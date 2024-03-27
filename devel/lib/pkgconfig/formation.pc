@@ -1,0 +1,8 @@
+prefix=/home/yangyu/Desktop/fc/formation_ws/devel
+
+Name: formation
+Description: Description of formation
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: roscpp std_msgs

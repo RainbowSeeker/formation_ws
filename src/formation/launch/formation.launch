@@ -1,0 +1,7 @@
+<launch>
+    <!-- Add your nodes, parameters, and other launch elements here -->
+    <nodes>
+        <node name="formation" pkg="formation" type="formation_node" output="screen"/>
+        <param name="formation/num_uav" value="3"/>
+    </nodes>
+</launch>
