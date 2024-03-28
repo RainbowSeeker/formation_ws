@@ -3,7 +3,7 @@
 #include <thread>
 #include "uav_node.h"
 
-static constexpr int NUM_UAVS = 3;
+static constexpr int NUM_UAVS = 1;
 
 int main(int argc, char** argv) 
 {

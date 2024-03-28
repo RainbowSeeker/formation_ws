@@ -1,6 +1,7 @@
 #pragma once
 
-#include "lib/Formation_FMS.h"
+#include "src/Formation_FMS.h"
+#include "src/Formation_FMS_types.h"
 
 /*
     Pilot_Cmd_Bus Pilot_Cmd;           // '<Root>/Pilot_Cmd'

@@ -1,7 +1,7 @@
 
 file(GLOB_RECURSE FMS_SRC
-    lib/*.cpp
-    lib/*.h
+    src/*.cpp
+    src/*.h
     *.cpp
 )
 

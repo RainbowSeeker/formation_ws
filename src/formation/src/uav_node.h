@@ -1,15 +1,12 @@
 #pragma once
 
 #include <ros/ros.h>
-#include <geometry_msgs/PoseStamped.h>
-#include <geometry_msgs/Vector3Stamped.h>
 #include <mavros_msgs/CommandBool.h>
 #include <mavros_msgs/SetMode.h>
 #include <mavros_msgs/State.h>
-#include <sensor_msgs/NavSatFix.h>
 #include <cstring>
 
-#include "FMS.h"
+#include "Formation_FMS/FMS.h"
 
 class UavNode : public ros::NodeHandle
 {
@@ -27,8 +24,7 @@ private:
     void publish_offboard_control_mode();
 
     // ros publisher and subscriber
-    ros::Publisher setpoint_accel_pub;  // publisher for lateral acceleration (for loiter)
-    ros::Publisher local_pos_pub;       // publisher for local position setpoint (including x_R y_R h_R)
+    ros::Publisher setpoint_raw_local_pub;  // publisher for Local position, velocity and acceleration setpoint.
 
     ros::Subscriber state_sub;
     ros::ServiceClient arming_client;
@@ -40,9 +36,18 @@ private:
     mavros_msgs::SetMode _set_mode;
     mavros_msgs::CommandBool _arm_cmd;
 
+    //FMS INPUT subscriber
+    ros::Subscriber local_pose_sub;
+    ros::Subscriber local_vel_sub;
 
     // FMS
     FMS _fms;
     FMS_In _fms_in;
     FMS_Out _fms_out;
+    struct fms_fusion
+    {
+        Formation_Cross_Bus cross;
+        Other_Mission_Data_Bus mission;
+    };
+    static fms_fusion fusion;
 };
