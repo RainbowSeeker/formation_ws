@@ -70,6 +70,12 @@ int UavNode::initialize()
     _fms.initialize();
     return 0;
 }
+void UavNode::parameter_update()
+{
+    FMS_PARAM.FW_AIRSPD_TRIM = 15;
+    FMS_PARAM.FW_HEIGHT_TRIM = 20;
+    FORMATION_PARAM.UAV_ID = _uav_id;
+}
 
 void UavNode::fms_step()
 {
@@ -97,6 +103,9 @@ void UavNode::fms_step()
  */
 void UavNode::publish_trajectory_setpoint()
 {
+#if AIRCRAFT_TYPE == FIXED_WING
+    
+#else
     mavros_msgs::PositionTarget setpoint{};
     setpoint.header.stamp = ros::Time::now();
     /*
@@ -119,16 +128,19 @@ void UavNode::publish_trajectory_setpoint()
         uint16 FORCE = 512 # Force in af vector flag
         uint16 IGNORE_YAW = 1024
         uint16 IGNORE_YAW_RATE = 2048
-    */  //only control vn, ve, vh, an, ae
+    */  //only control vn, ve, vh, an, ae, ah(0)
     setpoint.type_mask = mavros_msgs::PositionTarget::IGNORE_PX | mavros_msgs::PositionTarget::IGNORE_PY | mavros_msgs::PositionTarget::IGNORE_PZ | 
-            mavros_msgs::PositionTarget::IGNORE_AFZ | mavros_msgs::PositionTarget::IGNORE_YAW | mavros_msgs::PositionTarget::IGNORE_YAW_RATE;
+            mavros_msgs::PositionTarget::IGNORE_YAW | mavros_msgs::PositionTarget::IGNORE_YAW_RATE;
     //NED to ENU
-    setpoint.velocity.y = -1;    //vn
-    setpoint.velocity.x = 0;    //ve
-    setpoint.velocity.z = 0.4;    //vh
+    // _fms_out.FMS_Out.ax_cmd;
+    setpoint.velocity.y = 10;    //vn
+    setpoint.velocity.x = 5;    //ve
+    setpoint.velocity.z = 10;    //vh _fms_out.FMS_Out.vh_cmd;
     setpoint.acceleration_or_force.y = 0;    //an
-    setpoint.acceleration_or_force.x = 0;    //ae
+    setpoint.acceleration_or_force.x = 10;    //ae
+    setpoint.acceleration_or_force.z = 0;    //ah
     setpoint_raw_local_pub.publish(setpoint);
+#endif
 }
 
 /**

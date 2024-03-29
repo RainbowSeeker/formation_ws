@@ -7,9 +7,9 @@
 //
 // Code generated for Simulink model 'Formation_FMS'.
 //
-// Model version                  : 1.121
+// Model version                  : 1.127
 // Simulink Coder version         : 9.8 (R2022b) 13-May-2022
-// C/C++ source code generated on : Wed Mar 27 20:14:25 2024
+// C/C++ source code generated on : Fri Mar 29 15:55:50 2024
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -61,26 +61,38 @@ extern "C"
 //  these parameters and exports their symbols.
 //
 
+extern struct_RybhgqIOamJFBGFK48xLQB FORMATION_PARAM;// Variable: FORMATION_PARAM
+                                                        //  Referenced by:
+                                                        //    '<Root>/FMS State Machine'
+                                                        //    '<S82>/MATLAB Function'
+                                                        //    '<S84>/MATLAB Function'
+                                                        //    '<S19>/Time Consensus Controller'
+                                                        //    '<S19>/Gain1'
+                                                        //    '<S44>/Consensus Controller'
+
 extern struct_FebwIpiU9Ih55vl7WG22GB CONTROL_PARAM;// Variable: CONTROL_PARAM
                                                       //  Referenced by:
-                                                      //    '<S15>/Constant'
                                                       //    '<S16>/Saturation'
-                                                      //    '<S64>/Constant'
                                                       //    '<S65>/Saturation'
-                                                      //    '<S19>/Constant'
                                                       //    '<S20>/Saturation'
-                                                      //    '<S42>/Constant'
                                                       //    '<S43>/Saturation'
 
-extern struct_9QCb8LDOYrZ6XTvfIWkyaC FMS_PARAM;// Variable: FMS_PARAM
+extern struct_U9pfOUhK42GcE1cZiAFZlB FMS_PARAM;// Variable: FMS_PARAM
                                                   //  Referenced by:
                                                   //    '<Root>/ACCEPT_R'
+                                                  //    '<S15>/Constant'
                                                   //    '<S16>/Gain2'
+                                                  //    '<S64>/Constant'
+                                                  //    '<S65>/Constant'
                                                   //    '<S65>/Gain2'
                                                   //    '<S66>/L1'
                                                   //    '<S66>/R'
+                                                  //    '<S19>/Constant'
+                                                  //    '<S20>/Constant'
                                                   //    '<S20>/Gain2'
+                                                  //    '<S42>/Constant'
                                                   //    '<S42>/Gain'
+                                                  //    '<S43>/Constant'
                                                   //    '<S43>/Gain2'
                                                   //    '<S23>/L1'
                                                   //    '<S23>/Saturation1'
@@ -118,12 +130,13 @@ class Formation_FMS final
 
   // Block signals (default storage)
   struct B_Formation_FMS_T {
-    Other_Mission_Data_Bus mission;    // '<S83>/MATLAB Function'
+    Other_Mission_Data_Bus mission;    // '<S82>/MATLAB Function'
     Formation_Cross_Bus Formation_Cross_d;
     real32_T xyz_O_nx3[9];             // '<S44>/Vector Concatenate'
     real32_T vNED_O_nx3[9];            // '<S44>/Vector Concatenate1'
     Commander_In_Bus Cmd_In;           // '<Root>/FMS State Machine'
     real32_T pose[3];
+    real_T SFunction_o13;              // '<Root>/FMS State Machine'
     real32_T new_vel_err[2];
     real32_T Reshape2_bi[2];           // '<S48>/Reshape2'
     real32_T P_mr[2];                  // '<S49>/SearchL1RefWP'
@@ -140,16 +153,17 @@ class Formation_FMS final
     real32_T l1_a_cmd_m;               // '<S56>/Divide'
     real32_T u_e;                      // '<S49>/SearchL1RefWP'
     real32_T rtb_P_mr_m;
+    real32_T new_pos_err_idx_0;
+    real32_T new_pos_err_idx_1;
+    real32_T rtb_Switch_i_idx_0;
     real32_T pos_err_idx_2;
     real32_T pos_err_idx_0;
-    real32_T new_pos_err_idx_1;
-    real32_T new_pos_err_idx_0;
-    real32_T rtb_Switch_i_idx_0;
     real32_T a_tmp;
-    real32_T y;
+    real32_T b_y;
     real32_T scale;
     real32_T absxk;
     real32_T t;
+    real32_T path_ratio;
     real32_T nearest_cross;
     real32_T project_line;
     real32_T dotProduct;
@@ -163,12 +177,13 @@ class Formation_FMS final
     real32_T t_p;
     real32_T q;
     int32_T n;                         // '<S67>/SearchL1RefWP'
+    int32_T ux_cmd_tmp;
     int32_T i;
     int32_T b_vlen;
     int32_T i_c;
     int32_T i1;
     uint32_T Mission_Data_timestamp_prev;
-    uint32_T VehicleFormationFormAssembleWay;
+    uint32_T valid;
     PilotMode mode_prev;
     VehicleState state;                // '<Root>/FMS State Machine'
     boolean_T x[2];
@@ -185,20 +200,16 @@ class Formation_FMS final
 
   // Block states (default storage) for system '<Root>'
   struct DW_Formation_FMS_T {
-    real_T Delay_DSTATE;               // '<S65>/Delay'
-    real_T Delay_DSTATE_l;             // '<S20>/Delay'
-    real_T Delay_DSTATE_c;             // '<S43>/Delay'
-    real32_T DiscreteTimeIntegrator5_DSTATE;// '<S86>/Discrete-Time Integrator5' 
-    real32_T Delay_DSTATE_p;           // '<S16>/Delay'
+    real32_T Delay_DSTATE;             // '<S16>/Delay'
     real32_T start_vel_DSTATE[2];      // '<S69>/start_vel'
+    real32_T Delay_DSTATE_m;           // '<S65>/Delay'
+    real32_T Delay_DSTATE_l;           // '<S20>/Delay'
+    real32_T Delay_DSTATE_o;           // '<S43>/Delay'
     real32_T DiscreteTimeIntegrator1_DSTATE;// '<S4>/Discrete-Time Integrator1'
     uint32_T DelayInput1_DSTATE;       // '<S7>/Delay Input1'
     PilotMode Delay_DSTATE_j;          // '<S5>/Delay'
     real32_T waypoints[25];            // '<Root>/FMS State Machine'
-    real32_T DiscreteTimeIntegrator5_PREV_U;// '<S86>/Discrete-Time Integrator5' 
     uint32_T Mission_Data_timestamp_start;// '<Root>/FMS State Machine'
-    uint32_T VehicleFormationFormAssembleW_m;
-                          // '<S3>/Vehicle.Formation.FormAssemble.Waypoint.LPF'
     PilotMode mode_start;              // '<Root>/FMS State Machine'
     uint16_T DelayInput1_DSTATE_h;     // '<S17>/Delay Input1'
     uint16_T DelayInput1_DSTATE_d;     // '<S40>/Delay Input1'
@@ -209,39 +220,17 @@ class Formation_FMS final
     uint8_T is_FormMission;            // '<Root>/FMS State Machine'
     uint8_T is_Mission;                // '<Root>/FMS State Machine'
     uint8_T is_active_c3_Formation_FMS;// '<Root>/FMS State Machine'
-    uint8_T DiscreteTimeIntegrator5_IC_LOAD;// '<S86>/Discrete-Time Integrator5' 
-    uint8_T DiscreteTimeIntegrator5_SYSTEM_;// '<S86>/Discrete-Time Integrator5' 
-    boolean_T VehicleFormationFormAssembleW_o;
-                          // '<S3>/Vehicle.Formation.FormAssemble.Waypoint.LPF'
     boolean_T icLoad;                  // '<S16>/Delay'
     boolean_T icLoad_c;                // '<S69>/start_vel'
-    boolean_T icLoad_m;                // '<S65>/Delay'
+    boolean_T icLoad_j;                // '<S65>/Delay'
     boolean_T icLoad_h;                // '<S20>/Delay'
-    boolean_T icLoad_n;                // '<S43>/Delay'
+    boolean_T icLoad_k;                // '<S43>/Delay'
   };
 
   // Zero-crossing (trigger) state
   struct PrevZCX_Formation_FMS_T {
     ZCSigState Mission_SubSystem_Reset_ZCE;// '<S12>/Mission_SubSystem'
     ZCSigState FormMission_SubSystem_Reset_ZCE;// '<S13>/FormMission_SubSystem'
-  };
-
-  // Constant parameters (default storage)
-  struct ConstP_Formation_FMS_T {
-    // Expression: adj_matrix
-    //  Referenced by: '<S44>/Consensus Controller'
-
-    real_T ConsensusController_adj_matrix[9];
-
-    // Expression: rel_x
-    //  Referenced by: '<S44>/Consensus Controller'
-
-    real_T ConsensusController_rel_x[9];
-
-    // Expression: rel_y
-    //  Referenced by: '<S44>/Consensus Controller'
-
-    real_T ConsensusController_rel_y[9];
   };
 
   // External inputs (root inport signals with default storage)
@@ -262,15 +251,6 @@ class Formation_FMS final
   // Real-time Model Data Structure
   struct RT_MODEL_Formation_FMS_T {
     const char_T * volatile errorStatus;
-
-    //
-    //  Timing:
-    //  The following substructure contains information regarding
-    //  the timing information for the model.
-
-    struct {
-      uint32_T clockTick0;
-    } Timing;
   };
 
   // Copy Constructor
@@ -375,9 +355,6 @@ class Formation_FMS final
   RT_MODEL_Formation_FMS_T Formation_FMS_M;
 };
 
-// Constant parameters (default storage)
-extern const Formation_FMS::ConstP_Formation_FMS_T Formation_FMS_ConstP;
-
 //-
 //  These blocks were eliminated from the model due to optimizations:
 //
@@ -412,7 +389,6 @@ extern const Formation_FMS::ConstP_Formation_FMS_T Formation_FMS_ConstP;
 //  Block '<S67>/Reshape' : Reshape block reduction
 //  Block '<S67>/Reshape1' : Reshape block reduction
 //  Block '<S67>/Reshape3' : Reshape block reduction
-//  Block '<S86>/Data Type Conversion' : Eliminate redundant data type conversion
 
 
 //-
@@ -511,14 +487,12 @@ extern const Formation_FMS::ConstP_Formation_FMS_T Formation_FMS_ConstP;
 //  '<S79>'  : 'Formation_FMS/FMS Commander/Commander/Hold/Loiter_Control/L1_Core/L1_Lateral_Acceleration/Included Angle/Vector Normalize'
 //  '<S80>'  : 'Formation_FMS/FMS Commander/Commander/Hold/Loiter_Control/L1_Core/L1_Lateral_Acceleration/Included Angle/Vector Normalize1'
 //  '<S81>'  : 'Formation_FMS/FMS Commander/Commander/Hold/Loiter_Control/Reference_Point/Vector Normalize'
-//  '<S82>'  : 'Formation_FMS/FMS State Machine/Vehicle.Formation.FormAssemble.Waypoint.LPF'
-//  '<S83>'  : 'Formation_FMS/FMS State Machine/Vehicle.Formation.FormAssemble.dubinsPath'
-//  '<S84>'  : 'Formation_FMS/FMS State Machine/Vehicle.Formation.FormAssemble.dubinsPathRatio'
-//  '<S85>'  : 'Formation_FMS/FMS State Machine/Vehicle.Formation.check_form_valid'
-//  '<S86>'  : 'Formation_FMS/FMS State Machine/Vehicle.Formation.FormAssemble.Waypoint.LPF/First Order LPF'
-//  '<S87>'  : 'Formation_FMS/FMS State Machine/Vehicle.Formation.FormAssemble.dubinsPath/MATLAB Function'
-//  '<S88>'  : 'Formation_FMS/FMS State Machine/Vehicle.Formation.FormAssemble.dubinsPathRatio/Dubins Closest Point'
-//  '<S89>'  : 'Formation_FMS/FMS State Machine/Vehicle.Formation.check_form_valid/MATLAB Function'
+//  '<S82>'  : 'Formation_FMS/FMS State Machine/Vehicle.Formation.FormAssemble.dubinsPath'
+//  '<S83>'  : 'Formation_FMS/FMS State Machine/Vehicle.Formation.FormAssemble.dubinsPathRatio'
+//  '<S84>'  : 'Formation_FMS/FMS State Machine/Vehicle.Formation.check_form_valid'
+//  '<S85>'  : 'Formation_FMS/FMS State Machine/Vehicle.Formation.FormAssemble.dubinsPath/MATLAB Function'
+//  '<S86>'  : 'Formation_FMS/FMS State Machine/Vehicle.Formation.FormAssemble.dubinsPathRatio/Dubins Closest Point'
+//  '<S87>'  : 'Formation_FMS/FMS State Machine/Vehicle.Formation.check_form_valid/MATLAB Function'
 
 #endif                                 // RTW_HEADER_Formation_FMS_h_
 

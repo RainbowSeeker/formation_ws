@@ -7,9 +7,9 @@
 //
 // Code generated for Simulink model 'Formation_FMS'.
 //
-// Model version                  : 1.121
+// Model version                  : 1.127
 // Simulink Coder version         : 9.8 (R2022b) 13-May-2022
-// C/C++ source code generated on : Wed Mar 27 20:14:25 2024
+// C/C++ source code generated on : Fri Mar 29 15:55:50 2024
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -183,11 +183,31 @@ struct Other_Mission_Data_Bus
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_9QCb8LDOYrZ6XTvfIWkyaC_
-#define DEFINED_TYPEDEF_FOR_struct_9QCb8LDOYrZ6XTvfIWkyaC_
+#ifndef DEFINED_TYPEDEF_FOR_struct_RybhgqIOamJFBGFK48xLQB_
+#define DEFINED_TYPEDEF_FOR_struct_RybhgqIOamJFBGFK48xLQB_
 
-struct struct_9QCb8LDOYrZ6XTvfIWkyaC
+struct struct_RybhgqIOamJFBGFK48xLQB
 {
+  real_T UAV_ID;
+  real_T ADJ_MARTIX[9];
+  real_T REL_X_MATRIX[9];
+  real_T REL_Y_MATRIX[9];
+  real_T REL_Z_MATRIX[9];
+  real_T NUM_UAV;
+  real_T FORM_POINT[9];
+  real32_T FORM_RADIUS;
+  real32_T ASSEMBLE_KT;
+};
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_struct_U9pfOUhK42GcE1cZiAFZlB_
+#define DEFINED_TYPEDEF_FOR_struct_U9pfOUhK42GcE1cZiAFZlB_
+
+struct struct_U9pfOUhK42GcE1cZiAFZlB
+{
+  real32_T FW_AIRSPD_TRIM;
+  real32_T FW_HEIGHT_TRIM;
   real32_T THROTTLE_DZ;
   real32_T YAW_DZ;
   real32_T ROLL_DZ;
@@ -264,7 +284,7 @@ struct struct_FebwIpiU9Ih55vl7WG22GB
 
 #endif
 
-// Custom Type definition for MATLAB Function: '<S83>/MATLAB Function'
+// Custom Type definition for MATLAB Function: '<S82>/MATLAB Function'
 #ifndef struct_captured_var_Formation_FMS_T
 #define struct_captured_var_Formation_FMS_T
 

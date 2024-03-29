@@ -8,6 +8,10 @@
 
 #include "Formation_FMS/FMS.h"
 
+#define FIXED_WING      1
+#define AIRCRAFT_TYPE   FIXED_WING
+
+
 class UavNode : public ros::NodeHandle
 {
 public:
@@ -19,6 +23,7 @@ public:
 
     bool connected() const;
 private:
+    void parameter_update();
     void fms_step();
     void publish_trajectory_setpoint();
     void publish_offboard_control_mode();

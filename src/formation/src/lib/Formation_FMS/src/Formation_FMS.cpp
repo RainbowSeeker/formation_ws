@@ -7,9 +7,9 @@
 //
 // Code generated for Simulink model 'Formation_FMS'.
 //
-// Model version                  : 1.121
+// Model version                  : 1.127
 // Simulink Coder version         : 9.8 (R2022b) 13-May-2022
-// C/C++ source code generated on : Wed Mar 27 20:14:25 2024
+// C/C++ source code generated on : Fri Mar 29 15:55:50 2024
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -68,6 +68,31 @@ const uint8_T Formation_FMS_IN_Waypoint_g{ 4U };
 const uint8_T Formation_FM_IN_NO_ACTIVE_CHILD{ 0U };
 
 // Exported block parameters
+struct_RybhgqIOamJFBGFK48xLQB FORMATION_PARAM{
+  1.0,
+
+  { 0.0, 1.0, 1.0, 0.2, 0.0, 0.0, 0.2, 0.0, 0.0 },
+
+  { 0.0, -20.0, -20.0, 20.0, 0.0, 0.0, 20.0, 0.0, 0.0 },
+
+  { 0.0, -20.0, 20.0, 20.0, 0.0, 40.0, -20.0, -40.0, 0.0 },
+
+  { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
+  3.0,
+
+  { 0.0, 50.0, -50.0, 1000.0, 1000.0, 1000.0, 0.0, 0.0, 0.0 },
+  100.0F,
+  5.0F
+} ;                                    // Variable: FORMATION_PARAM
+                                          //  Referenced by:
+                                          //    '<Root>/FMS State Machine'
+                                          //    '<S82>/MATLAB Function'
+                                          //    '<S84>/MATLAB Function'
+                                          //    '<S19>/Time Consensus Controller'
+                                          //    '<S19>/Gain1'
+                                          //    '<S44>/Consensus Controller'
+
+
 struct_FebwIpiU9Ih55vl7WG22GB CONTROL_PARAM{
   7.0F,
   7.0F,
@@ -119,17 +144,15 @@ struct_FebwIpiU9Ih55vl7WG22GB CONTROL_PARAM{
   0.1F
 } ;                                    // Variable: CONTROL_PARAM
                                           //  Referenced by:
-                                          //    '<S15>/Constant'
                                           //    '<S16>/Saturation'
-                                          //    '<S64>/Constant'
                                           //    '<S65>/Saturation'
-                                          //    '<S19>/Constant'
                                           //    '<S20>/Saturation'
-                                          //    '<S42>/Constant'
                                           //    '<S43>/Saturation'
 
 
-struct_9QCb8LDOYrZ6XTvfIWkyaC FMS_PARAM{
+struct_U9pfOUhK42GcE1cZiAFZlB FMS_PARAM{
+  25.0F,
+  1000.0F,
   0.15F,
   0.15F,
   0.1F,
@@ -148,12 +171,19 @@ struct_9QCb8LDOYrZ6XTvfIWkyaC FMS_PARAM{
 } ;                                    // Variable: FMS_PARAM
                                           //  Referenced by:
                                           //    '<Root>/ACCEPT_R'
+                                          //    '<S15>/Constant'
                                           //    '<S16>/Gain2'
+                                          //    '<S64>/Constant'
+                                          //    '<S65>/Constant'
                                           //    '<S65>/Gain2'
                                           //    '<S66>/L1'
                                           //    '<S66>/R'
+                                          //    '<S19>/Constant'
+                                          //    '<S20>/Constant'
                                           //    '<S20>/Gain2'
+                                          //    '<S42>/Constant'
                                           //    '<S42>/Gain'
+                                          //    '<S43>/Constant'
                                           //    '<S43>/Gain2'
                                           //    '<S23>/L1'
                                           //    '<S23>/Saturation1'
@@ -287,7 +317,7 @@ void Formation_FMS::Formation_FMS_SearchL1RefWP(const real32_T rtu_P1[2], const
   *rty_u = u;
 }
 
-// Function for MATLAB Function: '<S83>/MATLAB Function'
+// Function for MATLAB Function: '<S82>/MATLAB Function'
 real_T Formation_FMS::Formation_FMS_atan3(real_T x, real_T y, real_T x0, real_T
   b_y0)
 {
@@ -317,7 +347,7 @@ real_T Formation_FMS::Formation_FMS_atan3(real_T x, real_T y, real_T x0, real_T
   return result;
 }
 
-// Function for MATLAB Function: '<S83>/MATLAB Function'
+// Function for MATLAB Function: '<S82>/MATLAB Function'
 void Formation_FMS::Formation_FMS_Dubins(const captured_var_Formation_FMS_T
   *PhiMaximum, const captured_var_Formation_FMS_T *rad2deg, real_T xs, real_T ys,
   real_T psi_s, real_T xf, real_T yf, real_T psi_f, real_T v, real_T xts[4],
@@ -334,16 +364,16 @@ void Formation_FMS::Formation_FMS_Dubins(const captured_var_Formation_FMS_T
   boolean_T exitg1;
   *r = v * v / 9.81 / std::tan(PhiMaximum->contents / rad2deg->contents);
   localB->l_best = psi_s / rad2deg->contents;
-  localB->pos_tmp = std::cos(localB->l_best) * *r;
+  localB->pos_tmp = std::sin(localB->l_best) * *r;
   pos[0] = localB->pos_tmp + xs;
-  localB->l_best = std::sin(localB->l_best) * *r;
+  localB->l_best = std::cos(localB->l_best) * *r;
   pos[2] = ys - localB->l_best;
   pos[1] = xs - localB->pos_tmp;
   pos[3] = localB->l_best + ys;
   localB->l_best = psi_f / rad2deg->contents;
-  localB->pos_tmp = std::cos(localB->l_best) * *r;
+  localB->pos_tmp = std::sin(localB->l_best) * *r;
   pof[0] = localB->pos_tmp + xf;
-  localB->l_best = std::sin(localB->l_best) * *r;
+  localB->l_best = std::cos(localB->l_best) * *r;
   pof[2] = yf - localB->l_best;
   pof[1] = xf - localB->pos_tmp;
   pof[3] = localB->l_best + yf;
@@ -547,7 +577,7 @@ void Formation_FMS::VehicleFormationFormAssembledub(const Formation_Cross_Bus
   int32_T i;
   int32_T target;
 
-  // MATLAB Function: '<S83>/MATLAB Function'
+  // MATLAB Function: '<S82>/MATLAB Function'
   localB->PhiMaximum.contents = 40.0;
   localB->rad2deg.contents = 57.295779513082323;
   localB->obj.xs = 0.0;
@@ -610,23 +640,23 @@ void Formation_FMS::VehicleFormationFormAssembledub(const Formation_Cross_Bus
   localB->object[0].xs = rtu_Formation_Cross->x_R[0];
   localB->object[0].ys = rtu_Formation_Cross->y_R[0];
   localB->object[0].psi_s = rtu_Formation_Cross->psi[0];
-  localB->object[0].xf = 0.0;
-  localB->object[0].yf = 1000.0;
-  localB->object[0].psi_f = 0.0;
+  localB->object[0].xf = FORMATION_PARAM.FORM_POINT[0];
+  localB->object[0].yf = FORMATION_PARAM.FORM_POINT[3];
+  localB->object[0].psi_f = FORMATION_PARAM.FORM_POINT[6];
   localB->object[0].v = 25.0;
   localB->object[1].xs = rtu_Formation_Cross->x_R[1];
   localB->object[1].ys = rtu_Formation_Cross->y_R[1];
   localB->object[1].psi_s = rtu_Formation_Cross->psi[1];
-  localB->object[1].xf = 50.0;
-  localB->object[1].yf = 1000.0;
-  localB->object[1].psi_f = 0.0;
+  localB->object[1].xf = FORMATION_PARAM.FORM_POINT[1];
+  localB->object[1].yf = FORMATION_PARAM.FORM_POINT[4];
+  localB->object[1].psi_f = FORMATION_PARAM.FORM_POINT[7];
   localB->object[1].v = 25.0;
   localB->object[2].xs = rtu_Formation_Cross->x_R[2];
   localB->object[2].ys = rtu_Formation_Cross->y_R[2];
   localB->object[2].psi_s = rtu_Formation_Cross->psi[2];
-  localB->object[2].xf = -50.0;
-  localB->object[2].yf = 1000.0;
-  localB->object[2].psi_f = 0.0;
+  localB->object[2].xf = FORMATION_PARAM.FORM_POINT[2];
+  localB->object[2].yf = FORMATION_PARAM.FORM_POINT[5];
+  localB->object[2].psi_f = FORMATION_PARAM.FORM_POINT[8];
   localB->object[2].v = 25.0;
   target = -1;
   localB->l_ref = -1.0;
@@ -634,18 +664,21 @@ void Formation_FMS::VehicleFormationFormAssembledub(const Formation_Cross_Bus
   Formation_FMS_Dubins(&localB->PhiMaximum, &localB->rad2deg, static_cast<real_T>
                        (rtu_Formation_Cross->x_R[0]), static_cast<real_T>
                        (rtu_Formation_Cross->y_R[0]), static_cast<real_T>
-                       (rtu_Formation_Cross->psi[0]), 0.0, 1000.0, 0.0, 25.0,
-                       localB->obj.xts, localB->obj.yts, localB->obj.xtf,
-                       localB->obj.ytf, localB->obj.cs, localB->obj.cf,
-                       localB->obj.lt, localB->obj.l, localB->obj.pos,
-                       localB->obj.pof, &localB->obj.r, localB->b_data, &b_size,
-                       localB->c_data, &c_size, localB);
+                       (rtu_Formation_Cross->psi[0]),
+                       FORMATION_PARAM.FORM_POINT[0],
+                       FORMATION_PARAM.FORM_POINT[3],
+                       FORMATION_PARAM.FORM_POINT[6], 25.0, localB->obj.xts,
+                       localB->obj.yts, localB->obj.xtf, localB->obj.ytf,
+                       localB->obj.cs, localB->obj.cf, localB->obj.lt,
+                       localB->obj.l, localB->obj.pos, localB->obj.pof,
+                       &localB->obj.r, localB->b_data, &b_size, localB->c_data,
+                       &c_size, localB);
   localB->obj.index_dubins[0] = localB->b_data[0];
   localB->obj.index_dubins[1] = localB->c_data[0];
-  localB->search_floor = localB->obj.l[(((static_cast<int32_T>(localB->c_data[0])
-    - 1) << 1) + static_cast<int32_T>(localB->b_data[0])) - 1];
-  if (localB->search_floor > -1.0) {
-    localB->l_ref = localB->search_floor;
+  localB->goal = localB->obj.l[(((static_cast<int32_T>(localB->c_data[0]) - 1) <<
+    1) + static_cast<int32_T>(localB->b_data[0])) - 1];
+  if (localB->goal > -1.0) {
+    localB->l_ref = localB->goal;
     target = 1;
   }
 
@@ -654,18 +687,21 @@ void Formation_FMS::VehicleFormationFormAssembledub(const Formation_Cross_Bus
   Formation_FMS_Dubins(&localB->PhiMaximum, &localB->rad2deg, static_cast<real_T>
                        (rtu_Formation_Cross->x_R[1]), static_cast<real_T>
                        (rtu_Formation_Cross->y_R[1]), static_cast<real_T>
-                       (rtu_Formation_Cross->psi[1]), 50.0, 1000.0, 0.0, 25.0,
-                       localB->obj.xts, localB->obj.yts, localB->obj.xtf,
-                       localB->obj.ytf, localB->obj.cs, localB->obj.cf,
-                       localB->obj.lt, localB->obj.l, localB->obj.pos,
-                       localB->obj.pof, &localB->obj.r, localB->b_data, &b_size,
-                       localB->c_data, &c_size, localB);
+                       (rtu_Formation_Cross->psi[1]),
+                       FORMATION_PARAM.FORM_POINT[1],
+                       FORMATION_PARAM.FORM_POINT[4],
+                       FORMATION_PARAM.FORM_POINT[7], 25.0, localB->obj.xts,
+                       localB->obj.yts, localB->obj.xtf, localB->obj.ytf,
+                       localB->obj.cs, localB->obj.cf, localB->obj.lt,
+                       localB->obj.l, localB->obj.pos, localB->obj.pof,
+                       &localB->obj.r, localB->b_data, &b_size, localB->c_data,
+                       &c_size, localB);
   localB->obj.index_dubins[0] = localB->b_data[0];
   localB->obj.index_dubins[1] = localB->c_data[0];
-  localB->search_floor = localB->obj.l[(((static_cast<int32_T>(localB->c_data[0])
-    - 1) << 1) + static_cast<int32_T>(localB->b_data[0])) - 1];
-  if (localB->search_floor > localB->l_ref) {
-    localB->l_ref = localB->search_floor;
+  localB->goal = localB->obj.l[(((static_cast<int32_T>(localB->c_data[0]) - 1) <<
+    1) + static_cast<int32_T>(localB->b_data[0])) - 1];
+  if (localB->goal > localB->l_ref) {
+    localB->l_ref = localB->goal;
     target = 2;
   }
 
@@ -674,18 +710,21 @@ void Formation_FMS::VehicleFormationFormAssembledub(const Formation_Cross_Bus
   Formation_FMS_Dubins(&localB->PhiMaximum, &localB->rad2deg, static_cast<real_T>
                        (rtu_Formation_Cross->x_R[2]), static_cast<real_T>
                        (rtu_Formation_Cross->y_R[2]), static_cast<real_T>
-                       (rtu_Formation_Cross->psi[2]), -50.0, 1000.0, 0.0, 25.0,
-                       localB->obj.xts, localB->obj.yts, localB->obj.xtf,
-                       localB->obj.ytf, localB->obj.cs, localB->obj.cf,
-                       localB->obj.lt, localB->obj.l, localB->obj.pos,
-                       localB->obj.pof, &localB->obj.r, localB->b_data, &b_size,
-                       localB->c_data, &c_size, localB);
+                       (rtu_Formation_Cross->psi[2]),
+                       FORMATION_PARAM.FORM_POINT[2],
+                       FORMATION_PARAM.FORM_POINT[5],
+                       FORMATION_PARAM.FORM_POINT[8], 25.0, localB->obj.xts,
+                       localB->obj.yts, localB->obj.xtf, localB->obj.ytf,
+                       localB->obj.cs, localB->obj.cf, localB->obj.lt,
+                       localB->obj.l, localB->obj.pos, localB->obj.pof,
+                       &localB->obj.r, localB->b_data, &b_size, localB->c_data,
+                       &c_size, localB);
   localB->obj.index_dubins[0] = localB->b_data[0];
   localB->obj.index_dubins[1] = localB->c_data[0];
-  localB->search_floor = localB->obj.l[(((static_cast<int32_T>(localB->c_data[0])
-    - 1) << 1) + static_cast<int32_T>(localB->b_data[0])) - 1];
-  if (localB->search_floor > localB->l_ref) {
-    localB->l_ref = localB->search_floor;
+  localB->goal = localB->obj.l[(((static_cast<int32_T>(localB->c_data[0]) - 1) <<
+    1) + static_cast<int32_T>(localB->b_data[0])) - 1];
+  if (localB->goal > localB->l_ref) {
+    localB->l_ref = localB->goal;
     target = 3;
   }
 
@@ -701,19 +740,23 @@ void Formation_FMS::VehicleFormationFormAssembledub(const Formation_Cross_Bus
         exitg1 = false;
         while ((!exitg1) && (stop_flag != 0)) {
           localB->search += d[j];
-          localB->object[i].xm = localB->object[i].xf - localB->search * 0.0;
-          localB->object[i].ym = localB->object[i].yf - localB->search;
+          localB->goal = localB->object[i].psi_f / 57.295779513082323;
+          localB->object[i].xm = localB->object[i].xf - std::cos(localB->goal) *
+            localB->search;
+          localB->object[i].ym = localB->object[i].yf - std::sin(localB->goal) *
+            localB->search;
           Formation_FMS_Dubins(&localB->PhiMaximum, &localB->rad2deg,
                                localB->object[i].xs, localB->object[i].ys,
                                localB->object[i].psi_s, localB->object[i].xm,
-                               localB->object[i].ym, 0.0, localB->object[i].v,
-                               localB->object[i].xts, localB->object[i].yts,
-                               localB->object[i].xtf, localB->object[i].ytf,
-                               localB->object[i].cs, localB->object[i].cf,
-                               localB->object[i].lt, localB->object[i].l,
-                               localB->object[i].pos, localB->object[i].pof,
-                               &localB->goal, localB->b_data, &b_size,
-                               localB->c_data, &c_size, localB);
+                               localB->object[i].ym, localB->object[i].psi_f,
+                               localB->object[i].v, localB->object[i].xts,
+                               localB->object[i].yts, localB->object[i].xtf,
+                               localB->object[i].ytf, localB->object[i].cs,
+                               localB->object[i].cf, localB->object[i].lt,
+                               localB->object[i].l, localB->object[i].pos,
+                               localB->object[i].pof, &localB->goal,
+                               localB->b_data, &b_size, localB->c_data, &c_size,
+                               localB);
           localB->object[i].index_dubins[0] = localB->b_data[0];
           localB->object[i].index_dubins[1] = localB->c_data[0];
           localB->goal = (localB->object[i].l[(((static_cast<int32_T>
@@ -764,12 +807,12 @@ void Formation_FMS::VehicleFormationFormAssembledub(const Formation_Cross_Bus
     localB->result[66] = localB->object[0].cf[i];
     localB->result[9] = localB->object[0].xm;
     localB->result[24] = localB->object[0].ym;
-    localB->result[39] = 0.0;
+    localB->result[39] = localB->object[0].psi_f;
     localB->result[54] = 0.0;
     localB->result[69] = 0.0;
     localB->result[12] = localB->object[0].xf;
     localB->result[27] = localB->object[0].yf;
-    localB->result[42] = 0.0;
+    localB->result[42] = localB->object[0].psi_f;
     localB->result[57] = 0.0;
     localB->result[72] = localB->object[0].l[i];
   } else {
@@ -798,12 +841,12 @@ void Formation_FMS::VehicleFormationFormAssembledub(const Formation_Cross_Bus
     localB->result[66] = localB->object[0].cf[i];
     localB->result[9] = localB->object[0].xm;
     localB->result[24] = localB->object[0].ym;
-    localB->result[39] = 0.0;
+    localB->result[39] = localB->object[0].psi_f;
     localB->result[54] = 0.0;
     localB->result[69] = localB->object[0].l_ad;
     localB->result[12] = localB->object[0].xf;
     localB->result[27] = localB->object[0].yf;
-    localB->result[42] = 0.0;
+    localB->result[42] = localB->object[0].psi_f;
     localB->result[57] = 0.0;
     localB->result[72] = localB->object[0].l[i] + localB->object[0].l_ad;
   }
@@ -833,12 +876,12 @@ void Formation_FMS::VehicleFormationFormAssembledub(const Formation_Cross_Bus
     localB->result[67] = localB->object[1].cf[i];
     localB->result[10] = localB->object[1].xm;
     localB->result[25] = localB->object[1].ym;
-    localB->result[40] = 0.0;
+    localB->result[40] = localB->object[1].psi_f;
     localB->result[55] = 0.0;
     localB->result[70] = 0.0;
     localB->result[13] = localB->object[1].xf;
     localB->result[28] = localB->object[1].yf;
-    localB->result[43] = 0.0;
+    localB->result[43] = localB->object[1].psi_f;
     localB->result[58] = 0.0;
     localB->result[73] = localB->object[1].l[i];
   } else {
@@ -867,12 +910,12 @@ void Formation_FMS::VehicleFormationFormAssembledub(const Formation_Cross_Bus
     localB->result[67] = localB->object[1].cf[i];
     localB->result[10] = localB->object[1].xm;
     localB->result[25] = localB->object[1].ym;
-    localB->result[40] = 0.0;
+    localB->result[40] = localB->object[1].psi_f;
     localB->result[55] = 0.0;
     localB->result[70] = localB->object[1].l_ad;
     localB->result[13] = localB->object[1].xf;
     localB->result[28] = localB->object[1].yf;
-    localB->result[43] = 0.0;
+    localB->result[43] = localB->object[1].psi_f;
     localB->result[58] = 0.0;
     localB->result[73] = localB->object[1].l[i] + localB->object[1].l_ad;
   }
@@ -902,12 +945,12 @@ void Formation_FMS::VehicleFormationFormAssembledub(const Formation_Cross_Bus
     localB->result[68] = localB->object[2].cf[i];
     localB->result[11] = localB->object[2].xm;
     localB->result[26] = localB->object[2].ym;
-    localB->result[41] = 0.0;
+    localB->result[41] = localB->object[2].psi_f;
     localB->result[56] = 0.0;
     localB->result[71] = 0.0;
     localB->result[14] = localB->object[2].xf;
     localB->result[29] = localB->object[2].yf;
-    localB->result[44] = 0.0;
+    localB->result[44] = localB->object[2].psi_f;
     localB->result[59] = 0.0;
     localB->result[74] = localB->object[2].l[i];
   } else {
@@ -936,12 +979,12 @@ void Formation_FMS::VehicleFormationFormAssembledub(const Formation_Cross_Bus
     localB->result[68] = localB->object[2].cf[i];
     localB->result[11] = localB->object[2].xm;
     localB->result[26] = localB->object[2].ym;
-    localB->result[41] = 0.0;
+    localB->result[41] = localB->object[2].psi_f;
     localB->result[56] = 0.0;
     localB->result[71] = localB->object[2].l_ad;
     localB->result[14] = localB->object[2].xf;
     localB->result[29] = localB->object[2].yf;
-    localB->result[44] = 0.0;
+    localB->result[44] = localB->object[2].psi_f;
     localB->result[59] = 0.0;
     localB->result[74] = localB->object[2].l[i] + localB->object[2].l_ad;
   }
@@ -971,10 +1014,10 @@ void Formation_FMS::VehicleFormationFormAssembledub(const Formation_Cross_Bus
     }
   }
 
-  // End of MATLAB Function: '<S83>/MATLAB Function'
+  // End of MATLAB Function: '<S82>/MATLAB Function'
 }
 
-// Function for MATLAB Function: '<S84>/Dubins Closest Point'
+// Function for MATLAB Function: '<S83>/Dubins Closest Point'
 real32_T Formation_FMS::Formation_FMS_norm(const real32_T x[2])
 {
   real32_T y;
@@ -1036,7 +1079,7 @@ real32_T Formation_FMS::Formation_FMS_rt_atan2f_snf(real32_T u0, real32_T u1)
   return y;
 }
 
-// Function for MATLAB Function: '<S84>/Dubins Closest Point'
+// Function for MATLAB Function: '<S83>/Dubins Closest Point'
 real32_T Formation_FMS::Formation_FMS_mod(real32_T x)
 {
   real32_T r;
@@ -1065,7 +1108,7 @@ real32_T Formation_FMS::Formation_FMS_mod(real32_T x)
   return r;
 }
 
-// Function for MATLAB Function: '<S84>/Dubins Closest Point'
+// Function for MATLAB Function: '<S83>/Dubins Closest Point'
 void Formation_FMS::Formati_getMinDistanceAtSegment(const real32_T waypoints[25],
   const real32_T pose[3], uint16_T segment, real32_T *dist, real32_T *ratio)
 {
@@ -1266,10 +1309,9 @@ void Formation_FMS::Formation_FMS_Vehicle(const INS_Out_Bus
 {
   // Delay: '<S5>/Delay' incorporates:
   //   Constant: '<Root>/ACCEPT_R'
-  //   MATLAB Function: '<S85>/MATLAB Function'
+  //   MATLAB Function: '<S84>/MATLAB Function'
   //   Outport: '<Root>/Form_Single'
   //   Outport: '<Root>/Other_Mission_Data'
-  //   SignalConversion generated from: '<S82>/Output'
 
   if ((*mode_prev != Formation_FMS_DW.mode_start) &&
       (Formation_FMS_DW.Delay_DSTATE_j != PilotMode::None)) {
@@ -1301,15 +1343,18 @@ void Formation_FMS::Formation_FMS_Vehicle(const INS_Out_Bus
           BusConversion_InsertedFor_FMS_c->y_R;
         Formation_FMS_B.Cmd_In.sp_waypoint[2] =
           BusConversion_InsertedFor_FMS_c->h_R;
-        *Formation_Cross_d = *BusConversion_InsertedFor_FMS_p;
+        if (FORMATION_PARAM.UAV_ID == 1.0) {
+          *Formation_Cross_d = *BusConversion_InsertedFor_FMS_p;
 
-        // Outputs for Function Call SubSystem: '<S3>/Vehicle.Formation.FormAssemble.dubinsPath' 
-        VehicleFormationFormAssembledub(Formation_Cross_d,
-          &Formation_FMS_B.mission,
-          &Formation_FMS_B.VehicleFormationFormAssembled_o);
+          // Outputs for Function Call SubSystem: '<S3>/Vehicle.Formation.FormAssemble.dubinsPath' 
+          VehicleFormationFormAssembledub(Formation_Cross_d,
+            &Formation_FMS_B.mission,
+            &Formation_FMS_B.VehicleFormationFormAssembled_o);
 
-        // End of Outputs for SubSystem: '<S3>/Vehicle.Formation.FormAssemble.dubinsPath' 
-        Formation_FMS_Y.Other_Mission_Data = Formation_FMS_B.mission;
+          // End of Outputs for SubSystem: '<S3>/Vehicle.Formation.FormAssemble.dubinsPath' 
+          Formation_FMS_Y.Other_Mission_Data = Formation_FMS_B.mission;
+        }
+
         Formation_FMS_DW.is_FormAssemble = Formation_FMS_IN_WaitForUpdate;
         Formation_FMS_B.state = VehicleState::None;
       } else {
@@ -1349,21 +1394,22 @@ void Formation_FMS::Formation_FMS_Vehicle(const INS_Out_Bus
      case Formation_FMS_IN_Formation:
       {
         // Outputs for Function Call SubSystem: '<S3>/Vehicle.Formation.check_form_valid' 
-        // MATLAB Function: '<S85>/MATLAB Function'
-        Formation_FMS_B.VehicleFormationFormAssembleWay = 0U;
+        // MATLAB Function: '<S84>/MATLAB Function'
+        Formation_FMS_B.valid = 0U;
         for (Formation_FMS_B.i = 0; Formation_FMS_B.i < 3; Formation_FMS_B.i++)
         {
-          if (Formation_FMS_B.i + 1 != 1) {
+          if (!(static_cast<real_T>(Formation_FMS_B.i) + 1.0 ==
+                FORMATION_PARAM.UAV_ID)) {
             Formation_FMS_B.scale = 1.29246971E-26F;
             Formation_FMS_B.absxk = std::abs
               (BusConversion_InsertedFor_FMS_p->x_R[Formation_FMS_B.i] -
                BusConversion_InsertedFor_FMS_c->x_R);
             if (Formation_FMS_B.absxk > 1.29246971E-26F) {
-              Formation_FMS_B.y = 1.0F;
+              Formation_FMS_B.path_ratio = 1.0F;
               Formation_FMS_B.scale = Formation_FMS_B.absxk;
             } else {
               Formation_FMS_B.t = Formation_FMS_B.absxk / 1.29246971E-26F;
-              Formation_FMS_B.y = Formation_FMS_B.t * Formation_FMS_B.t;
+              Formation_FMS_B.path_ratio = Formation_FMS_B.t * Formation_FMS_B.t;
             }
 
             Formation_FMS_B.absxk = std::abs
@@ -1371,27 +1417,25 @@ void Formation_FMS::Formation_FMS_Vehicle(const INS_Out_Bus
                BusConversion_InsertedFor_FMS_c->y_R);
             if (Formation_FMS_B.absxk > Formation_FMS_B.scale) {
               Formation_FMS_B.t = Formation_FMS_B.scale / Formation_FMS_B.absxk;
-              Formation_FMS_B.y = Formation_FMS_B.y * Formation_FMS_B.t *
-                Formation_FMS_B.t + 1.0F;
+              Formation_FMS_B.path_ratio = Formation_FMS_B.path_ratio *
+                Formation_FMS_B.t * Formation_FMS_B.t + 1.0F;
               Formation_FMS_B.scale = Formation_FMS_B.absxk;
             } else {
               Formation_FMS_B.t = Formation_FMS_B.absxk / Formation_FMS_B.scale;
-              Formation_FMS_B.y += Formation_FMS_B.t * Formation_FMS_B.t;
+              Formation_FMS_B.path_ratio += Formation_FMS_B.t *
+                Formation_FMS_B.t;
             }
 
-            if (Formation_FMS_B.scale * std::sqrt(Formation_FMS_B.y) <= 100.0F)
-            {
-              Formation_FMS_B.VehicleFormationFormAssembleWay |= 1U <<
-                Formation_FMS_B.i;
+            if (Formation_FMS_B.scale * std::sqrt(Formation_FMS_B.path_ratio) <=
+                FORMATION_PARAM.FORM_RADIUS) {
+              Formation_FMS_B.valid |= 1U << Formation_FMS_B.i;
             } else {
-              Formation_FMS_B.VehicleFormationFormAssembleWay &= ~(1U <<
-                Formation_FMS_B.i);
+              Formation_FMS_B.valid &= ~(1U << Formation_FMS_B.i);
             }
           }
         }
 
-        Formation_FMS_B.Cmd_In.form_valid =
-          Formation_FMS_B.VehicleFormationFormAssembleWay;
+        Formation_FMS_B.Cmd_In.form_valid = Formation_FMS_B.valid;
 
         // End of Outputs for SubSystem: '<S3>/Vehicle.Formation.check_form_valid' 
         switch (Formation_FMS_DW.is_Formation) {
@@ -1405,14 +1449,6 @@ void Formation_FMS::Formation_FMS_Vehicle(const INS_Out_Bus
                     BusConversion_InsertedFor_FMSSt->valid_items) {
                   boolean_T exitg1;
                   Formation_FMS_DW.is_FormAssemble = Formation_FMS_IN_Waypoint;
-
-                  // Enable for Function Call SubSystem: '<S3>/Vehicle.Formation.FormAssemble.Waypoint.LPF' 
-                  Formation_FMS_DW.VehicleFormationFormAssembleW_o = true;
-
-                  // Enable for DiscreteIntegrator: '<S86>/Discrete-Time Integrator5' 
-                  Formation_FMS_DW.DiscreteTimeIntegrator5_SYSTEM_ = 1U;
-
-                  // End of Enable for SubSystem: '<S3>/Vehicle.Formation.FormAssemble.Waypoint.LPF' 
                   Formation_FMS_B.Cmd_In.cur_waypoint[0] =
                     Formation_FMS_B.Cmd_In.sp_waypoint[0];
                   Formation_FMS_B.Cmd_In.cur_waypoint[1] =
@@ -1530,29 +1566,27 @@ void Formation_FMS::Formation_FMS_Vehicle(const INS_Out_Bus
               if (Formation_FMS_norm
                   (Formation_FMS_B.BusConversion_InsertedFor_FMS_c) <=
                   FMS_PARAM.ACCEPT_R) {
-                Formation_FMS_B.VehicleFormationFormAssembleWay =
-                  Formation_FMS_B.wp_index + 1U;
+                Formation_FMS_B.valid = Formation_FMS_B.wp_index + 1U;
                 if (Formation_FMS_B.wp_index + 1U > 65535U) {
-                  Formation_FMS_B.VehicleFormationFormAssembleWay = 65535U;
+                  Formation_FMS_B.valid = 65535U;
                 }
 
                 Formation_FMS_B.wp_index = static_cast<uint16_T>
-                  (Formation_FMS_B.VehicleFormationFormAssembleWay);
+                  (Formation_FMS_B.valid);
                 Formation_FMS_DW.is_FormAssemble = Formation_FMS_IN_NextWP;
                 Formation_FMS_B.state = VehicleState::FormAssemble;
               } else {
-                Formation_FMS_B.VehicleFormationFormAssembleWay =
-                  Formation_FMS_B.wp_index - /*MW:OvSatOk*/ 1U;
+                Formation_FMS_B.valid = Formation_FMS_B.wp_index -
+                  /*MW:OvSatOk*/ 1U;
                 if (Formation_FMS_B.wp_index - 1U > Formation_FMS_B.wp_index) {
-                  Formation_FMS_B.VehicleFormationFormAssembleWay = 0U;
+                  Formation_FMS_B.valid = 0U;
                 }
 
-                if (static_cast<uint16_T>
-                    (Formation_FMS_B.VehicleFormationFormAssembleWay) < 1) {
+                if (static_cast<uint16_T>(Formation_FMS_B.valid) < 1) {
                   Formation_FMS_B.wp_index_f = 1U;
                 } else {
                   Formation_FMS_B.wp_index_f = static_cast<uint16_T>
-                    (Formation_FMS_B.VehicleFormationFormAssembleWay);
+                    (Formation_FMS_B.valid);
                 }
 
                 Formation_FMS_B.pose[0] = BusConversion_InsertedFor_FMS_c->x_R;
@@ -1560,21 +1594,20 @@ void Formation_FMS::Formation_FMS_Vehicle(const INS_Out_Bus
                 Formation_FMS_B.pose[2] = BusConversion_InsertedFor_FMS_c->psi;
 
                 // Outputs for Function Call SubSystem: '<S3>/Vehicle.Formation.FormAssemble.dubinsPathRatio' 
-                // MATLAB Function: '<S84>/Dubins Closest Point'
+                // MATLAB Function: '<S83>/Dubins Closest Point'
                 Formati_getMinDistanceAtSegment(Formation_FMS_DW.waypoints,
                   Formation_FMS_B.pose, Formation_FMS_B.wp_index_f,
                   &Formation_FMS_B.t, &Formation_FMS_B.scale);
-                Formation_FMS_B.VehicleFormationFormAssembleWay =
-                  Formation_FMS_B.wp_index_f + 1U;
+                Formation_FMS_B.valid = Formation_FMS_B.wp_index_f + 1U;
                 if (Formation_FMS_B.wp_index_f + 1U > 65535U) {
-                  Formation_FMS_B.VehicleFormationFormAssembleWay = 65535U;
+                  Formation_FMS_B.valid = 65535U;
                 }
 
                 Formati_getMinDistanceAtSegment(Formation_FMS_DW.waypoints,
                   Formation_FMS_B.pose, static_cast<uint16_T>
-                  (Formation_FMS_B.VehicleFormationFormAssembleWay),
-                  &Formation_FMS_B.y, &Formation_FMS_B.absxk);
-                if (Formation_FMS_B.t <= Formation_FMS_B.y) {
+                  (Formation_FMS_B.valid), &Formation_FMS_B.path_ratio,
+                  &Formation_FMS_B.absxk);
+                if (Formation_FMS_B.t <= Formation_FMS_B.path_ratio) {
                   Formation_FMS_B.i = static_cast<int32_T>
                     (Formation_FMS_B.wp_index_f - /*MW:OvSatOk*/ 1U);
                   if (Formation_FMS_B.wp_index_f - 1U >
@@ -1595,7 +1628,7 @@ void Formation_FMS::Formation_FMS_Vehicle(const INS_Out_Bus
                     }
                   }
 
-                  Formation_FMS_B.scale =
+                  Formation_FMS_B.path_ratio =
                     (Formation_FMS_DW.waypoints[Formation_FMS_B.wp_index_f + 19]
                      * Formation_FMS_B.scale + Formation_FMS_B.t) /
                     Formation_FMS_DW.waypoints[24];
@@ -1608,71 +1641,28 @@ void Formation_FMS::Formation_FMS_Vehicle(const INS_Out_Bus
                       Formation_FMS_DW.waypoints[Formation_FMS_B.i + 19];
                   }
 
-                  Formation_FMS_B.VehicleFormationFormAssembleWay =
-                    Formation_FMS_B.wp_index_f + 1U;
+                  Formation_FMS_B.valid = Formation_FMS_B.wp_index_f + 1U;
                   if (Formation_FMS_B.wp_index_f + 1U > 65535U) {
-                    Formation_FMS_B.VehicleFormationFormAssembleWay = 65535U;
+                    Formation_FMS_B.valid = 65535U;
                   }
 
-                  Formation_FMS_B.scale = (Formation_FMS_DW.waypoints[
-                    static_cast<int32_T>
-                    (Formation_FMS_B.VehicleFormationFormAssembleWay) + 19] *
+                  Formation_FMS_B.path_ratio = (Formation_FMS_DW.waypoints[
+                    static_cast<int32_T>(Formation_FMS_B.valid) + 19] *
                     Formation_FMS_B.absxk + Formation_FMS_B.t) /
                     Formation_FMS_DW.waypoints[24];
                 }
 
-                // End of MATLAB Function: '<S84>/Dubins Closest Point'
+                // End of MATLAB Function: '<S83>/Dubins Closest Point'
                 // End of Outputs for SubSystem: '<S3>/Vehicle.Formation.FormAssemble.dubinsPathRatio' 
-
-                // Outputs for Function Call SubSystem: '<S3>/Vehicle.Formation.FormAssemble.Waypoint.LPF' 
-                if (Formation_FMS_DW.VehicleFormationFormAssembleW_o) {
-                  Formation_FMS_B.VehicleFormationFormAssembleWay = 0U;
-                } else {
-                  Formation_FMS_B.VehicleFormationFormAssembleWay =
-                    (&Formation_FMS_M)->Timing.clockTick0 -
-                    Formation_FMS_DW.VehicleFormationFormAssembleW_m;
-                }
-
-                Formation_FMS_DW.VehicleFormationFormAssembleW_m =
-                  (&Formation_FMS_M)->Timing.clockTick0;
-                Formation_FMS_DW.VehicleFormationFormAssembleW_o = false;
-
-                // DiscreteIntegrator: '<S86>/Discrete-Time Integrator5'
-                if (Formation_FMS_DW.DiscreteTimeIntegrator5_SYSTEM_ != 0) {
-                  if (Formation_FMS_DW.DiscreteTimeIntegrator5_IC_LOAD != 0) {
-                    Formation_FMS_DW.DiscreteTimeIntegrator5_DSTATE =
-                      Formation_FMS_B.scale;
-                  }
-                } else {
-                  // DiscreteIntegrator: '<S86>/Discrete-Time Integrator5'
-                  Formation_FMS_DW.DiscreteTimeIntegrator5_DSTATE += 0.2F *
-                    static_cast<real32_T>
-                    (Formation_FMS_B.VehicleFormationFormAssembleWay) *
-                    Formation_FMS_DW.DiscreteTimeIntegrator5_PREV_U;
-                }
-
-                // End of DiscreteIntegrator: '<S86>/Discrete-Time Integrator5'
-
-                // Update for DiscreteIntegrator: '<S86>/Discrete-Time Integrator5' incorporates:
-                //   Gain: '<S86>/Gain'
-                //   Sum: '<S86>/Sum5'
-
-                Formation_FMS_DW.DiscreteTimeIntegrator5_SYSTEM_ = 0U;
-                Formation_FMS_DW.DiscreteTimeIntegrator5_IC_LOAD = 0U;
-                Formation_FMS_DW.DiscreteTimeIntegrator5_PREV_U =
-                  (Formation_FMS_B.scale -
-                   Formation_FMS_DW.DiscreteTimeIntegrator5_DSTATE) * 62.831852F;
-
-                // End of Outputs for SubSystem: '<S3>/Vehicle.Formation.FormAssemble.Waypoint.LPF' 
                 Formation_FMS_B.scale = 1.29246971E-26F;
                 Formation_FMS_B.absxk = std::abs
                   (BusConversion_InsertedFor_FMS_c->vn);
                 if (Formation_FMS_B.absxk > 1.29246971E-26F) {
-                  Formation_FMS_B.y = 1.0F;
+                  Formation_FMS_B.b_y = 1.0F;
                   Formation_FMS_B.scale = Formation_FMS_B.absxk;
                 } else {
                   Formation_FMS_B.t = Formation_FMS_B.absxk / 1.29246971E-26F;
-                  Formation_FMS_B.y = Formation_FMS_B.t * Formation_FMS_B.t;
+                  Formation_FMS_B.b_y = Formation_FMS_B.t * Formation_FMS_B.t;
                 }
 
                 Formation_FMS_B.absxk = std::abs
@@ -1680,22 +1670,18 @@ void Formation_FMS::Formation_FMS_Vehicle(const INS_Out_Bus
                 if (Formation_FMS_B.absxk > Formation_FMS_B.scale) {
                   Formation_FMS_B.t = Formation_FMS_B.scale /
                     Formation_FMS_B.absxk;
-                  Formation_FMS_B.y = Formation_FMS_B.y * Formation_FMS_B.t *
+                  Formation_FMS_B.b_y = Formation_FMS_B.b_y * Formation_FMS_B.t *
                     Formation_FMS_B.t + 1.0F;
                   Formation_FMS_B.scale = Formation_FMS_B.absxk;
                 } else {
                   Formation_FMS_B.t = Formation_FMS_B.absxk /
                     Formation_FMS_B.scale;
-                  Formation_FMS_B.y += Formation_FMS_B.t * Formation_FMS_B.t;
+                  Formation_FMS_B.b_y += Formation_FMS_B.t * Formation_FMS_B.t;
                 }
 
-                // Outputs for Function Call SubSystem: '<S3>/Vehicle.Formation.FormAssemble.Waypoint.LPF' 
-                Formation_FMS_Y.Form_Single = (1.0F -
-                  Formation_FMS_DW.DiscreteTimeIntegrator5_DSTATE) *
-                  BusConversion_InsertedFor_FMSSt->ext2[4] /
-                  (Formation_FMS_B.scale * std::sqrt(Formation_FMS_B.y));
-
-                // End of Outputs for SubSystem: '<S3>/Vehicle.Formation.FormAssemble.Waypoint.LPF' 
+                Formation_FMS_Y.Form_Single = (1.0F - Formation_FMS_B.path_ratio)
+                  * BusConversion_InsertedFor_FMSSt->ext2[4] /
+                  (Formation_FMS_B.scale * std::sqrt(Formation_FMS_B.b_y));
               }
               break;
             }
@@ -1724,8 +1710,11 @@ void Formation_FMS::Formation_FMS_Vehicle(const INS_Out_Bus
               break;
 
              case Formation_FMS_IN_NextWP_d:
-              if (Formation_FMS_B.wp_index <=
-                  BusConversion_InsertedFor_FMSSt->valid_items) {
+              if (FORMATION_PARAM.UAV_ID != 1.0) {
+                Formation_FMS_DW.is_FormMission = Formation_FMS_IN_Follower;
+                Formation_FMS_B.Cmd_In.l1_enable = false;
+              } else if (Formation_FMS_B.wp_index <=
+                         BusConversion_InsertedFor_FMSSt->valid_items) {
                 Formation_FMS_DW.is_FormMission = Formation_FMS_IN_Waypoint_g;
                 Formation_FMS_B.Cmd_In.cur_waypoint[0] =
                   Formation_FMS_B.Cmd_In.sp_waypoint[0];
@@ -1760,14 +1749,13 @@ void Formation_FMS::Formation_FMS_Vehicle(const INS_Out_Bus
               if (Formation_FMS_norm
                   (Formation_FMS_B.BusConversion_InsertedFor_FMS_c) <=
                   FMS_PARAM.ACCEPT_R) {
-                Formation_FMS_B.VehicleFormationFormAssembleWay =
-                  Formation_FMS_B.wp_index + 1U;
+                Formation_FMS_B.valid = Formation_FMS_B.wp_index + 1U;
                 if (Formation_FMS_B.wp_index + 1U > 65535U) {
-                  Formation_FMS_B.VehicleFormationFormAssembleWay = 65535U;
+                  Formation_FMS_B.valid = 65535U;
                 }
 
                 Formation_FMS_B.wp_index = static_cast<uint16_T>
-                  (Formation_FMS_B.VehicleFormationFormAssembleWay);
+                  (Formation_FMS_B.valid);
                 Formation_FMS_DW.is_FormMission = Formation_FMS_IN_NextWP_d;
               }
               break;
@@ -1845,14 +1833,13 @@ void Formation_FMS::Formation_FMS_Vehicle(const INS_Out_Bus
             Formation_FMS_B.Cmd_In.sp_waypoint[1];
           if (Formation_FMS_norm(Formation_FMS_B.BusConversion_InsertedFor_FMS_c)
               <= FMS_PARAM.ACCEPT_R) {
-            Formation_FMS_B.VehicleFormationFormAssembleWay =
-              Formation_FMS_B.wp_index + 1U;
+            Formation_FMS_B.valid = Formation_FMS_B.wp_index + 1U;
             if (Formation_FMS_B.wp_index + 1U > 65535U) {
-              Formation_FMS_B.VehicleFormationFormAssembleWay = 65535U;
+              Formation_FMS_B.valid = 65535U;
             }
 
             Formation_FMS_B.wp_index = static_cast<uint16_T>
-              (Formation_FMS_B.VehicleFormationFormAssembleWay);
+              (Formation_FMS_B.valid);
             Formation_FMS_DW.is_Mission = Formation_FMS_IN_NextWP_dp;
             Formation_FMS_B.state = VehicleState::None;
           }
@@ -1962,19 +1949,20 @@ void Formation_FMS::step()
         Formation_FMS_B.Cmd_In.sp_waypoint[0] = Formation_FMS_U.INS_Out.x_R;
         Formation_FMS_B.Cmd_In.sp_waypoint[1] = Formation_FMS_U.INS_Out.y_R;
         Formation_FMS_B.Cmd_In.sp_waypoint[2] = Formation_FMS_U.INS_Out.h_R;
+        if (FORMATION_PARAM.UAV_ID == 1.0) {
+          // Outputs for Function Call SubSystem: '<S3>/Vehicle.Formation.FormAssemble.dubinsPath' 
+          VehicleFormationFormAssembledub(&Formation_FMS_U.Formation_Cross,
+            &Formation_FMS_B.mission,
+            &Formation_FMS_B.VehicleFormationFormAssembled_o);
 
-        // Outputs for Function Call SubSystem: '<S3>/Vehicle.Formation.FormAssemble.dubinsPath' 
-        VehicleFormationFormAssembledub(&Formation_FMS_U.Formation_Cross,
-          &Formation_FMS_B.mission,
-          &Formation_FMS_B.VehicleFormationFormAssembled_o);
+          // End of Outputs for SubSystem: '<S3>/Vehicle.Formation.FormAssemble.dubinsPath' 
 
-        // End of Outputs for SubSystem: '<S3>/Vehicle.Formation.FormAssemble.dubinsPath' 
+          // Outport: '<Root>/Other_Mission_Data' incorporates:
+          //   Inport: '<Root>/Formation_Cross'
 
-        // Outport: '<Root>/Other_Mission_Data' incorporates:
-        //   Inport: '<Root>/Formation_Cross'
-        //   Inport: '<Root>/INS_Out'
+          Formation_FMS_Y.Other_Mission_Data = Formation_FMS_B.mission;
+        }
 
-        Formation_FMS_Y.Other_Mission_Data = Formation_FMS_B.mission;
         Formation_FMS_DW.is_FormAssemble = Formation_FMS_IN_WaitForUpdate;
         Formation_FMS_B.state = VehicleState::None;
       } else {
@@ -2055,9 +2043,9 @@ void Formation_FMS::step()
     //   ResetPort: '<S41>/Reset'
 
     // InitializeConditions for Delay: '<S43>/Delay'
-    Formation_FMS_DW.icLoad_n = ((Formation_FMS_B.FixPtRelationalOperator_m &&
+    Formation_FMS_DW.icLoad_k = ((Formation_FMS_B.FixPtRelationalOperator_m &&
       (Formation_FMS_PrevZCX.FormMission_SubSystem_Reset_ZCE != POS_ZCSIG)) ||
-      Formation_FMS_DW.icLoad_n);
+      Formation_FMS_DW.icLoad_k);
     Formation_FMS_PrevZCX.FormMission_SubSystem_Reset_ZCE =
       Formation_FMS_B.FixPtRelationalOperator_m;
 
@@ -2172,50 +2160,57 @@ void Formation_FMS::step()
     // MATLAB Function: '<S44>/Consensus Controller' incorporates:
     //   Concatenate: '<S44>/Vector Concatenate'
     //   Concatenate: '<S44>/Vector Concatenate1'
-    //   Inport: '<Root>/Formation_Cross'
-    //   SignalConversion generated from: '<S9>/Signal Copy2'
 
     Formation_FMS_B.Sum1_e = 0.0F;
     Formation_FMS_B.u = 0.0F;
     Formation_FMS_B.a = 0.0F;
+    Formation_FMS_B.new_pos_err_idx_0 = Formation_FMS_B.vNED_O_nx3
+      [static_cast<int32_T>(FORMATION_PARAM.UAV_ID) - 1];
+    Formation_FMS_B.new_pos_err_idx_1 = Formation_FMS_B.vNED_O_nx3
+      [static_cast<int32_T>(FORMATION_PARAM.UAV_ID) + 2];
     Formation_FMS_B.psi = Formation_FMS_rt_atan2f_snf
-      (Formation_FMS_U.Formation_Cross.ve[0],
-       Formation_FMS_U.Formation_Cross.vn[0]);
-    Formation_FMS_B.new_pos_err_idx_0 = std::sin(Formation_FMS_B.psi);
-    Formation_FMS_B.new_pos_err_idx_1 = std::cos(Formation_FMS_B.psi);
+      (Formation_FMS_B.new_pos_err_idx_1, Formation_FMS_B.new_pos_err_idx_0);
+    Formation_FMS_B.pos_err_idx_2 = std::sin(Formation_FMS_B.psi);
+    Formation_FMS_B.l1_a_cmd_m = std::cos(Formation_FMS_B.psi);
     for (Formation_FMS_B.n = 0; Formation_FMS_B.n < 3; Formation_FMS_B.n++) {
       if ((1U << Formation_FMS_B.n & Formation_FMS_B.Cmd_In.form_valid) != 0U) {
-        Formation_FMS_B.pos_err_idx_0 = Formation_FMS_B.xyz_O_nx3[0] -
+        Formation_FMS_B.pos_err_idx_0 = Formation_FMS_B.xyz_O_nx3
+          [static_cast<int32_T>(FORMATION_PARAM.UAV_ID) - 1] -
           Formation_FMS_B.xyz_O_nx3[Formation_FMS_B.n];
-        Formation_FMS_B.psi = Formation_FMS_B.xyz_O_nx3[3] -
+        Formation_FMS_B.psi = Formation_FMS_B.xyz_O_nx3[static_cast<int32_T>
+          (FORMATION_PARAM.UAV_ID) + 2] -
           Formation_FMS_B.xyz_O_nx3[Formation_FMS_B.n + 3];
-        Formation_FMS_B.l1_a_cmd_m = Formation_FMS_B.vNED_O_nx3[0] -
+        Formation_FMS_B.rtb_Switch_i_idx_0 = Formation_FMS_B.new_pos_err_idx_0 -
           Formation_FMS_B.vNED_O_nx3[Formation_FMS_B.n];
-        Formation_FMS_B.pos_err_idx_2 = Formation_FMS_B.vNED_O_nx3[3] -
+        Formation_FMS_B.u_e = Formation_FMS_B.new_pos_err_idx_1 -
           Formation_FMS_B.vNED_O_nx3[Formation_FMS_B.n + 3];
-        Formation_FMS_B.new_vel_err[0] = Formation_FMS_B.new_pos_err_idx_1 *
-          Formation_FMS_B.l1_a_cmd_m;
-        Formation_FMS_B.new_vel_err[1] = -Formation_FMS_B.new_pos_err_idx_0 *
-          Formation_FMS_B.l1_a_cmd_m;
-        Formation_FMS_B.l1_a_cmd_m = static_cast<real32_T>
-          (Formation_FMS_ConstP.ConsensusController_adj_matrix[3 *
-           Formation_FMS_B.n]);
-        Formation_FMS_B.Sum1_e -= (((Formation_FMS_B.new_pos_err_idx_1 *
-          Formation_FMS_B.pos_err_idx_0 + Formation_FMS_B.new_pos_err_idx_0 *
+        Formation_FMS_B.new_vel_err[0] = Formation_FMS_B.l1_a_cmd_m *
+          Formation_FMS_B.rtb_Switch_i_idx_0;
+        Formation_FMS_B.new_vel_err[1] = -Formation_FMS_B.pos_err_idx_2 *
+          Formation_FMS_B.rtb_Switch_i_idx_0;
+        Formation_FMS_B.ux_cmd_tmp = (3 * Formation_FMS_B.n + static_cast<
+          int32_T>(FORMATION_PARAM.UAV_ID)) - 1;
+        Formation_FMS_B.rtb_Switch_i_idx_0 = static_cast<real32_T>
+          (FORMATION_PARAM.ADJ_MARTIX[Formation_FMS_B.ux_cmd_tmp]);
+        Formation_FMS_B.Sum1_e -= (((Formation_FMS_B.l1_a_cmd_m *
+          Formation_FMS_B.pos_err_idx_0 + Formation_FMS_B.pos_err_idx_2 *
           Formation_FMS_B.psi) - static_cast<real32_T>
-          (Formation_FMS_ConstP.ConsensusController_rel_x[3 * Formation_FMS_B.n]))
-          + (Formation_FMS_B.new_pos_err_idx_0 * Formation_FMS_B.pos_err_idx_2 +
-             Formation_FMS_B.new_vel_err[0])) * Formation_FMS_B.l1_a_cmd_m;
-        Formation_FMS_B.u -= (((-Formation_FMS_B.new_pos_err_idx_0 *
-          Formation_FMS_B.pos_err_idx_0 + Formation_FMS_B.new_pos_err_idx_1 *
+          (FORMATION_PARAM.REL_X_MATRIX[Formation_FMS_B.ux_cmd_tmp])) +
+          (Formation_FMS_B.pos_err_idx_2 * Formation_FMS_B.u_e +
+           Formation_FMS_B.new_vel_err[0])) * Formation_FMS_B.rtb_Switch_i_idx_0;
+        Formation_FMS_B.u -= (((-Formation_FMS_B.pos_err_idx_2 *
+          Formation_FMS_B.pos_err_idx_0 + Formation_FMS_B.l1_a_cmd_m *
           Formation_FMS_B.psi) - static_cast<real32_T>
-          (Formation_FMS_ConstP.ConsensusController_rel_y[3 * Formation_FMS_B.n]))
-                              + (Formation_FMS_B.new_pos_err_idx_1 *
-          Formation_FMS_B.pos_err_idx_2 + Formation_FMS_B.new_vel_err[1])) *
-          Formation_FMS_B.l1_a_cmd_m;
-        Formation_FMS_B.a -= (Formation_FMS_B.xyz_O_nx3[6] -
-                              Formation_FMS_B.xyz_O_nx3[Formation_FMS_B.n + 6]) *
-          Formation_FMS_B.l1_a_cmd_m;
+          (FORMATION_PARAM.REL_Y_MATRIX[Formation_FMS_B.ux_cmd_tmp])) +
+                              (Formation_FMS_B.l1_a_cmd_m * Formation_FMS_B.u_e
+          + Formation_FMS_B.new_vel_err[1])) *
+          Formation_FMS_B.rtb_Switch_i_idx_0;
+        Formation_FMS_B.a -= ((Formation_FMS_B.xyz_O_nx3[static_cast<int32_T>
+          (FORMATION_PARAM.UAV_ID) + 5] -
+          Formation_FMS_B.xyz_O_nx3[Formation_FMS_B.n + 6]) -
+                              static_cast<real32_T>
+                              (FORMATION_PARAM.REL_Z_MATRIX[Formation_FMS_B.ux_cmd_tmp]))
+          * Formation_FMS_B.rtb_Switch_i_idx_0;
       }
     }
 
@@ -2598,8 +2593,8 @@ void Formation_FMS::step()
     //   Product: '<S63>/Divide'
     //   Sum: '<S50>/Subtract'
 
-    if (Formation_FMS_DW.icLoad_n) {
-      Formation_FMS_DW.Delay_DSTATE_c = 1000.0;
+    if (Formation_FMS_DW.icLoad_k) {
+      Formation_FMS_DW.Delay_DSTATE_o = FMS_PARAM.FW_HEIGHT_TRIM;
     }
 
     // End of Outputs for SubSystem: '<S13>/FormMission_SubSystem'
@@ -2622,7 +2617,7 @@ void Formation_FMS::step()
     //   Sum: '<S41>/Sum1'
     //   Sum: '<S42>/Sum'
 
-    Formation_FMS_Y.FMS_Out.ax_cmd = (CONTROL_PARAM.FW_AIRSPD_TRIM -
+    Formation_FMS_Y.FMS_Out.ax_cmd = (FMS_PARAM.FW_AIRSPD_TRIM -
       Formation_FMS_U.INS_Out.airspeed) * FMS_PARAM.AIRSPD_P +
       Formation_FMS_B.Sum1_e;
     Formation_FMS_Y.FMS_Out.ay_cmd = Formation_FMS_B.Saturation1 +
@@ -2633,9 +2628,8 @@ void Formation_FMS::step()
     //   Inport: '<Root>/INS_Out'
     //   Sum: '<S43>/Sum'
 
-    Formation_FMS_B.pos_err_idx_0 = static_cast<real32_T>
-      ((Formation_FMS_DW.Delay_DSTATE_c - Formation_FMS_U.INS_Out.h_R) *
-       FMS_PARAM.Z_P);
+    Formation_FMS_B.pos_err_idx_0 = (Formation_FMS_DW.Delay_DSTATE_o -
+      Formation_FMS_U.INS_Out.h_R) * FMS_PARAM.Z_P;
 
     // Saturate: '<S43>/Saturation'
     if (Formation_FMS_B.pos_err_idx_0 > CONTROL_PARAM.FW_T_CLMB_MAX) {
@@ -2654,7 +2648,7 @@ void Formation_FMS::step()
       Formation_FMS_B.a;
 
     // Update for Delay: '<S43>/Delay'
-    Formation_FMS_DW.icLoad_n = false;
+    Formation_FMS_DW.icLoad_k = false;
 
     // End of Outputs for SubSystem: '<S13>/FormMission_SubSystem'
 
@@ -2992,7 +2986,7 @@ void Formation_FMS::step()
     //   Constant: '<S20>/Constant'
 
     if (Formation_FMS_DW.icLoad_h) {
-      Formation_FMS_DW.Delay_DSTATE_l = 1000.0;
+      Formation_FMS_DW.Delay_DSTATE_l = FMS_PARAM.FW_HEIGHT_TRIM;
     }
 
     // End of Outputs for SubSystem: '<S12>/Mission_SubSystem'
@@ -3005,6 +2999,13 @@ void Formation_FMS::step()
     // Outputs for Resettable SubSystem: '<S12>/Mission_SubSystem' incorporates:
     //   ResetPort: '<S18>/Reset'
 
+    // MATLAB Function: '<S19>/Time Consensus Controller' incorporates:
+    //   Inport: '<Root>/Formation_Cross'
+    //   Outport: '<Root>/FMS_Out'
+
+    Formation_FMS_B.pos_err_idx_0 = Formation_FMS_U.Formation_Cross.left_time[
+      static_cast<int32_T>(FORMATION_PARAM.UAV_ID) - 1];
+
     // BusAssignment: '<S18>/Bus Assignment' incorporates:
     //   Constant: '<S19>/Constant'
     //   Gain: '<S19>/Gain1'
@@ -3015,14 +3016,17 @@ void Formation_FMS::step()
     //   Sum: '<S19>/Sum'
     //   Sum: '<S19>/Sum1'
 
-    Formation_FMS_Y.FMS_Out.ax_cmd =
-      (((Formation_FMS_U.Formation_Cross.left_time[0] -
-         Formation_FMS_U.Formation_Cross.left_time[0]) * 0.0F +
-        (Formation_FMS_U.Formation_Cross.left_time[0] -
-         Formation_FMS_U.Formation_Cross.left_time[1]) * 0.2F) +
-       (Formation_FMS_U.Formation_Cross.left_time[0] -
-        Formation_FMS_U.Formation_Cross.left_time[2]) * 0.2F) * 5.0F +
-      (CONTROL_PARAM.FW_AIRSPD_TRIM - Formation_FMS_U.INS_Out.airspeed);
+    Formation_FMS_Y.FMS_Out.ax_cmd = (((Formation_FMS_B.pos_err_idx_0 -
+      Formation_FMS_U.Formation_Cross.left_time[0]) * static_cast<real32_T>
+      (FORMATION_PARAM.ADJ_MARTIX[static_cast<int32_T>(FORMATION_PARAM.UAV_ID) -
+       1]) + (Formation_FMS_B.pos_err_idx_0 -
+              Formation_FMS_U.Formation_Cross.left_time[1]) *
+      static_cast<real32_T>(FORMATION_PARAM.ADJ_MARTIX[static_cast<int32_T>
+      (FORMATION_PARAM.UAV_ID) + 2])) + (Formation_FMS_B.pos_err_idx_0 -
+      Formation_FMS_U.Formation_Cross.left_time[2]) * static_cast<real32_T>
+      (FORMATION_PARAM.ADJ_MARTIX[static_cast<int32_T>(FORMATION_PARAM.UAV_ID) +
+       5])) * FORMATION_PARAM.ASSEMBLE_KT + (FMS_PARAM.FW_AIRSPD_TRIM -
+      Formation_FMS_U.INS_Out.airspeed);
 
     // DotProduct: '<S33>/Dot Product'
     Formation_FMS_B.pos_err_idx_0 = Formation_FMS_B.P_mr[0] *
@@ -3094,9 +3098,8 @@ void Formation_FMS::step()
     //   Inport: '<Root>/INS_Out'
     //   Sum: '<S20>/Sum'
 
-    Formation_FMS_B.pos_err_idx_0 = static_cast<real32_T>
-      ((Formation_FMS_DW.Delay_DSTATE_l - Formation_FMS_U.INS_Out.h_R) *
-       FMS_PARAM.Z_P);
+    Formation_FMS_B.pos_err_idx_0 = (Formation_FMS_DW.Delay_DSTATE_l -
+      Formation_FMS_U.INS_Out.h_R) * FMS_PARAM.Z_P;
 
     // Saturate: '<S20>/Saturation'
     if (Formation_FMS_B.pos_err_idx_0 > CONTROL_PARAM.FW_T_CLMB_MAX) {
@@ -3145,7 +3148,7 @@ void Formation_FMS::step()
       //   Delay: '<S69>/start_vel'
 
       Formation_FMS_DW.icLoad_c = true;
-      Formation_FMS_DW.icLoad_m = true;
+      Formation_FMS_DW.icLoad_j = true;
 
       // End of InitializeConditions for SubSystem: '<S10>/Hold'
     }
@@ -3554,8 +3557,8 @@ void Formation_FMS::step()
     // Delay: '<S65>/Delay' incorporates:
     //   Constant: '<S65>/Constant'
 
-    if (Formation_FMS_DW.icLoad_m) {
-      Formation_FMS_DW.Delay_DSTATE = 1000.0;
+    if (Formation_FMS_DW.icLoad_j) {
+      Formation_FMS_DW.Delay_DSTATE_m = FMS_PARAM.FW_HEIGHT_TRIM;
     }
 
     // End of Outputs for SubSystem: '<S10>/Hold'
@@ -3570,7 +3573,7 @@ void Formation_FMS::step()
     //   Outport: '<Root>/FMS_Out'
     //   Sum: '<S64>/Sum'
 
-    Formation_FMS_Y.FMS_Out.ax_cmd = CONTROL_PARAM.FW_AIRSPD_TRIM -
+    Formation_FMS_Y.FMS_Out.ax_cmd = FMS_PARAM.FW_AIRSPD_TRIM -
       Formation_FMS_U.INS_Out.airspeed;
 
     // DotProduct: '<S74>/Dot Product'
@@ -3625,9 +3628,8 @@ void Formation_FMS::step()
     //   Inport: '<Root>/INS_Out'
     //   Sum: '<S65>/Sum'
 
-    Formation_FMS_B.pos_err_idx_0 = static_cast<real32_T>
-      ((Formation_FMS_DW.Delay_DSTATE - Formation_FMS_U.INS_Out.h_R) *
-       FMS_PARAM.Z_P);
+    Formation_FMS_B.pos_err_idx_0 = (Formation_FMS_DW.Delay_DSTATE_m -
+      Formation_FMS_U.INS_Out.h_R) * FMS_PARAM.Z_P;
 
     // Saturate: '<S65>/Saturation'
     if (Formation_FMS_B.pos_err_idx_0 > CONTROL_PARAM.FW_T_CLMB_MAX) {
@@ -3653,7 +3655,7 @@ void Formation_FMS::step()
     Formation_FMS_DW.icLoad_c = false;
 
     // Update for Delay: '<S65>/Delay'
-    Formation_FMS_DW.icLoad_m = false;
+    Formation_FMS_DW.icLoad_j = false;
 
     // End of Outputs for SubSystem: '<S10>/Hold'
     break;
@@ -3677,7 +3679,7 @@ void Formation_FMS::step()
     //   Inport: '<Root>/INS_Out'
 
     if (Formation_FMS_DW.icLoad) {
-      Formation_FMS_DW.Delay_DSTATE_p = Formation_FMS_U.INS_Out.h_R;
+      Formation_FMS_DW.Delay_DSTATE = Formation_FMS_U.INS_Out.h_R;
     }
 
     // End of Outputs for SubSystem: '<S10>/Default'
@@ -3692,7 +3694,7 @@ void Formation_FMS::step()
     //   Outport: '<Root>/FMS_Out'
     //   Sum: '<S15>/Sum'
 
-    Formation_FMS_Y.FMS_Out.ax_cmd = CONTROL_PARAM.FW_AIRSPD_TRIM -
+    Formation_FMS_Y.FMS_Out.ax_cmd = FMS_PARAM.FW_AIRSPD_TRIM -
       Formation_FMS_U.INS_Out.airspeed;
     Formation_FMS_Y.FMS_Out.ay_cmd = 0.0F;
 
@@ -3701,7 +3703,7 @@ void Formation_FMS::step()
     //   Inport: '<Root>/INS_Out'
     //   Sum: '<S16>/Sum'
 
-    Formation_FMS_B.pos_err_idx_0 = (Formation_FMS_DW.Delay_DSTATE_p -
+    Formation_FMS_B.pos_err_idx_0 = (Formation_FMS_DW.Delay_DSTATE -
       Formation_FMS_U.INS_Out.h_R) * FMS_PARAM.Z_P;
 
     // Saturate: '<S16>/Saturation'
@@ -3732,14 +3734,6 @@ void Formation_FMS::step()
   }
 
   // End of SwitchCase: '<S10>/Switch Case'
-
-  // Update absolute time for base rate
-  // The "clockTick0" counts the number of times the code of this task has
-  //  been executed. The resolution of this integer timer is 0.2, which is the step size
-  //  of the task. Size of "clockTick0" ensures timer will not overflow during the
-  //  application lifespan selected.
-
-  (&Formation_FMS_M)->Timing.clockTick0++;
 }
 
 // Model initialize function
@@ -3754,27 +3748,23 @@ void Formation_FMS::initialize()
   Formation_FMS_DW.SwitchCase_ActiveSubsystem = -1;
   Formation_FMS_PrevZCX.FormMission_SubSystem_Reset_ZCE = POS_ZCSIG;
   Formation_FMS_PrevZCX.Mission_SubSystem_Reset_ZCE = POS_ZCSIG;
+
+  // SystemInitialize for Chart: '<Root>/FMS State Machine' incorporates:
+  //   Outport: '<Root>/Other_Mission_Data'
+
   Formation_FMS_B.Cmd_In.form_valid = 0U;
   Formation_FMS_B.Cmd_In.l1_enable = false;
-
-  // SystemInitialize for Outport: '<Root>/Other_Mission_Data'
   Formation_FMS_Y.Other_Mission_Data.timestamp = 0U;
   Formation_FMS_B.Cmd_In.sp_waypoint[0] = 0.0F;
   Formation_FMS_B.Cmd_In.cur_waypoint[0] = 0.0F;
-
-  // SystemInitialize for Outport: '<Root>/Other_Mission_Data'
   Formation_FMS_Y.Other_Mission_Data.type[0] = 0U;
   Formation_FMS_Y.Other_Mission_Data.valid_items[0] = 0U;
   Formation_FMS_B.Cmd_In.sp_waypoint[1] = 0.0F;
   Formation_FMS_B.Cmd_In.cur_waypoint[1] = 0.0F;
-
-  // SystemInitialize for Outport: '<Root>/Other_Mission_Data'
   Formation_FMS_Y.Other_Mission_Data.type[1] = 0U;
   Formation_FMS_Y.Other_Mission_Data.valid_items[1] = 0U;
   Formation_FMS_B.Cmd_In.sp_waypoint[2] = 0.0F;
   Formation_FMS_B.Cmd_In.cur_waypoint[2] = 0.0F;
-
-  // SystemInitialize for Outport: '<Root>/Other_Mission_Data'
   Formation_FMS_Y.Other_Mission_Data.type[2] = 0U;
   Formation_FMS_Y.Other_Mission_Data.valid_items[2] = 0U;
   std::memset(&Formation_FMS_Y.Other_Mission_Data.x[0], 0, 24U * sizeof(real32_T));
@@ -3787,16 +3777,10 @@ void Formation_FMS::initialize()
   std::memset(&Formation_FMS_Y.Other_Mission_Data.ext2[0], 0, 24U * sizeof
               (real32_T));
 
-  // SystemInitialize for Chart: '<Root>/FMS State Machine' incorporates:
-  //   SubSystem: '<S3>/Vehicle.Formation.FormAssemble.Waypoint.LPF'
-
-  // InitializeConditions for DiscreteIntegrator: '<S86>/Discrete-Time Integrator5' 
-  Formation_FMS_DW.DiscreteTimeIntegrator5_IC_LOAD = 1U;
-
   // SystemInitialize for IfAction SubSystem: '<S10>/FormMission'
   // SystemInitialize for Resettable SubSystem: '<S13>/FormMission_SubSystem'
   // InitializeConditions for Delay: '<S43>/Delay'
-  Formation_FMS_DW.icLoad_n = true;
+  Formation_FMS_DW.icLoad_k = true;
 
   // End of SystemInitialize for SubSystem: '<S13>/FormMission_SubSystem'
   // End of SystemInitialize for SubSystem: '<S10>/FormMission'
@@ -3814,7 +3798,7 @@ void Formation_FMS::initialize()
   Formation_FMS_DW.icLoad_c = true;
 
   // InitializeConditions for Delay: '<S65>/Delay'
-  Formation_FMS_DW.icLoad_m = true;
+  Formation_FMS_DW.icLoad_j = true;
 
   // End of SystemInitialize for SubSystem: '<S10>/Hold'
 
