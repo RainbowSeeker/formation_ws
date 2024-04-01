@@ -3,21 +3,21 @@
 // course requirements at degree granting institutions only.  Not for
 // government, commercial, or other organizational use.
 //
-// File: Formation_FMS_types.h
+// File: FMS_TECS_types.h
 //
-// Code generated for Simulink model 'Formation_FMS'.
+// Code generated for Simulink model 'FMS_TECS'.
 //
-// Model version                  : 1.127
+// Model version                  : 1.27
 // Simulink Coder version         : 9.8 (R2022b) 13-May-2022
-// C/C++ source code generated on : Fri Mar 29 15:55:50 2024
+// C/C++ source code generated on : Mon Apr  1 20:58:12 2024
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: Intel->x86-64 (Linux 64)
 // Code generation objectives: Unspecified
 // Validation result: Not run
 //
-#ifndef RTW_HEADER_Formation_FMS_types_h_
-#define RTW_HEADER_Formation_FMS_types_h_
+#ifndef RTW_HEADER_FMS_TECS_types_h_
+#define RTW_HEADER_FMS_TECS_types_h_
 #include "rtwtypes.h"
 #ifndef DEFINED_TYPEDEF_FOR_Pilot_Cmd_Bus_
 #define DEFINED_TYPEDEF_FOR_Pilot_Cmd_Bus_
@@ -103,21 +103,6 @@ struct Formation_Cross_Bus
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_PilotMode_
-#define DEFINED_TYPEDEF_FOR_PilotMode_
-
-// enumeration of pilot mode
-enum class PilotMode
-  : int32_T {
-  None = 0,                            // Default value
-  FormAssemble = 1,
-  FormDisband = 2,
-  Mission = 4,
-  Hold = 5
-};
-
-#endif
-
 #ifndef DEFINED_TYPEDEF_FOR_FMS_Out_Bus_
 #define DEFINED_TYPEDEF_FOR_FMS_Out_Bus_
 
@@ -127,35 +112,6 @@ struct FMS_Out_Bus
   real32_T ax_cmd;
   real32_T ay_cmd;
   real32_T vh_cmd;
-};
-
-#endif
-
-#ifndef DEFINED_TYPEDEF_FOR_VehicleState_
-#define DEFINED_TYPEDEF_FOR_VehicleState_
-
-// enumeration to track active leaf state of FMS/FMS State Machine/Vehicle
-enum class VehicleState
-  : int32_T {
-  None = 0,                            // Default value
-  FormAssemble,
-  FormDisband,
-  FormMission,
-  Mission,
-  Hold
-};
-
-#endif
-
-#ifndef DEFINED_TYPEDEF_FOR_Commander_In_Bus_
-#define DEFINED_TYPEDEF_FOR_Commander_In_Bus_
-
-struct Commander_In_Bus
-{
-  uint32_T form_valid;
-  boolean_T l1_enable;
-  real32_T sp_waypoint[3];
-  real32_T cur_waypoint[3];
 };
 
 #endif
@@ -179,50 +135,6 @@ struct Other_Mission_Data_Bus
   real32_T heading[24];
   real32_T ext1[24];
   real32_T ext2[24];
-};
-
-#endif
-
-#ifndef DEFINED_TYPEDEF_FOR_struct_RybhgqIOamJFBGFK48xLQB_
-#define DEFINED_TYPEDEF_FOR_struct_RybhgqIOamJFBGFK48xLQB_
-
-struct struct_RybhgqIOamJFBGFK48xLQB
-{
-  real_T UAV_ID;
-  real_T ADJ_MARTIX[9];
-  real_T REL_X_MATRIX[9];
-  real_T REL_Y_MATRIX[9];
-  real_T REL_Z_MATRIX[9];
-  real_T NUM_UAV;
-  real_T FORM_POINT[9];
-  real32_T FORM_RADIUS;
-  real32_T ASSEMBLE_KT;
-};
-
-#endif
-
-#ifndef DEFINED_TYPEDEF_FOR_struct_U9pfOUhK42GcE1cZiAFZlB_
-#define DEFINED_TYPEDEF_FOR_struct_U9pfOUhK42GcE1cZiAFZlB_
-
-struct struct_U9pfOUhK42GcE1cZiAFZlB
-{
-  real32_T FW_AIRSPD_TRIM;
-  real32_T FW_HEIGHT_TRIM;
-  real32_T THROTTLE_DZ;
-  real32_T YAW_DZ;
-  real32_T ROLL_DZ;
-  real32_T PITCH_DZ;
-  real32_T AIRSPD_P;
-  real32_T Z_P;
-  real32_T VEL_Z_LIM;
-  real32_T YAW_P;
-  real32_T YAW_RATE_LIM;
-  real32_T ROLL_PITCH_LIM;
-  real32_T L1;
-  real32_T ACCEPT_R;
-  real32_T LOITER_R;
-  real32_T Y_P;
-  real32_T ACC_Y_LIM;
 };
 
 #endif
@@ -284,49 +196,50 @@ struct struct_FebwIpiU9Ih55vl7WG22GB
 
 #endif
 
-// Custom Type definition for MATLAB Function: '<S82>/MATLAB Function'
-#ifndef struct_captured_var_Formation_FMS_T
-#define struct_captured_var_Formation_FMS_T
+#ifndef DEFINED_TYPEDEF_FOR_struct_RybhgqIOamJFBGFK48xLQB_
+#define DEFINED_TYPEDEF_FOR_struct_RybhgqIOamJFBGFK48xLQB_
 
-struct captured_var_Formation_FMS_T
+struct struct_RybhgqIOamJFBGFK48xLQB
 {
-  real_T contents;
+  real_T UAV_ID;
+  real_T ADJ_MARTIX[9];
+  real_T REL_X_MATRIX[9];
+  real_T REL_Y_MATRIX[9];
+  real_T REL_Z_MATRIX[9];
+  real_T NUM_UAV;
+  real_T FORM_POINT[9];
+  real32_T FORM_RADIUS;
+  real32_T ASSEMBLE_KT;
 };
 
-#endif                                 // struct_captured_var_Formation_FMS_T
+#endif
 
-#ifndef struct_sGXMO9PmoeW2JqDMJvYKnvG_Forma_T
-#define struct_sGXMO9PmoeW2JqDMJvYKnvG_Forma_T
+#ifndef DEFINED_TYPEDEF_FOR_struct_U9pfOUhK42GcE1cZiAFZlB_
+#define DEFINED_TYPEDEF_FOR_struct_U9pfOUhK42GcE1cZiAFZlB_
 
-struct sGXMO9PmoeW2JqDMJvYKnvG_Forma_T
+struct struct_U9pfOUhK42GcE1cZiAFZlB
 {
-  real_T xs;
-  real_T ys;
-  real_T psi_s;
-  real_T xf;
-  real_T yf;
-  real_T psi_f;
-  real_T v;
-  real_T r;
-  real_T pos[4];
-  real_T pof[4];
-  real_T xts[4];
-  real_T yts[4];
-  real_T xtf[4];
-  real_T ytf[4];
-  real_T cs[4];
-  real_T cf[4];
-  real_T lt[4];
-  real_T l[4];
-  real_T index_dubins[2];
-  real_T l_ad;
-  real_T precision_flag;
-  real_T xm;
-  real_T ym;
+  real32_T FW_AIRSPD_TRIM;
+  real32_T FW_HEIGHT_TRIM;
+  real32_T THROTTLE_DZ;
+  real32_T YAW_DZ;
+  real32_T ROLL_DZ;
+  real32_T PITCH_DZ;
+  real32_T AIRSPD_P;
+  real32_T Z_P;
+  real32_T VEL_Z_LIM;
+  real32_T YAW_P;
+  real32_T YAW_RATE_LIM;
+  real32_T ROLL_PITCH_LIM;
+  real32_T L1;
+  real32_T ACCEPT_R;
+  real32_T LOITER_R;
+  real32_T Y_P;
+  real32_T ACC_Y_LIM;
 };
 
-#endif                                // struct_sGXMO9PmoeW2JqDMJvYKnvG_Forma_T
-#endif                                 // RTW_HEADER_Formation_FMS_types_h_
+#endif
+#endif                                 // RTW_HEADER_FMS_TECS_types_h_
 
 //
 // File trailer for generated code.

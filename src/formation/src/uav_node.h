@@ -6,7 +6,7 @@
 #include <mavros_msgs/State.h>
 #include <cstring>
 
-#include "Formation_FMS/FMS.h"
+#include "FMS_TECS/FMS.h"
 
 #define FIXED_WING      1
 #define AIRCRAFT_TYPE   FIXED_WING
@@ -29,8 +29,11 @@ private:
     void publish_offboard_control_mode();
 
     // ros publisher and subscriber
+#if AIRCRAFT_TYPE == FIXED_WING
+    ros::Publisher setpoint_raw_att_pub;   // publisher for Attitude setpoint.
+#else
     ros::Publisher setpoint_raw_local_pub;  // publisher for Local position, velocity and acceleration setpoint.
-
+#endif
     ros::Subscriber state_sub;
     ros::ServiceClient arming_client;
     ros::ServiceClient set_mode_client;

@@ -5,18 +5,12 @@
 //
 // File: rtwtypes.h
 //
-// Code generated for Simulink model 'Lateral_Longitudinal_Control'.
+// Code generated for Simulink model 'Formation_FMS'.
 //
-// Model version                  : 1.1
+// Model version                  : 1.127
 // Simulink Coder version         : 9.8 (R2022b) 13-May-2022
-// C/C++ source code generated on : Fri Mar 29 19:23:15 2024
+// C/C++ source code generated on : Fri Mar 29 21:28:37 2024
 //
-// Target selection: ert.tlc
-// Embedded hardware selection: Intel->x86-64 (Windows64)
-// Code generation objectives: Unspecified
-// Validation result: Not run
-//
-
 #ifndef RTWTYPES_H
 #define RTWTYPES_H
 
@@ -33,9 +27,9 @@
 
 //=======================================================================*
 //  Target hardware information
-//    Device type: Intel->x86-64 (Windows64)
+//    Device type: Intel->x86-64 (Linux 64)
 //    Number of bits:     char:   8    short:   16    int:  32
-//                        long:  32
+//                        long:  64
 //                        native word size:  64
 //    Byte ordering: LittleEndian
 //    Signed integer division rounds to: Zero
@@ -54,6 +48,8 @@ typedef short int16_T;
 typedef unsigned short uint16_T;
 typedef int int32_T;
 typedef unsigned int uint32_T;
+typedef long int64_T;
+typedef unsigned long uint64_T;
 typedef float real32_T;
 typedef double real64_T;
 
@@ -133,6 +129,20 @@ typedef struct {
   uint32_T im;
 } cuint32_T;
 
+#define CINT64_T
+
+typedef struct {
+  int64_T re;
+  int64_T im;
+} cint64_T;
+
+#define CUINT64_T
+
+typedef struct {
+  uint64_T re;
+  uint64_T im;
+} cuint64_T;
+
 //=======================================================================*
 //  Min and Max:                                                          *
 //    int8_T, int16_T, int32_T     - signed 8, 16, or 32 bit integers     *
@@ -147,6 +157,9 @@ typedef struct {
 #define MAX_int32_T                    ((int32_T)(2147483647))
 #define MIN_int32_T                    ((int32_T)(-2147483647-1))
 #define MAX_uint32_T                   ((uint32_T)(0xFFFFFFFFU))
+#define MAX_int64_T                    ((int64_T)(9223372036854775807L))
+#define MIN_int64_T                    ((int64_T)(-9223372036854775807L-1L))
+#define MAX_uint64_T                   ((uint64_T)(0xFFFFFFFFFFFFFFFFUL))
 
 // Block D-Work pointer type
 typedef void * pointer_T;

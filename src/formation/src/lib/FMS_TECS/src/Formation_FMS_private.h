@@ -9,7 +9,7 @@
 //
 // Model version                  : 1.127
 // Simulink Coder version         : 9.8 (R2022b) 13-May-2022
-// C/C++ source code generated on : Fri Mar 29 15:55:50 2024
+// C/C++ source code generated on : Fri Mar 29 21:28:37 2024
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -21,6 +21,23 @@
 #include "rtwtypes.h"
 #include "zero_crossing_types.h"
 #include "Formation_FMS_types.h"
+
+// Macros for accessing real-time model data structure
+#ifndef rtmGetErrorStatus
+#define rtmGetErrorStatus(rtm)         (*((rtm)->errorStatus))
+#endif
+
+#ifndef rtmSetErrorStatus
+#define rtmSetErrorStatus(rtm, val)    (*((rtm)->errorStatus) = (val))
+#endif
+
+#ifndef rtmGetErrorStatusPointer
+#define rtmGetErrorStatusPointer(rtm)  (rtm)->errorStatus
+#endif
+
+#ifndef rtmSetErrorStatusPointer
+#define rtmSetErrorStatusPointer(rtm, val) ((rtm)->errorStatus = (val))
+#endif
 #endif                                 // RTW_HEADER_Formation_FMS_private_h_
 
 //

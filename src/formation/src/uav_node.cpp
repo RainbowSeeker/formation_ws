@@ -6,6 +6,7 @@
 #include <sensor_msgs/Imu.h>
 #include <tf/transform_datatypes.h>
 #include <mavros_msgs/PositionTarget.h>
+#include <mavros_msgs/AttitudeTarget.h>
 
 #include <matrix/math.hpp>
 using matrix::Eulerf;
@@ -33,7 +34,11 @@ int UavNode::initialize()
         _state = *msg;
     });
 
+#if AIRCRAFT_TYPE == FIXED_WING
+    setpoint_raw_att_pub = advertise<mavros_msgs::AttitudeTarget>(_node_name + "/mavros/setpoint_raw/attitude", 10);
+#else
     setpoint_raw_local_pub = advertise<mavros_msgs::PositionTarget>(_node_name + "/mavros/setpoint_raw/local", 10);
+#endif
 
     arming_client = serviceClient<mavros_msgs::CommandBool>(_node_name + "/mavros/cmd/arming");
     set_mode_client = serviceClient<mavros_msgs::SetMode>(_node_name + "/mavros/set_mode");
@@ -44,16 +49,15 @@ int UavNode::initialize()
         _fms_in.INS_Out.x_R = msg->pose.position.y;
         _fms_in.INS_Out.y_R = msg->pose.position.x;
         _fms_in.INS_Out.h_R = msg->pose.position.z;
-        _fms_in.INS_Out.quat[0] = msg->pose.orientation.w;
-        _fms_in.INS_Out.quat[1] = msg->pose.orientation.x;
-        _fms_in.INS_Out.quat[2] = msg->pose.orientation.y;
-        _fms_in.INS_Out.quat[3] = msg->pose.orientation.z;
-        Eulerf euler(Quatf(_fms_in.INS_Out.quat));
-        _fms_in.INS_Out.phi     = euler.phi();
-        _fms_in.INS_Out.theta   = euler.theta();
-        _fms_in.INS_Out.psi     = euler.psi();
-        ROS_INFO("UAV %s: x_R: %f, y_R: %f, h_R: %f, phi: %f, theta: %f, psi: %f", _node_name.c_str(), _fms_in.INS_Out.x_R, _fms_in.INS_Out.y_R, _fms_in.INS_Out.h_R,
-                M_RAD_TO_DEG * _fms_in.INS_Out.phi, M_RAD_TO_DEG * _fms_in.INS_Out.theta, M_RAD_TO_DEG * _fms_in.INS_Out.psi);
+        tf::Quaternion quat_enu;
+        tf::quaternionMsgToTF(msg->pose.orientation, quat_enu);
+        double roll, pitch, yaw;
+        tf::Matrix3x3(quat_enu).getRPY(roll, pitch, yaw);
+        _fms_in.INS_Out.phi     = roll;
+        _fms_in.INS_Out.theta   = -pitch;
+        _fms_in.INS_Out.psi     = M_PI_2 - yaw;
+        ROS_DEBUG("UAV %s: x_R: %f, y_R: %f, h_R: %f, phi: %f, theta: %f, psi: %f", _node_name.c_str(), _fms_in.INS_Out.x_R, _fms_in.INS_Out.y_R, _fms_in.INS_Out.h_R,
+                _fms_in.INS_Out.phi, _fms_in.INS_Out.theta, _fms_in.INS_Out.psi);
     });
 
     local_vel_sub = subscribe<geometry_msgs::TwistStamped>(_node_name + "/mavros/local_position/velocity_local", 10, [this](const geometry_msgs::TwistStamped::ConstPtr& msg){
@@ -62,7 +66,7 @@ int UavNode::initialize()
         _fms_in.INS_Out.ve = msg->twist.linear.x;
         _fms_in.INS_Out.vd = -msg->twist.linear.z;
         _fms_in.INS_Out.airspeed = std::sqrt(std::pow(_fms_in.INS_Out.vn, 2) + std::pow(_fms_in.INS_Out.ve, 2) + std::pow(_fms_in.INS_Out.vd, 2));
-        ROS_INFO("UAV %s: vn: %f, ve: %f, vd: %f", _node_name.c_str(), _fms_in.INS_Out.vn, _fms_in.INS_Out.ve, _fms_in.INS_Out.vd);
+        ROS_DEBUG("UAV %s: vn: %f, ve: %f, vd: %f, airspeed: %f", _node_name.c_str(), _fms_in.INS_Out.vn, _fms_in.INS_Out.ve, _fms_in.INS_Out.vd, _fms_in.INS_Out.airspeed);
     });
 
     ROS_INFO("UAV node %s created", name());
@@ -72,9 +76,30 @@ int UavNode::initialize()
 }
 void UavNode::parameter_update()
 {
-    FMS_PARAM.FW_AIRSPD_TRIM = 15;
-    FMS_PARAM.FW_HEIGHT_TRIM = 20;
+    FMS_PARAM.FW_AIRSPD_TRIM = 15.f;
+    FMS_PARAM.FW_HEIGHT_TRIM = 50;
     FORMATION_PARAM.UAV_ID = _uav_id;
+
+    CONTROL_PARAM.FW_P_LIM_MIN = -15.f * M_DEG_TO_RAD;
+    CONTROL_PARAM.FW_THR_MIN = 0.05f;
+    CONTROL_PARAM.FW_THR_MAX = 0.6f;
+    CONTROL_PARAM.FW_THR_TRIM = 0.25f;
+    CONTROL_PARAM.FW_AIRSPD_MIN = 10.f;
+    CONTROL_PARAM.FW_AIRSPD_MAX = 20.f;
+    CONTROL_PARAM.FW_AIRSPD_TRIM = 15.f;
+    CONTROL_PARAM.FW_AIRSPD_STALL = 7.f;
+    CONTROL_PARAM.FW_ARSP_MODE = 0;
+    CONTROL_PARAM.FW_ARSP_SCALE_EN = 1;
+    CONTROL_PARAM.FW_T_TAS_TC = 5.f;
+    CONTROL_PARAM.FW_T_CLMB_MAX = 8.f;
+    CONTROL_PARAM.FW_T_SINK_MAX = 2.7f;
+    CONTROL_PARAM.FW_T_SINK_MIN = 2.2f;
+    CONTROL_PARAM.FW_T_CLMB_R_SP = 3.f;
+    CONTROL_PARAM.FW_T_SINK_R_SP = 2.f;
+
+    CONTROL_PARAM.FW_T_I_GAIN_THR = 0.f;
+    CONTROL_PARAM.FW_T_RLL2THR = 0.f;
+    CONTROL_PARAM.FW_T_I_GAIN_PIT = 0.f;
 }
 
 void UavNode::fms_step()
@@ -85,7 +110,6 @@ void UavNode::fms_step()
     fusion.cross.vn[_uav_id] = _fms_in.INS_Out.vn;
     fusion.cross.ve[_uav_id] = _fms_in.INS_Out.ve;
     fusion.cross.vd[_uav_id] = _fms_in.INS_Out.vd;
-    fusion.cross.psi[_uav_id] = _fms_in.INS_Out.psi;
     
     _fms_in.Pilot_Cmd = {};
     _fms_in.Mission_Data = {};
@@ -94,7 +118,11 @@ void UavNode::fms_step()
     _fms_out = _fms.step(&_fms_in);
 
     fusion.cross.left_time[_uav_id] = _fms_out.Form_Single;
-    fusion.mission = _fms_out.Other_Mission_Data;
+    if (_uav_id == 0 && _fms_out.Other_Mission_Data.timestamp != fusion.mission.timestamp)
+    {
+        fusion.mission = _fms_out.Other_Mission_Data;
+    }
+    ROS_INFO("UAV %s: setpoint roll: %f, pitch: %f, throttle: %f", _node_name.c_str(), _fms_out.att_cmd[0], _fms_out.att_cmd[1], _fms_out.throttle_cmd);
 }
 /**
  * @brief Publish a trajectory setpoint
@@ -104,7 +132,19 @@ void UavNode::fms_step()
 void UavNode::publish_trajectory_setpoint()
 {
 #if AIRCRAFT_TYPE == FIXED_WING
-    
+    mavros_msgs::AttitudeTarget setpoint{};
+    setpoint.header.stamp = ros::Time::now();
+    /*
+        uint8 IGNORE_ROLL_RATE = 1 # body_rate.x
+        uint8 IGNORE_PITCH_RATE = 2 # body_rate.y
+        uint8 IGNORE_YAW_RATE = 4 # body_rate.z
+        uint8 IGNORE_THRUST = 64
+        uint8 IGNORE_ATTITUDE = 128 # orientation field
+    */
+    setpoint.type_mask = mavros_msgs::AttitudeTarget::IGNORE_ROLL_RATE | mavros_msgs::AttitudeTarget::IGNORE_PITCH_RATE | mavros_msgs::AttitudeTarget::IGNORE_YAW_RATE;
+    setpoint.thrust = _fms_out.throttle_cmd;
+    tf::quaternionTFToMsg(tf::createQuaternionFromRPY(_fms_out.att_cmd[0], -_fms_out.att_cmd[1], 0), setpoint.orientation);
+    setpoint_raw_att_pub.publish(setpoint);
 #else
     mavros_msgs::PositionTarget setpoint{};
     setpoint.header.stamp = ros::Time::now();
@@ -177,7 +217,7 @@ int UavNode::call_once()
     {
         return 0;
     }
-
+    parameter_update();
     fms_step();
     publish_offboard_control_mode();
     publish_trajectory_setpoint();
@@ -186,7 +226,7 @@ int UavNode::call_once()
 
 bool UavNode::connected() const
 {
-    return _state.connected;
+    return _state.connected && _state.armed;
 }
 
 const char* UavNode::name()
