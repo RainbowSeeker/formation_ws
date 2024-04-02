@@ -7,19 +7,20 @@
 //
 // Code generated for Simulink model 'Formation_FMS'.
 //
-// Model version                  : 1.127
+// Model version                  : 1.159
 // Simulink Coder version         : 9.8 (R2022b) 13-May-2022
-// C/C++ source code generated on : Fri Mar 29 21:28:37 2024
+// C/C++ source code generated on : Tue Apr  2 21:16:26 2024
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: Intel->x86-64 (Linux 64)
-// Code generation objectives: Unspecified
+// Code generation objectives:
+//    1. Execution efficiency
+//    2. RAM efficiency
 // Validation result: Not run
 //
 #ifndef RTW_HEADER_Formation_FMS_h_
 #define RTW_HEADER_Formation_FMS_h_
 #include "rtwtypes.h"
-#include "Formation_FMS_types.h"
 
 extern "C"
 {
@@ -35,15 +36,312 @@ extern "C"
 
 }
 
-extern "C"
-{
-
-#include "rtGetNaN.h"
-
-}
-
 #include <cstring>
 #include "zero_crossing_types.h"
+#ifndef DEFINED_TYPEDEF_FOR_Pilot_Cmd_Bus_
+#define DEFINED_TYPEDEF_FOR_Pilot_Cmd_Bus_
+
+struct Pilot_Cmd_Bus
+{
+  uint32_T timestamp;
+  uint32_T mode;
+};
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_Mission_Data_Bus_
+#define DEFINED_TYPEDEF_FOR_Mission_Data_Bus_
+
+struct Mission_Data_Bus
+{
+  uint32_T timestamp;
+
+  // FormAssemble(1),
+  // FormDisband(2),
+  // FormMission(3),
+  // Mission(4),
+  uint32_T type;
+  uint8_T valid_items;
+  real32_T x[8];
+  real32_T y[8];
+  real32_T z[8];
+  real32_T heading[8];
+  real32_T ext1[8];
+  real32_T ext2[8];
+};
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_INS_Out_Bus_
+#define DEFINED_TYPEDEF_FOR_INS_Out_Bus_
+
+struct INS_Out_Bus
+{
+  uint32_T timestamp;
+  real32_T phi;
+  real32_T theta;
+  real32_T psi;
+  real32_T p;
+  real32_T q;
+  real32_T r;
+
+  // Quaternion
+  real32_T quat[4];
+  real32_T x_R;
+  real32_T y_R;
+  real32_T h_R;
+  real32_T airspeed;
+  real32_T ax;
+  real32_T ay;
+  real32_T az;
+  real32_T vn;
+  real32_T ve;
+  real32_T vd;
+};
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_Formation_Cross_Bus_
+#define DEFINED_TYPEDEF_FOR_Formation_Cross_Bus_
+
+// Supports up to 3 drone.
+struct Formation_Cross_Bus
+{
+  uint32_T timestamp[3];
+  real32_T x_R[3];
+  real32_T y_R[3];
+  real32_T h_R[3];
+  real32_T vn[3];
+  real32_T ve[3];
+  real32_T vd[3];
+  real32_T left_time[3];
+};
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_PilotMode_
+#define DEFINED_TYPEDEF_FOR_PilotMode_
+
+// enumeration of pilot mode
+enum class PilotMode
+  : int32_T {
+  None = 0,                            // Default value
+  Hold,
+  FormAssemble,
+  FormDisband,
+  FormMission
+};
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_VehicleState_
+#define DEFINED_TYPEDEF_FOR_VehicleState_
+
+// enumeration to track active leaf state of FMS/FMS State Machine/Vehicle
+enum class VehicleState
+  : int32_T {
+  None = 0,                            // Default value
+  Hold,
+  FormAssemble,
+  FormDisband,
+  FormMission
+};
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_FMS_Out_Bus_
+#define DEFINED_TYPEDEF_FOR_FMS_Out_Bus_
+
+struct FMS_Out_Bus
+{
+  uint32_T timestamp;
+  VehicleState state;
+  real32_T ax_cmd;
+  real32_T ay_cmd;
+  real32_T vh_cmd;
+};
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_Commander_In_Bus_
+#define DEFINED_TYPEDEF_FOR_Commander_In_Bus_
+
+struct Commander_In_Bus
+{
+  uint32_T form_valid;
+  boolean_T l1_enable;
+  real32_T sp_waypoint[3];
+  real32_T cur_waypoint[3];
+};
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_Other_Mission_Data_Bus_
+#define DEFINED_TYPEDEF_FOR_Other_Mission_Data_Bus_
+
+struct Other_Mission_Data_Bus
+{
+  uint32_T timestamp;
+
+  // FormAssemble(1),
+  // FormDisband(2),
+  // FormMission(3),
+  // Mission(4),
+  uint32_T type[3];
+  uint8_T valid_items[3];
+  real32_T x[24];
+  real32_T y[24];
+  real32_T z[24];
+  real32_T heading[24];
+  real32_T ext1[24];
+  real32_T ext2[24];
+};
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_struct_RybhgqIOamJFBGFK48xLQB_
+#define DEFINED_TYPEDEF_FOR_struct_RybhgqIOamJFBGFK48xLQB_
+
+struct struct_RybhgqIOamJFBGFK48xLQB
+{
+  real_T UAV_ID;
+  real_T ADJ_MARTIX[9];
+  real_T REL_X_MATRIX[9];
+  real_T REL_Y_MATRIX[9];
+  real_T REL_Z_MATRIX[9];
+  real_T NUM_UAV;
+  real_T FORM_POINT[9];
+  real32_T FORM_RADIUS;
+  real32_T ASSEMBLE_KT;
+};
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_struct_U9pfOUhK42GcE1cZiAFZlB_
+#define DEFINED_TYPEDEF_FOR_struct_U9pfOUhK42GcE1cZiAFZlB_
+
+struct struct_U9pfOUhK42GcE1cZiAFZlB
+{
+  real32_T FW_AIRSPD_TRIM;
+  real32_T FW_HEIGHT_TRIM;
+  real32_T THROTTLE_DZ;
+  real32_T YAW_DZ;
+  real32_T ROLL_DZ;
+  real32_T PITCH_DZ;
+  real32_T AIRSPD_P;
+  real32_T Z_P;
+  real32_T VEL_Z_LIM;
+  real32_T YAW_P;
+  real32_T YAW_RATE_LIM;
+  real32_T ROLL_PITCH_LIM;
+  real32_T L1;
+  real32_T ACCEPT_R;
+  real32_T LOITER_R;
+  real32_T Y_P;
+  real32_T ACC_Y_LIM;
+};
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_struct_FebwIpiU9Ih55vl7WG22GB_
+#define DEFINED_TYPEDEF_FOR_struct_FebwIpiU9Ih55vl7WG22GB_
+
+struct struct_FebwIpiU9Ih55vl7WG22GB
+{
+  real32_T ROLL_P;
+  real32_T PITCH_P;
+  real32_T ROLL_RATE_P;
+  real32_T PITCH_RATE_P;
+  real32_T YAW_RATE_P;
+  real32_T ROLL_RATE_I;
+  real32_T PITCH_RATE_I;
+  real32_T YAW_RATE_I;
+  real32_T RATE_I_MIN;
+  real32_T RATE_I_MAX;
+  real32_T TRIM_ROLL;
+  real32_T TRIM_PITCH;
+  real32_T TRIM_YAW;
+  real32_T FW_PSP_OFF;
+  real32_T FW_AIRSPD_MIN;
+  real32_T FW_AIRSPD_MAX;
+  real32_T FW_AIRSPD_TRIM;
+  real32_T FW_AIRSPD_STALL;
+  int32_T FW_ARSP_MODE;
+  int32_T FW_ARSP_SCALE_EN;
+  real32_T FW_T_TAS_TC;
+  real32_T FW_T_I_GAIN_PIT;
+  real32_T FW_T_I_GAIN_THR;
+  real32_T FW_T_THR_DAMP;
+  real32_T FW_T_SPDWEIGHT;
+  real32_T FW_T_CLMB_MAX;
+  real32_T FW_T_SINK_MIN;
+  real32_T FW_T_SINK_MAX;
+  real32_T FW_T_CLMB_R_SP;
+  real32_T FW_T_SINK_R_SP;
+  real32_T FW_P_LIM_MAX;
+  real32_T FW_P_LIM_MIN;
+  real32_T FW_R_LIM;
+  real32_T FW_T_VERT_ACC;
+  real32_T FW_T_ALT_TC;
+  real32_T FW_T_HRATE_FF;
+  real32_T FW_T_RLL2THR;
+  real32_T FW_RR_FF;
+  real32_T FW_PR_FF;
+  real32_T FW_YR_FF;
+  real32_T FW_R_RMAX;
+  real32_T FW_P_RMAX;
+  real32_T FW_Y_RMAX;
+  real32_T FW_THR_MAX;
+  real32_T FW_THR_MIN;
+  real32_T FW_THR_TRIM;
+  real32_T FW_T_SEB_R_FF;
+  real32_T FW_T_PTCH_DAMP;
+};
+
+#endif
+
+// Custom Type definition for MATLAB Function: '<S82>/MATLAB Function'
+#ifndef struct_captured_var_Formation_FMS_T
+#define struct_captured_var_Formation_FMS_T
+
+struct captured_var_Formation_FMS_T
+{
+  real_T contents;
+};
+
+#endif                                 // struct_captured_var_Formation_FMS_T
+
+#ifndef struct_sGXMO9PmoeW2JqDMJvYKnvG_Forma_T
+#define struct_sGXMO9PmoeW2JqDMJvYKnvG_Forma_T
+
+struct sGXMO9PmoeW2JqDMJvYKnvG_Forma_T
+{
+  real_T xs;
+  real_T ys;
+  real_T psi_s;
+  real_T xf;
+  real_T yf;
+  real_T psi_f;
+  real_T v;
+  real_T r;
+  real_T pos[4];
+  real_T pof[4];
+  real_T xts[4];
+  real_T yts[4];
+  real_T xtf[4];
+  real_T ytf[4];
+  real_T cs[4];
+  real_T cf[4];
+  real_T lt[4];
+  real_T l[4];
+  real_T index_dubins[2];
+  real_T l_ad;
+  real_T precision_flag;
+  real_T xm;
+  real_T ym;
+};
+
+#endif                                // struct_sGXMO9PmoeW2JqDMJvYKnvG_Forma_T
 
 //
 //  Exported Global Parameters
@@ -97,14 +395,21 @@ class Formation_FMS final
 {
   // public data and function members
  public:
-  // Block signals for system '<S3>/Vehicle.Formation.FormAssemble.dubinsPath'
-  struct B_VehicleFormationFormAssembl_T {
+  // Block signals and states (default storage) for model 'Formation_FMS'
+  struct DW_Formation_FMS_T {
     sGXMO9PmoeW2JqDMJvYKnvG_Forma_T object[3];
-    real_T result[75];
+    Other_Mission_Data_Bus Other_Mission_Data;// '<Root>/FMS State Machine'
     sGXMO9PmoeW2JqDMJvYKnvG_Forma_T obj;
+    Formation_Cross_Bus BusConversion_InsertedFor_FMS_p;
+    INS_Out_Bus BusConversion_InsertedFor_FMS_c;
+    Commander_In_Bus Cmd_In;           // '<Root>/FMS State Machine'
+    FMS_Out_Bus Merge;                 // '<S10>/Merge'
+    captured_var_Formation_FMS_T PhiMaximum;
+    captured_var_Formation_FMS_T rad2deg;
+    real_T result[75];
     real_T b_data[4];
     real_T c_data[4];
-    int32_T i_data[4];
+    real_T SFunction_o13;              // '<Root>/FMS State Machine'
     real_T l_ref;
     real_T search_floor;
     real_T search;
@@ -116,39 +421,40 @@ class Formation_FMS final
     real_T cs_tmp;
     real_T cs_tmp_m;
     real_T cf_tmp;
-    captured_var_Formation_FMS_T PhiMaximum;
-    captured_var_Formation_FMS_T rad2deg;
-  };
-
-  // Block signals for model 'Formation_FMS'
-  struct B_Formation_FMS_T {
-    Other_Mission_Data_Bus Other_Mission_Data;// '<Root>/FMS State Machine'
-    Other_Mission_Data_Bus mission;
-    Mission_Data_Bus BusConversion_InsertedFor_FMSSt;
-    Formation_Cross_Bus BusConversion_InsertedFor_FMS_p;
-    Formation_Cross_Bus Formation_Cross_d;
-    INS_Out_Bus BusConversion_InsertedFor_FMS_c;
+    real_T lt_tmp;
+    real_T deltax;
+    real_T deltay;
+    real32_T start_vel_DSTATE[2];      // '<S69>/start_vel'
+    real32_T waypoints[25];            // '<Root>/FMS State Machine'
     real32_T xyz_O_nx3[9];             // '<S44>/Vector Concatenate'
     real32_T vNED_O_nx3[9];            // '<S44>/Vector Concatenate1'
-    Commander_In_Bus Cmd_In;           // '<Root>/FMS State Machine'
-    FMS_Out_Bus Merge;                 // '<S10>/Merge'
+    real32_T BusConversion_InsertedFor_FMSSt[8];
+    real32_T BusConversion_InsertedFor_FMS_k[8];
+    real32_T BusConversion_InsertedFor_FM_cx[8];
+    real32_T BusConversion_InsertedFor_FMS_b[8];
+    real32_T BusConversion_InsertedFor_FM_pb[8];
+    real32_T BusConversion_InsertedFor_FM_cv[8];
     real32_T pose[3];
-    real_T SFunction_o13;              // '<Root>/FMS State Machine'
-    real32_T new_vel_err[2];
     real32_T Reshape2_bi[2];           // '<S48>/Reshape2'
+    real32_T P_c[2];                   // '<S49>/NearbyRefWP'
     real32_T P_mr[2];                  // '<S49>/SearchL1RefWP'
     real32_T P_b[2];                   // '<S49>/OutRegionRegWP'
-    real32_T BusConversion_InsertedFor_FMS_m[2];
     real32_T unit_point_to_next[2];
     real32_T unit_centre_to_pose[2];
-    real32_T Saturation1;              // '<S47>/Saturation1'
-    real32_T v_error_m;                // '<S42>/Sum'
-    real32_T rtb_vd_idx_0;
-    real32_T rtb_vd_idx_1;
+    real32_T Delay_DSTATE;             // '<S16>/Delay'
+    real32_T Delay_DSTATE_m;           // '<S65>/Delay'
+    real32_T Delay_DSTATE_l;           // '<S20>/Delay'
+    real32_T Delay_DSTATE_o;           // '<S43>/Delay'
+    real32_T DiscreteTimeIntegrator1_DSTATE;// '<S4>/Discrete-Time Integrator1'
+    real32_T scale;
+    real32_T absxk;
+    real32_T t;
+    real32_T Sum1_i;                   // '<S41>/Sum1'
+    real32_T path_ratio;
+    real32_T rtb_TmpSignalConversionAtSqua_f;
+    real32_T rtb_TmpSignalConversionAtSqua_g;
     real32_T rtb_vd_idx_2;
-    real32_T rtb_ve_idx_2;
-    real32_T rtb_ve_idx_0;
-    real32_T rtb_ve_idx_1;
+    real32_T rtb_vd_idx_0;
     real32_T rtb_x_R_idx_0;
     real32_T rtb_y_R_idx_0;
     real32_T rtb_h_R_idx_0;
@@ -157,70 +463,50 @@ class Formation_FMS final
     real32_T rtb_y_R_idx_1;
     real32_T rtb_h_R_idx_1;
     real32_T rtb_vn_idx_1;
+    real32_T rtb_ve_idx_1;
     real32_T rtb_x_R_idx_2;
     real32_T rtb_y_R_idx_2;
     real32_T rtb_h_R_idx_2;
     real32_T rtb_vn_idx_2;
-    real32_T b_y;
-    real32_T scale;
-    real32_T absxk;
-    real32_T t;
-    real32_T path_ratio;
+    real32_T rtb_ve_idx_2;
+    real32_T rtb_P_c_g;
     real32_T nearest_cross;
-    real32_T project_line;
     real32_T dotProduct;
     real32_T nearest_cross_tmp;
-    real32_T nearest_cross_tmp_c;
+    real32_T unit_norm_vector_idx_0;
+    real32_T unit_norm_vector_idx_1;
     real32_T unit_centre_to_pose_idx_0;
-    real32_T unit_point_to_next_tmp;
-    real32_T unit_point_to_next_tmp_k;
-    real32_T scale_c;
-    real32_T absxk_b;
-    real32_T t_p;
-    real32_T q;
+    real32_T unit_centre_to_pose_idx_1;
+    real32_T unit_line_idx_0;
+    real32_T unit_point_to_next_m;
+    int32_T i_data[4];
+    int32_T mask;
     int32_T i;
-    int32_T ux_cmd_tmp;
-    int32_T i_c;
-    int32_T b_vlen;
-    int32_T i_f;
-    int32_T i1;
-    uint32_T valid;
-    VehicleState state;                // '<Root>/FMS State Machine'
-    boolean_T x[2];
-    boolean_T b_x[2];
-    uint16_T wp_index;                 // '<Root>/FMS State Machine'
-    uint16_T wp_index_f;
-    int8_T rtPrevAction;
-    boolean_T FixPtRelationalOperator_d;// '<S7>/FixPt Relational Operator'
-    boolean_T c_y;
-    boolean_T rEQ0;
-    B_VehicleFormationFormAssembl_T VehicleFormationFormAssembled_o;
-                            // '<S3>/Vehicle.Formation.FormAssemble.dubinsPath'
-  };
-
-  // Block states (default storage) for model 'Formation_FMS'
-  struct DW_Formation_FMS_T {
-    real32_T Delay_DSTATE;             // '<S16>/Delay'
-    real32_T start_vel_DSTATE[2];      // '<S69>/start_vel'
-    real32_T Delay_DSTATE_m;           // '<S65>/Delay'
-    real32_T Delay_DSTATE_l;           // '<S20>/Delay'
-    real32_T Delay_DSTATE_o;           // '<S43>/Delay'
-    real32_T DiscreteTimeIntegrator1_DSTATE;// '<S4>/Discrete-Time Integrator1'
+    int32_T target;
+    int32_T stop_flag;
+    int32_T j;
+    int32_T i_n;
+    int32_T b_size;
+    int32_T c_size;
     uint32_T DelayInput1_DSTATE;       // '<S7>/Delay Input1'
-    PilotMode Delay_DSTATE_j;          // '<S5>/Delay'
-    real32_T waypoints[25];            // '<Root>/FMS State Machine'
     uint32_T Mission_Data_timestamp_prev;// '<Root>/FMS State Machine'
     uint32_T Mission_Data_timestamp_start;// '<Root>/FMS State Machine'
+    uint32_T BusConversion_InsertedFor_FM_pp;
+    uint32_T BusConversion_InsertedFor_FMS_l;
+    PilotMode Delay_DSTATE_j;          // '<S5>/Delay'
     PilotMode mode_prev;               // '<Root>/FMS State Machine'
     PilotMode mode_start;              // '<Root>/FMS State Machine'
+    PilotMode Switch;
+    VehicleState state;                // '<Root>/FMS State Machine'
+    uint16_T wp_index;                 // '<Root>/FMS State Machine'
     uint16_T DelayInput1_DSTATE_h;     // '<S17>/Delay Input1'
     uint16_T DelayInput1_DSTATE_d;     // '<S40>/Delay Input1'
+    int8_T j_data[4];
     int8_T SwitchCase_ActiveSubsystem; // '<S10>/Switch Case'
     uint8_T is_Vehicle;                // '<Root>/FMS State Machine'
     uint8_T is_Formation;              // '<Root>/FMS State Machine'
     uint8_T is_FormAssemble;           // '<Root>/FMS State Machine'
     uint8_T is_FormMission;            // '<Root>/FMS State Machine'
-    uint8_T is_Mission;                // '<Root>/FMS State Machine'
     uint8_T is_active_c3_Formation_FMS;// '<Root>/FMS State Machine'
     boolean_T icLoad;                  // '<S16>/Delay'
     boolean_T icLoad_c;                // '<S69>/start_vel'
@@ -250,10 +536,10 @@ class Formation_FMS final
   void initialize();
 
   // Initial conditions function
-  void init(uint32_T *rty_FMS_Out_timestamp, real32_T *rty_FMS_Out_ax_cmd,
-            real32_T *rty_FMS_Out_ay_cmd, real32_T *rty_FMS_Out_vh_cmd, uint32_T
-            *rty_Other_Mission_Data_timestam, uint32_T
-            rty_Other_Mission_Data_type[3], uint8_T
+  void init(uint32_T *rty_FMS_Out_timestamp, VehicleState *rty_FMS_Out_state,
+            real32_T *rty_FMS_Out_ax_cmd, real32_T *rty_FMS_Out_ay_cmd, real32_T
+            *rty_FMS_Out_vh_cmd, uint32_T *rty_Other_Mission_Data_timestam,
+            uint32_T rty_Other_Mission_Data_type[3], uint8_T
             rty_Other_Mission_Data_valid_it[3], real32_T
             rty_Other_Mission_Data_x[24], real32_T rty_Other_Mission_Data_y[24],
             real32_T rty_Other_Mission_Data_z[24], real32_T
@@ -302,11 +588,11 @@ class Formation_FMS final
             const real32_T rtu_Formation_Cross_h_R[3], const real32_T
             rtu_Formation_Cross_vn[3], const real32_T rtu_Formation_Cross_ve[3],
             const real32_T rtu_Formation_Cross_vd[3], const real32_T
-            rtu_Formation_Cross_psi[3], const real32_T
             rtu_Formation_Cross_left_time[3], uint32_T *rty_FMS_Out_timestamp,
-            real32_T *rty_FMS_Out_ax_cmd, real32_T *rty_FMS_Out_ay_cmd, real32_T
-            *rty_FMS_Out_vh_cmd, uint32_T *rty_Other_Mission_Data_timestam,
-            uint32_T rty_Other_Mission_Data_type[3], uint8_T
+            VehicleState *rty_FMS_Out_state, real32_T *rty_FMS_Out_ax_cmd,
+            real32_T *rty_FMS_Out_ay_cmd, real32_T *rty_FMS_Out_vh_cmd, uint32_T
+            *rty_Other_Mission_Data_timestam, uint32_T
+            rty_Other_Mission_Data_type[3], uint8_T
             rty_Other_Mission_Data_valid_it[3], real32_T
             rty_Other_Mission_Data_x[24], real32_T rty_Other_Mission_Data_y[24],
             real32_T rty_Other_Mission_Data_z[24], real32_T
@@ -326,9 +612,6 @@ class Formation_FMS final
 
   // private data and function members
  private:
-  // Block signals
-  B_Formation_FMS_T Formation_FMS_B;
-
   // Block states
   DW_Formation_FMS_T Formation_FMS_DW;
 
@@ -348,30 +631,20 @@ class Formation_FMS final
     real32_T rtu_P2[2], const real32_T rtu_P3[2], real32_T rtu_L1, real32_T
     rty_P[2], real32_T *rty_u);
 
-  // private member function(s) for subsystem '<S3>/Vehicle.Formation.FormAssemble.dubinsPath'
-  void VehicleFormationFormAssembledub(const Formation_Cross_Bus
-    *rtu_Formation_Cross, Other_Mission_Data_Bus *rty_Other_Mission_Data,
-    B_VehicleFormationFormAssembl_T *localB);
+  // private member function(s) for subsystem '<Root>/TmpModelReferenceSubsystem'
+  void Formation_exit_internal_Vehicle(void);
+  real_T Formation_FMS_atan3_9FIHpp9F(real_T x, real_T y, real_T x0, real_T b_y0);
   void Formation_FMS_Dubins(const captured_var_Formation_FMS_T *PhiMaximum,
     const captured_var_Formation_FMS_T *rad2deg, real_T xs, real_T ys, real_T
     psi_s, real_T xf, real_T yf, real_T psi_f, real_T v, real_T xts[4], real_T
     yts[4], real_T xtf[4], real_T ytf[4], real_T cs[4], real_T cf[4], real_T lt
     [4], real_T l[4], real_T pos[4], real_T pof[4], real_T *r, real_T m_data[],
-    int32_T *m_size, real_T n_data[], int32_T *n_size,
-    B_VehicleFormationFormAssembl_T *localB);
-
-  // private member function(s) for subsystem '<Root>/TmpModelReferenceSubsystem'
-  real32_T Formation_FMS_norm_7i8u8z8R(const real32_T x[2]);
-  void Formation_exit_internal_Vehicle(void);
-  real32_T Formation_FMS_rt_atan2f_snf(real32_T u0, real32_T u1);
-  real32_T Formation_FMS_mod_ThuC9Kor(real32_T x);
+    int32_T *m_size, real_T n_data[], int32_T *n_size);
+  void Format_enter_internal_Formation(const INS_Out_Bus
+    *BusConversion_InsertedFor_FMS_c, const Formation_Cross_Bus
+    *BusConversion_InsertedFor_FMS_p, const PilotMode *Switch);
   void Formati_getMinDistanceAtSegment(const real32_T waypoints[25], const
     real32_T pose[3], uint16_T segment, real32_T *dist, real32_T *ratio);
-  void Formation_FMS_Vehicle(const INS_Out_Bus *BusConversion_InsertedFor_FMS_c,
-    const Formation_Cross_Bus *BusConversion_InsertedFor_FMS_p, const
-    Mission_Data_Bus *BusConversion_InsertedFor_FMSSt, Formation_Cross_Bus
-    *Formation_Cross_d, Other_Mission_Data_Bus *mission, real32_T
-    *rty_Form_Single);
 
   // Real-Time Model
   RT_MODEL_Formation_FMS_T Formation_FMS_M;

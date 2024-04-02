@@ -22,19 +22,20 @@ using FMS_Out = FMS_TECS::ExtY_FMS_TECS_T;
 class FMS
 {
 public:
-    FMS() {};
-    ~FMS(){};
-
-    void initialize()
+    FMS() 
     {
         _fms.initialize();
-    }
+    };
+    ~FMS()
+    {
+        _fms.terminate();
+    };
 
     const FMS_Out &step(const FMS_In *fms_in)
     {
-        _fms.setExternalInputs(fms_in);
+        _fms.FMS_TECS_U = *fms_in;
         _fms.step();
-        return _fms.getExternalOutputs();
+        return _fms.FMS_TECS_Y;
     }
 
 private:

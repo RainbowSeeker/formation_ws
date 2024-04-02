@@ -5,11 +5,11 @@
 //
 // File: rtwtypes.h
 //
-// Code generated for Simulink model 'Formation_FMS'.
+// Code generated for Simulink model 'FMS_TECS'.
 //
-// Model version                  : 1.127
+// Model version                  : 1.36
 // Simulink Coder version         : 9.8 (R2022b) 13-May-2022
-// C/C++ source code generated on : Fri Mar 29 21:28:37 2024
+// C/C++ source code generated on : Tue Apr  2 21:16:50 2024
 //
 #ifndef RTWTYPES_H
 #define RTWTYPES_H
@@ -29,7 +29,7 @@
 //  Target hardware information
 //    Device type: Intel->x86-64 (Linux 64)
 //    Number of bits:     char:   8    short:   16    int:  32
-//                        long:  64
+//                        long:  64    long long:  64
 //                        native word size:  64
 //    Byte ordering: LittleEndian
 //    Signed integer division rounds to: Zero
@@ -55,7 +55,7 @@ typedef double real64_T;
 
 //===========================================================================*
 //  Generic type definitions: boolean_T, char_T, byte_T, int_T, uint_T,       *
-//                            real_T, time_T, ulong_T.                        *
+//                            real_T, time_T, ulong_T, ulonglong_T.           *
 // ===========================================================================
 typedef double real_T;
 typedef double time_T;
@@ -63,6 +63,7 @@ typedef unsigned char boolean_T;
 typedef int int_T;
 typedef unsigned int uint_T;
 typedef unsigned long ulong_T;
+typedef unsigned long long ulonglong_T;
 typedef char char_T;
 typedef unsigned char uchar_T;
 typedef char_T byte_T;

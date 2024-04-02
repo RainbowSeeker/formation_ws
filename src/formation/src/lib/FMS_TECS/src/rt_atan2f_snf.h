@@ -3,7 +3,7 @@
 // course requirements at degree granting institutions only.  Not for
 // government, commercial, or other organizational use.
 //
-// File: rtGetInf.h
+// File: rt_atan2f_snf.h
 //
 // Code generated for Simulink model 'Formation_FMS'.
 //
@@ -11,19 +11,13 @@
 // Simulink Coder version         : 9.8 (R2022b) 13-May-2022
 // C/C++ source code generated on : Tue Apr  2 21:16:26 2024
 //
-#ifndef RTW_HEADER_rtGetInf_h_
-#define RTW_HEADER_rtGetInf_h_
+#ifndef RTW_HEADER_rt_atan2f_snf_h_
+#define RTW_HEADER_rt_atan2f_snf_h_
 #include "rtwtypes.h"
 
-extern "C"
-{
-  extern real_T rtGetInf(void);
-  extern real32_T rtGetInfF(void);
-  extern real_T rtGetMinusInf(void);
-  extern real32_T rtGetMinusInfF(void);
-}                                      // extern "C"
+extern real32_T rt_atan2f_snf(real32_T u0, real32_T u1);
 
-#endif                                 // RTW_HEADER_rtGetInf_h_
+#endif                                 // RTW_HEADER_rt_atan2f_snf_h_
 
 //
 // File trailer for generated code.

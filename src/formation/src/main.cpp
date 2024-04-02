@@ -3,7 +3,7 @@
 #include <thread>
 #include "uav_node.h"
 
-static constexpr int NUM_UAVS = 1;
+static constexpr int NUM_UAVS = 3;
 
 int main(int argc, char** argv) 
 {
@@ -20,12 +20,7 @@ int main(int argc, char** argv)
                 ROS_ERROR("Failed to initialize %s", uav->name());
             }
 
-            ros::Rate rate(20);
-            while (1)
-            {
-                uav->call_once();
-                rate.sleep();
-            }
+            uav->spin();
         });
     }
 

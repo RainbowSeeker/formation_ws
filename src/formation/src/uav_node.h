@@ -11,6 +11,8 @@
 #define FIXED_WING      1
 #define AIRCRAFT_TYPE   FIXED_WING
 
+static constexpr int CONTROL_PERIOD_HZ = 20;
+
 
 class UavNode : public ros::NodeHandle
 {
@@ -19,11 +21,13 @@ public:
 
     const char* name();
     int initialize();
-    int call_once();
+    int spin();
 
     bool connected() const;
 private:
     void parameter_update();
+    void mission_decompose();
+    void pilot_cmd_decode();
     void fms_step();
     void publish_trajectory_setpoint();
     void publish_offboard_control_mode();
@@ -37,6 +41,7 @@ private:
     ros::Subscriber state_sub;
     ros::ServiceClient arming_client;
     ros::ServiceClient set_mode_client;
+    uint32_t run_time_ms{0};
 
     int _uav_id;
     std::string _node_name;

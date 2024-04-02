@@ -70,15 +70,13 @@ int UavNode::initialize()
     });
 
     ROS_INFO("UAV node %s created", name());
-
-    _fms.initialize();
     return 0;
 }
 void UavNode::parameter_update()
 {
     FMS_PARAM.FW_AIRSPD_TRIM = 15.f;
     FMS_PARAM.FW_HEIGHT_TRIM = 50;
-    FORMATION_PARAM.UAV_ID = _uav_id;
+    FORMATION_PARAM.UAV_ID = _uav_id + 1;
 
     CONTROL_PARAM.FW_P_LIM_MIN = -15.f * M_DEG_TO_RAD;
     CONTROL_PARAM.FW_THR_MIN = 0.05f;
@@ -102,6 +100,76 @@ void UavNode::parameter_update()
     CONTROL_PARAM.FW_T_I_GAIN_PIT = 0.f;
 }
 
+void UavNode::mission_decompose()
+{   
+    switch (_fms_out.FMS_Out.state)
+    {
+    case VehicleState::FormAssemble:
+    {
+        // if mission data is updated
+        if (_fms_in.Mission_Data.timestamp != fusion.mission.timestamp)
+        {
+            _fms_in.Mission_Data.timestamp = fusion.mission.timestamp;
+            _fms_in.Mission_Data.type = fusion.mission.type[_uav_id];
+            _fms_in.Mission_Data.valid_items = fusion.mission.valid_items[_uav_id];
+            for (size_t i = 0; i < 8; i++)
+            {
+                _fms_in.Mission_Data.x[i] = fusion.mission.x[3 * i + _uav_id];
+                _fms_in.Mission_Data.y[i] = fusion.mission.y[3 * i + _uav_id];
+                _fms_in.Mission_Data.z[i] = fusion.mission.z[3 * i + _uav_id];
+                _fms_in.Mission_Data.heading[i] = fusion.mission.heading[3 * i + _uav_id];
+                _fms_in.Mission_Data.ext1[i] = fusion.mission.ext1[3 * i + _uav_id];
+                _fms_in.Mission_Data.ext2[i] = fusion.mission.ext2[3 * i + _uav_id];
+            }
+        }
+        break;
+    }
+    case VehicleState::FormMission:
+    {
+        static bool already = false;
+        if (_uav_id == 0 && !already && _fms_out.FMS_Out.state == VehicleState::FormMission)
+        {
+            already = true;
+            _fms_in.Mission_Data.timestamp += 100;
+            _fms_in.Mission_Data.type = uint32_t(3);
+            _fms_in.Mission_Data.valid_items = 4;
+            _fms_in.Mission_Data.x[0] = 1500.f;
+            _fms_in.Mission_Data.y[0] = 1500.f;
+            _fms_in.Mission_Data.z[0] = 50.f;
+
+            _fms_in.Mission_Data.x[1] = 2000.f;
+            _fms_in.Mission_Data.y[1] = 1500.f;
+            _fms_in.Mission_Data.z[1] = 50.f;
+
+            _fms_in.Mission_Data.x[2] = 2000.f;
+            _fms_in.Mission_Data.y[2] = 1000.f;
+            _fms_in.Mission_Data.z[2] = 50.f;
+
+            _fms_in.Mission_Data.x[3] = 1500.f;
+            _fms_in.Mission_Data.y[3] = 500.f;
+            _fms_in.Mission_Data.z[3] = 50.f;
+        }
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+void UavNode::pilot_cmd_decode()
+{
+    if (run_time_ms < 1 * 1000)
+    {
+        _fms_in.Pilot_Cmd.timestamp = 0;
+        _fms_in.Pilot_Cmd.mode = uint32_t(PilotMode::None);
+    }
+    else
+    {
+        _fms_in.Pilot_Cmd.timestamp = 1;
+        _fms_in.Pilot_Cmd.mode = uint32_t(PilotMode::FormAssemble);
+    }
+}
+
 void UavNode::fms_step()
 {
     fusion.cross.x_R[_uav_id] = _fms_in.INS_Out.x_R;
@@ -111,18 +179,36 @@ void UavNode::fms_step()
     fusion.cross.ve[_uav_id] = _fms_in.INS_Out.ve;
     fusion.cross.vd[_uav_id] = _fms_in.INS_Out.vd;
     
-    _fms_in.Pilot_Cmd = {};
-    _fms_in.Mission_Data = {};
     // _fms_in.INS_Out; AUTOMATICALLY UPDATED BY SUBSCRIBERS
     _fms_in.Formation_Cross = fusion.cross;
     _fms_out = _fms.step(&_fms_in);
 
     fusion.cross.left_time[_uav_id] = _fms_out.Form_Single;
-    if (_uav_id == 0 && _fms_out.Other_Mission_Data.timestamp != fusion.mission.timestamp)
+    if (_uav_id == 0 && _fms_out.Other_Mission_Data.timestamp)
     {
         fusion.mission = _fms_out.Other_Mission_Data;
     }
-    ROS_INFO("UAV %s: setpoint roll: %f, pitch: %f, throttle: %f", _node_name.c_str(), _fms_out.att_cmd[0], _fms_out.att_cmd[1], _fms_out.throttle_cmd);
+    ROS_DEBUG("UAV %s: setpoint roll: %f, pitch: %f, throttle: %f", _node_name.c_str(), _fms_out.att_cmd[0], _fms_out.att_cmd[1], _fms_out.throttle_cmd);
+
+    auto get_state = [](VehicleState state) -> std::string
+    {
+        switch (state)
+        {
+        case VehicleState::None:
+            return "None";
+        case VehicleState::FormAssemble:
+            return "FormAssemble";
+        case VehicleState::FormDisband:
+            return "FormDisband";
+        case VehicleState::FormMission:
+            return "FormMission";
+        case VehicleState::Hold:
+            return "Hold";
+        default:
+            return "UNKNOWN";
+        }
+    };
+    ROS_INFO("UAV %s: state: %s, pose:[%.1f\t%.1f\t%.1f]", _node_name.c_str(), get_state(_fms_out.FMS_Out.state).c_str(), _fms_in.INS_Out.x_R, _fms_in.INS_Out.y_R, _fms_in.INS_Out.psi * M_RAD_TO_DEG);
 }
 /**
  * @brief Publish a trajectory setpoint
@@ -211,16 +297,25 @@ void UavNode::publish_offboard_control_mode()
     }
 }
 
-int UavNode::call_once()
+int UavNode::spin()
 {
-    if (!connected())
+    ros::Rate rate(CONTROL_PERIOD_HZ);
+
+    while (ros::ok())
     {
-        return 0;
+        if (connected())
+        {
+            parameter_update();
+            mission_decompose();
+            pilot_cmd_decode();
+            fms_step();
+            publish_offboard_control_mode();
+            publish_trajectory_setpoint();
+            run_time_ms += CONTROL_PERIOD_HZ;
+        }
+        rate.sleep();
     }
-    parameter_update();
-    fms_step();
-    publish_offboard_control_mode();
-    publish_trajectory_setpoint();
+
     return 0;
 }
 
