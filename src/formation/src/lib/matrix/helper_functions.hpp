@@ -2,10 +2,10 @@
 
 #include <cmath>
 
+
 /****************************************************************************
  * Defines for POSIX and ROS
  ****************************************************************************/
-
 #define OK 0
 #define ERROR -1
 #define MAX_RAND 32767
@@ -43,6 +43,7 @@
 
 #define M_DEG_TO_RAD 		0.017453292519943295
 #define M_RAD_TO_DEG 		57.295779513082323
+
 
 namespace matrix
 {

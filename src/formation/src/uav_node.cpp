@@ -3,12 +3,10 @@
 #include <geometry_msgs/TwistStamped.h>
 #include <geometry_msgs/Vector3Stamped.h>
 #include <sensor_msgs/NavSatFix.h>
-#include <sensor_msgs/Imu.h>
 #include <tf/transform_datatypes.h>
-#include <mavros_msgs/PositionTarget.h>
 #include <mavros_msgs/AttitudeTarget.h>
+#include <nav_msgs/Odometry.h>
 
-#include <matrix/math.hpp>
 using matrix::Eulerf;
 using matrix::Quatf;
 
@@ -42,15 +40,18 @@ int UavNode::initialize()
 
     arming_client = serviceClient<mavros_msgs::CommandBool>(_node_name + "/mavros/cmd/arming");
     set_mode_client = serviceClient<mavros_msgs::SetMode>(_node_name + "/mavros/set_mode");
+    cmd_client = serviceClient<mavros_msgs::CommandInt>(_node_name + "/mavros/cmd/command_int");
+    takeoff_client = serviceClient<mavros_msgs::CommandTOL>(_node_name + "/mavros/cmd/takeoff");
 
     // FMS INPUT subscriber
-    local_pose_sub = subscribe<geometry_msgs::PoseStamped>(_node_name + "/mavros/local_position/pose", 10, [this](const geometry_msgs::PoseStamped::ConstPtr& msg){
+    local_position_sub = subscribe<nav_msgs::Odometry>(_node_name + "/mavros/global_position/local", 10, [this](const nav_msgs::Odometry::ConstPtr& msg){
         //ENU to NED
-        _fms_in.INS_Out.x_R = msg->pose.position.y;
-        _fms_in.INS_Out.y_R = msg->pose.position.x;
-        _fms_in.INS_Out.h_R = msg->pose.position.z;
+        _fms_in.INS_Out.timestamp = msg->header.stamp.toNSec() / 1e3;
+        _fms_in.INS_Out.x_R = msg->pose.pose.position.y;
+        _fms_in.INS_Out.y_R = msg->pose.pose.position.x;
+        _fms_in.INS_Out.h_R = msg->pose.pose.position.z;
         tf::Quaternion quat_enu;
-        tf::quaternionMsgToTF(msg->pose.orientation, quat_enu);
+        tf::quaternionMsgToTF(msg->pose.pose.orientation, quat_enu);
         double roll, pitch, yaw;
         tf::Matrix3x3(quat_enu).getRPY(roll, pitch, yaw);
         _fms_in.INS_Out.phi     = roll;
@@ -58,17 +59,22 @@ int UavNode::initialize()
         _fms_in.INS_Out.psi     = M_PI_2 - yaw;
         ROS_DEBUG("UAV %s: x_R: %f, y_R: %f, h_R: %f, phi: %f, theta: %f, psi: %f", _node_name.c_str(), _fms_in.INS_Out.x_R, _fms_in.INS_Out.y_R, _fms_in.INS_Out.h_R,
                 _fms_in.INS_Out.phi, _fms_in.INS_Out.theta, _fms_in.INS_Out.psi);
-    });
 
-    local_vel_sub = subscribe<geometry_msgs::TwistStamped>(_node_name + "/mavros/local_position/velocity_local", 10, [this](const geometry_msgs::TwistStamped::ConstPtr& msg){
-        //ENU to NED
-        _fms_in.INS_Out.vn = msg->twist.linear.y;
-        _fms_in.INS_Out.ve = msg->twist.linear.x;
-        _fms_in.INS_Out.vd = -msg->twist.linear.z;
+        _fms_in.INS_Out.vn = msg->twist.twist.linear.y;
+        _fms_in.INS_Out.ve = msg->twist.twist.linear.x;
+        _fms_in.INS_Out.vd = -msg->twist.twist.linear.z;
         _fms_in.INS_Out.airspeed = std::sqrt(std::pow(_fms_in.INS_Out.vn, 2) + std::pow(_fms_in.INS_Out.ve, 2) + std::pow(_fms_in.INS_Out.vd, 2));
         ROS_DEBUG("UAV %s: vn: %f, ve: %f, vd: %f, airspeed: %f", _node_name.c_str(), _fms_in.INS_Out.vn, _fms_in.INS_Out.ve, _fms_in.INS_Out.vd, _fms_in.INS_Out.airspeed);
     });
 
+    global_position_sub = subscribe<sensor_msgs::NavSatFix>(_node_name + "/mavros/global_position/global", 10, [this](const sensor_msgs::NavSatFix::ConstPtr& msg){
+        if (_uav_id == 0 && !fusion.map.isInitialized() && msg->position_covariance_type >= 2)
+        {
+            fusion.map.initReference(msg->latitude, msg->longitude);
+            fusion.ref_alt = msg->altitude;
+        }
+    });
+    
     ROS_INFO("UAV node %s created", name());
     return 0;
 }
@@ -295,6 +301,47 @@ void UavNode::publish_offboard_control_mode()
             last_request = now;
         }
     }
+    
+    if (1)
+    {
+        static ros::Time last_request = now;
+        if (!lat0_has_set && fusion.map.isInitialized() && (now - last_request > ros::Duration(5.0)))
+        {
+            _int_cmd.request.command = 8000;    //VEHICLE_CMD_SET_GPS_GLOBAL_ORIGIN = 100000 --> 8000
+            _int_cmd.request.x = static_cast<int32_t>(fusion.map.getProjectionReferenceLat() * 1e7);
+            _int_cmd.request.y = static_cast<int32_t>(fusion.map.getProjectionReferenceLon() * 1e7);
+            _int_cmd.request.z = fusion.ref_alt;
+
+            if (cmd_client.call(_int_cmd) && _int_cmd.response.success)
+            {
+                ROS_INFO("Command sent %s", _node_name.c_str());
+                lat0_has_set = true;
+            }   
+        }
+    }
+
+
+    if (0)
+    {
+        static ros::Time last_request = now;
+        static bool takeoff = false;
+        if (!takeoff && lat0_has_set && (now - last_request > ros::Duration(5.0)))
+        {
+            _takeoff_cmd.request.min_pitch = M_DEG_TO_RAD * 15;
+            _takeoff_cmd.request.yaw = 0;
+            double lat, lon;
+            // fusion.map.reproject(_uav_id * 30, 0, lat, lon);
+            _takeoff_cmd.request.latitude = fusion.map.getProjectionReferenceLat();
+            _takeoff_cmd.request.longitude = fusion.map.getProjectionReferenceLon();
+            _takeoff_cmd.request.altitude = fusion.ref_alt + _uav_id * 20;
+
+            if (takeoff_client.call(_takeoff_cmd) && _takeoff_cmd.response.success)
+            {
+                ROS_INFO("Takeoff sent %s", _node_name.c_str());
+                takeoff = true;
+            }
+        }
+    }    
 }
 
 int UavNode::spin()
@@ -309,10 +356,10 @@ int UavNode::spin()
             mission_decompose();
             pilot_cmd_decode();
             fms_step();
-            publish_offboard_control_mode();
             publish_trajectory_setpoint();
             run_time_ms += CONTROL_PERIOD_HZ;
         }
+        publish_offboard_control_mode();
         rate.sleep();
     }
 
@@ -321,7 +368,7 @@ int UavNode::spin()
 
 bool UavNode::connected() const
 {
-    return _state.connected && _state.armed;
+    return _state.connected && _state.armed && lat0_has_set;
 }
 
 const char* UavNode::name()
