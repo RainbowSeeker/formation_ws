@@ -9,7 +9,7 @@
 //
 // Model version                  : 1.36
 // Simulink Coder version         : 9.8 (R2022b) 13-May-2022
-// C/C++ source code generated on : Tue Apr  2 21:16:50 2024
+// C/C++ source code generated on : Thu Apr 11 20:36:15 2024
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -22,10 +22,10 @@
 #include "Formation_FMS.h"
 
 // Exported block parameters
-struct_RybhgqIOamJFBGFK48xLQB FORMATION_PARAM{
-  1.0,
+struct_jAvRTXSPaltgzOYcAEIOhD FORMATION_PARAM{
+  1U,
 
-  { 0.0, 1.0, 1.0, 0., 0.0, 0.0, 0., 0.0, 0.0 },
+  { 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
 
   { 0.0, -20.0, -20.0, 20.0, 0.0, 0.0, 20.0, 0.0, 0.0 },
 
@@ -34,8 +34,10 @@ struct_RybhgqIOamJFBGFK48xLQB FORMATION_PARAM{
   { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
   3.0,
 
-  { 0.0, 50.0, -50.0, 1000.0, 1000.0, 1000.0, 0.0, 0.0, 0.0 },
-  100.0F,
+  { 0.0, 20.0, -20.0, 1000.0, 1000.0, 1000.0, 0.0, 0.0, 0.0 },
+  10000.0F,
+  1.0F,
+  0.2F,
   1.0F
 } ;                                    // Variable: FORMATION_PARAM
                                           //  Referenced by: '<Root>/Model'
@@ -118,14 +120,10 @@ struct_FebwIpiU9Ih55vl7WG22GB CONTROL_PARAM{
                                           //    '<S25>/load_factor_correction'
 
 
-struct_U9pfOUhK42GcE1cZiAFZlB FMS_PARAM{
+struct_0ZGjJhw03jURyv4APdfhOF FMS_PARAM{
   25.0F,
   1000.0F,
-  0.15F,
-  0.15F,
-  0.1F,
-  0.1F,
-  0.5F,
+  1.0F,
   1.0F,
   2.5F,
   2.5F,
@@ -230,7 +228,7 @@ void FMS_TECS::step()
   //  About '<S6>/Weighted Sample Time':
   //   y = K where K = ( w * Ts )
 
-  rtb_out_a = 0.05F * FMS_TECS_DW.airspeed_state[1] +
+  rtb_out_a = 0.02F * FMS_TECS_DW.airspeed_state[1] +
     FMS_TECS_DW.airspeed_state[0];
   rtb_ske_rate = 0.0F * FMS_TECS_DW.airspeed_state[0] +
     FMS_TECS_DW.airspeed_state[1];
@@ -241,15 +239,15 @@ void FMS_TECS::step()
   innovation_idx_0 = FMS_TECS_U.INS_Out.airspeed - rtb_out_a;
   rtb_Add_mp = (0.0F - rtb_ske_rate) * FMS_TECS_DW.kalman_gain[2];
   rtb_new_state_idx_0 = (FMS_TECS_DW.kalman_gain[0] * innovation_idx_0 +
-    rtb_Add_mp) * 0.05F + rtb_out_a;
+    rtb_Add_mp) * 0.02F + rtb_out_a;
   rtb_Product_h4 = (0.0F - rtb_ske_rate) * FMS_TECS_DW.kalman_gain[3];
   innovation_idx_0 = (FMS_TECS_DW.kalman_gain[1] * innovation_idx_0 +
-                      rtb_Product_h4) * 0.05F + rtb_ske_rate;
+                      rtb_Product_h4) * 0.02F + rtb_ske_rate;
   if (rtb_new_state_idx_0 < 2.22044605E-16F) {
     rtb_new_state_idx_0 = 0.0F;
-    innovation_idx_0 = ((-rtb_out_a / 0.05F - rtb_Add_mp) /
+    innovation_idx_0 = ((-rtb_out_a / 0.02F - rtb_Add_mp) /
                         FMS_TECS_DW.kalman_gain[0] * FMS_TECS_DW.kalman_gain[1]
-                        + rtb_Product_h4) * 0.05F + rtb_ske_rate;
+                        + rtb_Product_h4) * 0.02F + rtb_ske_rate;
   }
 
   FMS_TECS_DW.airspeed_state[0] = rtb_new_state_idx_0;
@@ -425,7 +423,7 @@ void FMS_TECS::step()
   //  About '<S18>/Weighted Sample Time':
   //   y = K where K = ( w * Ts )
 
-  rtb_out = 0.05F * CONTROL_PARAM.FW_T_VERT_ACC / std::fmax(rtb_new_state_idx_0,
+  rtb_out = 0.02F * CONTROL_PARAM.FW_T_VERT_ACC / std::fmax(rtb_new_state_idx_0,
     1.1920929E-7F);
   rtb_new_state_idx_0 = rtb_Product2 - rtb_out;
   FMS_TECS_DW.Delay_DSTATE = rtb_Product2 + rtb_out;
@@ -571,7 +569,7 @@ void FMS_TECS::step()
   //   Gain: '<S17>/I_Gain'
 
   FMS_TECS_DW.DiscreteTimeIntegrator_DSTATE += CONTROL_PARAM.FW_T_I_GAIN_PIT *
-    rtb_out_a * 0.05F;
+    rtb_out_a * 0.02F;
   FMS_TECS_DW.DiscreteTimeIntegrator_PrevRese = 0;
 
   // Update for DiscreteIntegrator: '<S24>/Discrete-Time Integrator5' incorporates:
@@ -580,13 +578,13 @@ void FMS_TECS::step()
 
   FMS_TECS_DW.DiscreteTimeIntegrator5_IC_LOAD = 0U;
   FMS_TECS_DW.DiscreteTimeIntegrator5_DSTATE += (rtb_ske_rate -
-    FMS_TECS_DW.DiscreteTimeIntegrator5_DSTATE) * 2.5F * 0.05F;
+    FMS_TECS_DW.DiscreteTimeIntegrator5_DSTATE) * 2.5F * 0.02F;
 
   // Update for DiscreteIntegrator: '<S23>/Discrete-Time Integrator' incorporates:
   //   Gain: '<S23>/I_Gain'
 
   FMS_TECS_DW.DiscreteTimeIntegrator_DSTATE_l += CONTROL_PARAM.FW_T_I_GAIN_THR *
-    rtb_new_state_idx_0 * 0.05F;
+    rtb_new_state_idx_0 * 0.02F;
   FMS_TECS_DW.DiscreteTimeIntegrator_PrevRe_m = 0;
 
   // Update for Delay: '<S13>/Delay'

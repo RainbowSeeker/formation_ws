@@ -7,7 +7,7 @@
 #include <mavros_msgs/SetMode.h>
 #include <mavros_msgs/State.h>
 #include <cstring>
-
+#include <fstream>
 #include <model/FMS_TECS/FMS.h>
 #include <lib/matrix/math.hpp>
 #include <lib/geo/geo.h>
@@ -15,7 +15,7 @@
 #define FIXED_WING      1
 #define AIRCRAFT_TYPE   FIXED_WING
 
-static constexpr int CONTROL_PERIOD_HZ = 20;
+static constexpr int CONTROL_PERIOD_HZ = 50;
 
 
 class UavNode : public ros::NodeHandle
@@ -33,6 +33,7 @@ private:
     void mission_decompose();
     void pilot_cmd_decode();
     void fms_step();
+    void data_save();
     void publish_trajectory_setpoint();
     void publish_offboard_control_mode();
 
@@ -74,4 +75,9 @@ private:
         Other_Mission_Data_Bus mission;
     };
     static fms_fusion fusion;
+
+
+    //log
+    std::ofstream _log_file;
+    uint32_t _write_count{0};
 };

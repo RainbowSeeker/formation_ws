@@ -83,6 +83,8 @@ void UavNode::parameter_update()
     FMS_PARAM.FW_AIRSPD_TRIM = 15.f;
     FMS_PARAM.FW_HEIGHT_TRIM = 50;
     FORMATION_PARAM.UAV_ID = _uav_id + 1;
+    FORMATION_PARAM.LATERAL_DAMP = 0.5;
+    // FORMATION_PARAM.LATERAL_PERIOD = 1;
 
     CONTROL_PARAM.FW_P_LIM_MIN = -15.f * M_DEG_TO_RAD;
     CONTROL_PARAM.FW_THR_MIN = 0.05f;
@@ -215,6 +217,43 @@ void UavNode::fms_step()
         }
     };
     ROS_INFO("UAV %s: state: %s, pose:[%.1f\t%.1f\t%.1f]", _node_name.c_str(), get_state(_fms_out.FMS_Out.state).c_str(), _fms_in.INS_Out.x_R, _fms_in.INS_Out.y_R, _fms_in.INS_Out.psi * M_RAD_TO_DEG);
+}
+
+void UavNode::data_save()
+{
+    if (_uav_id != 0)
+        return;
+    
+    if (!_log_file.is_open())
+    {
+        _log_file.open("formation_log.txt");
+        _log_file << "timestamp x_R[0] x_R[1] x_R[2] y_R[0] y_R[1] y_R[2] h_R[0] h_R[1] h_R[2] vn[0] vn[1] vn[2] ve[0] ve[1] ve[2] vd[0] vd[1] vd[2]" << std::endl;
+    }
+
+    _log_file << _fms_in.INS_Out.timestamp << " " 
+        << _fms_in.Formation_Cross.x_R[0] << " " 
+        << _fms_in.Formation_Cross.x_R[1] << " "
+        << _fms_in.Formation_Cross.x_R[2] << " "
+        << _fms_in.Formation_Cross.y_R[0] << " "
+        << _fms_in.Formation_Cross.y_R[1] << " "
+        << _fms_in.Formation_Cross.y_R[2] << " "
+        << _fms_in.Formation_Cross.h_R[0] << " "
+        << _fms_in.Formation_Cross.h_R[1] << " "
+        << _fms_in.Formation_Cross.h_R[2] << " "
+        << _fms_in.Formation_Cross.vn[0] << " "
+        << _fms_in.Formation_Cross.vn[1] << " "
+        << _fms_in.Formation_Cross.vn[2] << " "
+        << _fms_in.Formation_Cross.ve[0] << " "
+        << _fms_in.Formation_Cross.ve[1] << " "
+        << _fms_in.Formation_Cross.ve[2] << " "
+        << _fms_in.Formation_Cross.vd[0] << " "
+        << _fms_in.Formation_Cross.vd[1] << " "
+        << _fms_in.Formation_Cross.vd[2] << "\n";
+
+    if (++_write_count % 5 == 0)
+    {
+        _log_file << std::flush;
+    }
 }
 /**
  * @brief Publish a trajectory setpoint
@@ -357,6 +396,7 @@ int UavNode::spin()
             pilot_cmd_decode();
             fms_step();
             publish_trajectory_setpoint();
+            data_save();
             run_time_ms += CONTROL_PERIOD_HZ;
         }
         publish_offboard_control_mode();

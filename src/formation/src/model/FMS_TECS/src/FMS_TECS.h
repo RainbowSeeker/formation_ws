@@ -9,7 +9,7 @@
 //
 // Model version                  : 1.36
 // Simulink Coder version         : 9.8 (R2022b) 13-May-2022
-// C/C++ source code generated on : Tue Apr  2 21:16:50 2024
+// C/C++ source code generated on : Thu Apr 11 20:36:15 2024
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -225,12 +225,12 @@ struct struct_FebwIpiU9Ih55vl7WG22GB
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_RybhgqIOamJFBGFK48xLQB_
-#define DEFINED_TYPEDEF_FOR_struct_RybhgqIOamJFBGFK48xLQB_
+#ifndef DEFINED_TYPEDEF_FOR_struct_jAvRTXSPaltgzOYcAEIOhD_
+#define DEFINED_TYPEDEF_FOR_struct_jAvRTXSPaltgzOYcAEIOhD_
 
-struct struct_RybhgqIOamJFBGFK48xLQB
+struct struct_jAvRTXSPaltgzOYcAEIOhD
 {
-  real_T UAV_ID;
+  uint32_T UAV_ID;
   real_T ADJ_MARTIX[9];
   real_T REL_X_MATRIX[9];
   real_T REL_Y_MATRIX[9];
@@ -239,21 +239,19 @@ struct struct_RybhgqIOamJFBGFK48xLQB
   real_T FORM_POINT[9];
   real32_T FORM_RADIUS;
   real32_T ASSEMBLE_KT;
+  real32_T LATERAL_DAMP;
+  real32_T LATERAL_PERIOD;
 };
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_U9pfOUhK42GcE1cZiAFZlB_
-#define DEFINED_TYPEDEF_FOR_struct_U9pfOUhK42GcE1cZiAFZlB_
+#ifndef DEFINED_TYPEDEF_FOR_struct_0ZGjJhw03jURyv4APdfhOF_
+#define DEFINED_TYPEDEF_FOR_struct_0ZGjJhw03jURyv4APdfhOF_
 
-struct struct_U9pfOUhK42GcE1cZiAFZlB
+struct struct_0ZGjJhw03jURyv4APdfhOF
 {
   real32_T FW_AIRSPD_TRIM;
   real32_T FW_HEIGHT_TRIM;
-  real32_T THROTTLE_DZ;
-  real32_T YAW_DZ;
-  real32_T ROLL_DZ;
-  real32_T PITCH_DZ;
   real32_T AIRSPD_P;
   real32_T Z_P;
   real32_T VEL_Z_LIM;
@@ -277,7 +275,7 @@ struct struct_U9pfOUhK42GcE1cZiAFZlB
 //  these parameters and exports their symbols.
 //
 
-extern struct_RybhgqIOamJFBGFK48xLQB FORMATION_PARAM;// Variable: FORMATION_PARAM
+extern struct_jAvRTXSPaltgzOYcAEIOhD FORMATION_PARAM;// Variable: FORMATION_PARAM
                                                         //  Referenced by: '<Root>/Model'
 
 extern struct_FebwIpiU9Ih55vl7WG22GB CONTROL_PARAM;// Variable: CONTROL_PARAM
@@ -307,7 +305,7 @@ extern struct_FebwIpiU9Ih55vl7WG22GB CONTROL_PARAM;// Variable: CONTROL_PARAM
                                                       //    '<S23>/I_Gain'
                                                       //    '<S25>/load_factor_correction'
 
-extern struct_U9pfOUhK42GcE1cZiAFZlB FMS_PARAM;// Variable: FMS_PARAM
+extern struct_0ZGjJhw03jURyv4APdfhOF FMS_PARAM;// Variable: FMS_PARAM
                                                   //  Referenced by: '<Root>/Model'
 
 
