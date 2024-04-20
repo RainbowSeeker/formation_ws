@@ -7,9 +7,9 @@
 //
 // Code generated for Simulink model 'FMS_TECS'.
 //
-// Model version                  : 1.36
+// Model version                  : 1.41
 // Simulink Coder version         : 9.8 (R2022b) 13-May-2022
-// C/C++ source code generated on : Thu Apr 11 20:36:15 2024
+// C/C++ source code generated on : Sat Apr 20 16:40:13 2024
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -22,7 +22,7 @@
 #include "Formation_FMS.h"
 
 // Exported block parameters
-struct_jAvRTXSPaltgzOYcAEIOhD FORMATION_PARAM{
+struct_J7Uq7gTeDMxAAnCtpLwjSH FORMATION_PARAM{
   1U,
 
   { 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
@@ -31,14 +31,19 @@ struct_jAvRTXSPaltgzOYcAEIOhD FORMATION_PARAM{
 
   { 0.0, -20.0, 20.0, 20.0, 0.0, 40.0, -20.0, -40.0, 0.0 },
 
-  { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
+  { 0.0, -20.0, -40.0, 20.0, 0.0, -20.0, 40.0, 20.0, 0.0 },
   3.0,
 
   { 0.0, 20.0, -20.0, 1000.0, 1000.0, 1000.0, 0.0, 0.0, 0.0 },
-  10000.0F,
+
+  { 0.0, 20.0, -20.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
+  100.0F,
   1.0F,
   0.2F,
-  1.0F
+  1.0F,
+  0.3F,
+  0.05F,
+  0.5F
 } ;                                    // Variable: FORMATION_PARAM
                                           //  Referenced by: '<Root>/Model'
 
@@ -120,19 +125,15 @@ struct_FebwIpiU9Ih55vl7WG22GB CONTROL_PARAM{
                                           //    '<S25>/load_factor_correction'
 
 
-struct_0ZGjJhw03jURyv4APdfhOF FMS_PARAM{
+struct_krKDLIJ9OZPHOAucYn9ayF FMS_PARAM{
   25.0F,
   1000.0F,
+  1.2F,
   1.0F,
   1.0F,
-  2.5F,
-  2.5F,
-  1.04719758F,
-  0.52359879F,
   50.0F,
   100.0F,
   100.0F,
-  0.95F,
   8.0F
 } ;                                    // Variable: FMS_PARAM
                                           //  Referenced by: '<Root>/Model'
@@ -158,47 +159,27 @@ void FMS_TECS::FMS_TECS_Integrator_Clamping(real32_T rtu_err, real32_T
 // Model step function
 void FMS_TECS::step()
 {
-  // local block i/o variables
-  real32_T rtb_ax_cmd;
-  real32_T rtb_ay_cmd;
-  real32_T rtb_vh_cmd;
-  real32_T innovation_idx_0;
-  real32_T rtb_Add_mp;
-  real32_T rtb_DiscreteTimeIntegrator_g;
-  real32_T rtb_Product;
-  real32_T rtb_Product2;
-  real32_T rtb_Product3;
-  real32_T rtb_Product_h4;
-  real32_T rtb_new_state_idx_0;
-  real32_T rtb_out;
-  real32_T rtb_out_a;
-  real32_T rtb_ske_rate;
-
   // ModelReference generated from: '<Root>/Model' incorporates:
   //   Inport: '<Root>/Formation_Cross'
   //   Inport: '<Root>/INS_Out'
   //   Inport: '<Root>/Mission_Data'
   //   Inport: '<Root>/Pilot_Cmd'
-  //   Outport: '<Root>/Form_Single'
 
   ModelMDLOBJ1.step(&FMS_TECS_U.Pilot_Cmd.timestamp, &FMS_TECS_U.Pilot_Cmd.mode,
                     &FMS_TECS_U.Mission_Data.timestamp,
                     &FMS_TECS_U.Mission_Data.type,
                     &FMS_TECS_U.Mission_Data.valid_items,
                     &FMS_TECS_U.Mission_Data.x[0], &FMS_TECS_U.Mission_Data.y[0],
-                    &FMS_TECS_U.Mission_Data.z[0],
-                    &FMS_TECS_U.Mission_Data.heading[0],
-                    &FMS_TECS_U.Mission_Data.ext1[0],
-                    &FMS_TECS_U.Mission_Data.ext2[0],
-                    &FMS_TECS_U.INS_Out.timestamp, &FMS_TECS_U.INS_Out.phi,
-                    &FMS_TECS_U.INS_Out.theta, &FMS_TECS_U.INS_Out.psi,
-                    &FMS_TECS_U.INS_Out.p, &FMS_TECS_U.INS_Out.q,
-                    &FMS_TECS_U.INS_Out.r, &FMS_TECS_U.INS_Out.quat[0],
-                    &FMS_TECS_U.INS_Out.x_R, &FMS_TECS_U.INS_Out.y_R,
-                    &FMS_TECS_U.INS_Out.h_R, &FMS_TECS_U.INS_Out.airspeed,
-                    &FMS_TECS_U.INS_Out.ax, &FMS_TECS_U.INS_Out.ay,
-                    &FMS_TECS_U.INS_Out.az, &FMS_TECS_U.INS_Out.vn,
-                    &FMS_TECS_U.INS_Out.ve, &FMS_TECS_U.INS_Out.vd,
+                    &FMS_TECS_U.Mission_Data.z[0], &FMS_TECS_U.INS_Out.timestamp,
+                    &FMS_TECS_U.INS_Out.phi, &FMS_TECS_U.INS_Out.theta,
+                    &FMS_TECS_U.INS_Out.psi, &FMS_TECS_U.INS_Out.p,
+                    &FMS_TECS_U.INS_Out.q, &FMS_TECS_U.INS_Out.r,
+                    &FMS_TECS_U.INS_Out.quat[0], &FMS_TECS_U.INS_Out.x_R,
+                    &FMS_TECS_U.INS_Out.y_R, &FMS_TECS_U.INS_Out.h_R,
+                    &FMS_TECS_U.INS_Out.airspeed, &FMS_TECS_U.INS_Out.ax,
+                    &FMS_TECS_U.INS_Out.ay, &FMS_TECS_U.INS_Out.az,
+                    &FMS_TECS_U.INS_Out.vn, &FMS_TECS_U.INS_Out.ve,
+                    &FMS_TECS_U.INS_Out.vd,
                     &FMS_TECS_U.Formation_Cross.timestamp[0],
                     &FMS_TECS_U.Formation_Cross.x_R[0],
                     &FMS_TECS_U.Formation_Cross.y_R[0],
@@ -206,9 +187,8 @@ void FMS_TECS::step()
                     &FMS_TECS_U.Formation_Cross.vn[0],
                     &FMS_TECS_U.Formation_Cross.ve[0],
                     &FMS_TECS_U.Formation_Cross.vd[0],
-                    &FMS_TECS_U.Formation_Cross.left_time[0],
                     &FMS_TECS_Y.FMS_Out.timestamp, &FMS_TECS_Y.FMS_Out.state,
-                    &rtb_ax_cmd, &rtb_ay_cmd, &rtb_vh_cmd,
+                    &FMS_TECS_B.ax_cmd, &FMS_TECS_B.ay_cmd, &FMS_TECS_B.vh_cmd,
                     &FMS_TECS_Y.Other_Mission_Data.timestamp,
                     &FMS_TECS_Y.Other_Mission_Data.type[0],
                     &FMS_TECS_Y.Other_Mission_Data.valid_items[0],
@@ -217,8 +197,7 @@ void FMS_TECS::step()
                     &FMS_TECS_Y.Other_Mission_Data.z[0],
                     &FMS_TECS_Y.Other_Mission_Data.heading[0],
                     &FMS_TECS_Y.Other_Mission_Data.ext1[0],
-                    &FMS_TECS_Y.Other_Mission_Data.ext2[0],
-                    &FMS_TECS_Y.Form_Single);
+                    &FMS_TECS_Y.Other_Mission_Data.ext2[0]);
 
   // MATLAB Function: '<S6>/MATLAB Function' incorporates:
   //   Constant: '<S2>/Constant1'
@@ -228,69 +207,72 @@ void FMS_TECS::step()
   //  About '<S6>/Weighted Sample Time':
   //   y = K where K = ( w * Ts )
 
-  rtb_out_a = 0.02F * FMS_TECS_DW.airspeed_state[1] +
+  FMS_TECS_B.out_d = 0.02F * FMS_TECS_DW.airspeed_state[1] +
     FMS_TECS_DW.airspeed_state[0];
-  rtb_ske_rate = 0.0F * FMS_TECS_DW.airspeed_state[0] +
+  FMS_TECS_B.ske_rate = 0.0F * FMS_TECS_DW.airspeed_state[0] +
     FMS_TECS_DW.airspeed_state[1];
   FMS_TECS_DW.kalman_gain[0] = 0.866025388F;
   FMS_TECS_DW.kalman_gain[2] = 0.5F;
   FMS_TECS_DW.kalman_gain[1] = 0.5F;
   FMS_TECS_DW.kalman_gain[3] = 0.866025388F;
-  innovation_idx_0 = FMS_TECS_U.INS_Out.airspeed - rtb_out_a;
-  rtb_Add_mp = (0.0F - rtb_ske_rate) * FMS_TECS_DW.kalman_gain[2];
-  rtb_new_state_idx_0 = (FMS_TECS_DW.kalman_gain[0] * innovation_idx_0 +
-    rtb_Add_mp) * 0.02F + rtb_out_a;
-  rtb_Product_h4 = (0.0F - rtb_ske_rate) * FMS_TECS_DW.kalman_gain[3];
-  innovation_idx_0 = (FMS_TECS_DW.kalman_gain[1] * innovation_idx_0 +
-                      rtb_Product_h4) * 0.02F + rtb_ske_rate;
-  if (rtb_new_state_idx_0 < 2.22044605E-16F) {
-    rtb_new_state_idx_0 = 0.0F;
-    innovation_idx_0 = ((-rtb_out_a / 0.02F - rtb_Add_mp) /
-                        FMS_TECS_DW.kalman_gain[0] * FMS_TECS_DW.kalman_gain[1]
-                        + rtb_Product_h4) * 0.02F + rtb_ske_rate;
+  FMS_TECS_B.innovation_idx_0 = FMS_TECS_U.INS_Out.airspeed - FMS_TECS_B.out_d;
+  FMS_TECS_B.Add_l = (0.0F - FMS_TECS_B.ske_rate) * FMS_TECS_DW.kalman_gain[2];
+  FMS_TECS_B.rtb_new_state_idx_0 = (FMS_TECS_DW.kalman_gain[0] *
+    FMS_TECS_B.innovation_idx_0 + FMS_TECS_B.Add_l) * 0.02F + FMS_TECS_B.out_d;
+  FMS_TECS_B.Product_h = (0.0F - FMS_TECS_B.ske_rate) * FMS_TECS_DW.kalman_gain
+    [3];
+  FMS_TECS_B.innovation_idx_0 = (FMS_TECS_DW.kalman_gain[1] *
+    FMS_TECS_B.innovation_idx_0 + FMS_TECS_B.Product_h) * 0.02F +
+    FMS_TECS_B.ske_rate;
+  if (FMS_TECS_B.rtb_new_state_idx_0 < 2.22044605E-16F) {
+    FMS_TECS_B.rtb_new_state_idx_0 = 0.0F;
+    FMS_TECS_B.innovation_idx_0 = ((-FMS_TECS_B.out_d / 0.02F - FMS_TECS_B.Add_l)
+      / FMS_TECS_DW.kalman_gain[0] * FMS_TECS_DW.kalman_gain[1] +
+      FMS_TECS_B.Product_h) * 0.02F + FMS_TECS_B.ske_rate;
   }
 
-  FMS_TECS_DW.airspeed_state[0] = rtb_new_state_idx_0;
-  FMS_TECS_DW.airspeed_state[1] = innovation_idx_0;
+  FMS_TECS_DW.airspeed_state[0] = FMS_TECS_B.rtb_new_state_idx_0;
+  FMS_TECS_DW.airspeed_state[1] = FMS_TECS_B.innovation_idx_0;
 
   // End of MATLAB Function: '<S6>/MATLAB Function'
 
   // Product: '<S11>/Product3'
-  rtb_ske_rate = rtb_new_state_idx_0 * innovation_idx_0;
+  FMS_TECS_B.ske_rate = FMS_TECS_B.rtb_new_state_idx_0 *
+    FMS_TECS_B.innovation_idx_0;
 
   // Saturate: '<S14>/Saturation' incorporates:
   //   Constant: '<S14>/Constant'
 
   if (CONTROL_PARAM.FW_T_SPDWEIGHT > 2.0F) {
-    innovation_idx_0 = 2.0F;
+    FMS_TECS_B.innovation_idx_0 = 2.0F;
   } else if (CONTROL_PARAM.FW_T_SPDWEIGHT < 0.0F) {
-    innovation_idx_0 = 0.0F;
+    FMS_TECS_B.innovation_idx_0 = 0.0F;
   } else {
-    innovation_idx_0 = CONTROL_PARAM.FW_T_SPDWEIGHT;
+    FMS_TECS_B.innovation_idx_0 = CONTROL_PARAM.FW_T_SPDWEIGHT;
   }
 
   // End of Saturate: '<S14>/Saturation'
 
   // Saturate: '<S14>/Saturation1'
-  if (innovation_idx_0 > 1.0F) {
-    rtb_out_a = 1.0F;
+  if (FMS_TECS_B.innovation_idx_0 > 1.0F) {
+    FMS_TECS_B.out_d = 1.0F;
   } else {
-    rtb_out_a = innovation_idx_0;
+    FMS_TECS_B.out_d = FMS_TECS_B.innovation_idx_0;
   }
 
   // End of Saturate: '<S14>/Saturation1'
 
   // Product: '<S14>/Product3'
-  rtb_Product3 = rtb_ske_rate * rtb_out_a;
+  FMS_TECS_B.Product3 = FMS_TECS_B.ske_rate * FMS_TECS_B.out_d;
 
   // Saturate: '<S14>/Saturation2' incorporates:
   //   Constant: '<S14>/Constant1'
   //   Sum: '<S14>/Add'
 
-  if (2.0F - innovation_idx_0 > 1.0F) {
-    innovation_idx_0 = 1.0F;
+  if (2.0F - FMS_TECS_B.innovation_idx_0 > 1.0F) {
+    FMS_TECS_B.innovation_idx_0 = 1.0F;
   } else {
-    innovation_idx_0 = 2.0F - innovation_idx_0;
+    FMS_TECS_B.innovation_idx_0 = 2.0F - FMS_TECS_B.innovation_idx_0;
   }
 
   // End of Saturate: '<S14>/Saturation2'
@@ -300,28 +282,29 @@ void FMS_TECS::step()
   //   Gain: '<S3>/Gain1'
   //   Inport: '<Root>/INS_Out'
 
-  rtb_Add_mp = 9.80665F * -FMS_TECS_U.INS_Out.vd;
+  FMS_TECS_B.Add_l = 9.80665F * -FMS_TECS_U.INS_Out.vd;
 
   // Product: '<S14>/Product2'
-  rtb_Product2 = rtb_Add_mp * innovation_idx_0;
+  FMS_TECS_B.Product2 = FMS_TECS_B.Add_l * FMS_TECS_B.innovation_idx_0;
 
   // Saturate: '<S3>/Saturation'
-  if (rtb_vh_cmd > CONTROL_PARAM.FW_T_CLMB_MAX) {
-    rtb_Product_h4 = CONTROL_PARAM.FW_T_CLMB_MAX;
-  } else if (rtb_vh_cmd < -CONTROL_PARAM.FW_T_SINK_MAX) {
-    rtb_Product_h4 = -CONTROL_PARAM.FW_T_SINK_MAX;
+  if (FMS_TECS_B.vh_cmd > CONTROL_PARAM.FW_T_CLMB_MAX) {
+    FMS_TECS_B.Product_h = CONTROL_PARAM.FW_T_CLMB_MAX;
+  } else if (FMS_TECS_B.vh_cmd < -CONTROL_PARAM.FW_T_SINK_MAX) {
+    FMS_TECS_B.Product_h = -CONTROL_PARAM.FW_T_SINK_MAX;
   } else {
-    rtb_Product_h4 = rtb_vh_cmd;
+    FMS_TECS_B.Product_h = FMS_TECS_B.vh_cmd;
   }
 
   // Product: '<S11>/Product4' incorporates:
   //   Constant: '<S11>/Constant'
   //   Saturate: '<S3>/Saturation'
 
-  rtb_DiscreteTimeIntegrator_g = rtb_Product_h4 * 9.80665F;
+  FMS_TECS_B.DiscreteTimeIntegrator_h = FMS_TECS_B.Product_h * 9.80665F;
 
   // Product: '<S14>/Product'
-  rtb_Product = rtb_DiscreteTimeIntegrator_g * innovation_idx_0;
+  FMS_TECS_B.Product = FMS_TECS_B.DiscreteTimeIntegrator_h *
+    FMS_TECS_B.innovation_idx_0;
 
   // Product: '<S7>/Product' incorporates:
   //   Constant: '<S21>/throttle_above_trim'
@@ -330,18 +313,19 @@ void FMS_TECS::step()
   //   Saturate: '<S21>/Saturation'
   //   Switch: '<S21>/Switch'
 
-  rtb_Product_h4 = 9.80665F * CONTROL_PARAM.FW_T_CLMB_MAX;
-  innovation_idx_0 = rtb_Product_h4 * 0.5F / FMS_TECS_U.INS_Out.airspeed;
+  FMS_TECS_B.Product_h = 9.80665F * CONTROL_PARAM.FW_T_CLMB_MAX;
+  FMS_TECS_B.innovation_idx_0 = FMS_TECS_B.Product_h * 0.5F /
+    FMS_TECS_U.INS_Out.airspeed;
 
   // MATLAB Function: '<S7>/Integrator_Clamping' incorporates:
   //   Inport: '<Root>/INS_Out'
 
   if (FMS_TECS_U.INS_Out.airspeed >= CONTROL_PARAM.FW_AIRSPD_MAX) {
-    rtb_out = std::fmin(rtb_ax_cmd, 0.0F);
+    FMS_TECS_B.out = std::fmin(FMS_TECS_B.ax_cmd, 0.0F);
   } else if (FMS_TECS_U.INS_Out.airspeed <= CONTROL_PARAM.FW_AIRSPD_MIN) {
-    rtb_out = std::fmax(rtb_ax_cmd, 0.0F);
+    FMS_TECS_B.out = std::fmax(FMS_TECS_B.ax_cmd, 0.0F);
   } else {
-    rtb_out = rtb_ax_cmd;
+    FMS_TECS_B.out = FMS_TECS_B.ax_cmd;
   }
 
   // End of MATLAB Function: '<S7>/Integrator_Clamping'
@@ -349,19 +333,19 @@ void FMS_TECS::step()
   // Switch: '<S10>/Switch2' incorporates:
   //   RelationalOperator: '<S10>/LowerRelop1'
 
-  if (!(rtb_out > innovation_idx_0)) {
+  if (!(FMS_TECS_B.out > FMS_TECS_B.innovation_idx_0)) {
     // Product: '<S7>/Product1' incorporates:
     //   Constant: '<S7>/Constant1'
     //   Inport: '<Root>/INS_Out'
 
-    innovation_idx_0 = -9.80665F * CONTROL_PARAM.FW_T_SINK_MIN * 0.5F * (1.0F /
-      FMS_TECS_U.INS_Out.airspeed);
+    FMS_TECS_B.innovation_idx_0 = -9.80665F * CONTROL_PARAM.FW_T_SINK_MIN * 0.5F
+      * (1.0F / FMS_TECS_U.INS_Out.airspeed);
 
     // Switch: '<S10>/Switch' incorporates:
     //   RelationalOperator: '<S10>/UpperRelop'
 
-    if (!(rtb_out < innovation_idx_0)) {
-      innovation_idx_0 = rtb_out;
+    if (!(FMS_TECS_B.out < FMS_TECS_B.innovation_idx_0)) {
+      FMS_TECS_B.innovation_idx_0 = FMS_TECS_B.out;
     }
 
     // End of Switch: '<S10>/Switch'
@@ -370,25 +354,27 @@ void FMS_TECS::step()
   // End of Switch: '<S10>/Switch2'
 
   // Product: '<S11>/Product1'
-  innovation_idx_0 *= rtb_new_state_idx_0;
+  FMS_TECS_B.innovation_idx_0 *= FMS_TECS_B.rtb_new_state_idx_0;
 
   // Sum: '<S14>/Add1' incorporates:
   //   Product: '<S14>/Product1'
 
-  rtb_out_a = rtb_Product - innovation_idx_0 * rtb_out_a;
+  FMS_TECS_B.out_d = FMS_TECS_B.Product - FMS_TECS_B.innovation_idx_0 *
+    FMS_TECS_B.out_d;
 
   // Sum: '<S14>/Add3' incorporates:
   //   Sum: '<S14>/Add2'
 
-  rtb_Product3 = rtb_out_a - (rtb_Product2 - rtb_Product3);
+  FMS_TECS_B.Product3 = FMS_TECS_B.out_d - (FMS_TECS_B.Product2 -
+    FMS_TECS_B.Product3);
 
   // Gain: '<S16>/seb_rate_ff'
-  rtb_Product2 = CONTROL_PARAM.FW_T_SEB_R_FF * rtb_out_a;
+  FMS_TECS_B.Product2 = CONTROL_PARAM.FW_T_SEB_R_FF * FMS_TECS_B.out_d;
 
   // Product: '<S15>/Product' incorporates:
   //   Constant: '<S15>/Constant1'
 
-  rtb_out_a = 9.80665F * rtb_new_state_idx_0;
+  FMS_TECS_B.out_d = 9.80665F * FMS_TECS_B.rtb_new_state_idx_0;
 
   // DiscreteIntegrator: '<S17>/Discrete-Time Integrator'
   if (FMS_TECS_DW.DiscreteTimeIntegrator_PrevRese != 0) {
@@ -401,20 +387,21 @@ void FMS_TECS::step()
   //   Product: '<S16>/Divide'
   //   Sum: '<S16>/Add'
 
-  rtb_Product = (CONTROL_PARAM.FW_T_PTCH_DAMP * rtb_Product3 + rtb_Product2) /
-    rtb_out_a + FMS_TECS_DW.DiscreteTimeIntegrator_DSTATE;
+  FMS_TECS_B.Product = (CONTROL_PARAM.FW_T_PTCH_DAMP * FMS_TECS_B.Product3 +
+                        FMS_TECS_B.Product2) / FMS_TECS_B.out_d +
+    FMS_TECS_DW.DiscreteTimeIntegrator_DSTATE;
 
   // Saturate: '<S18>/Saturation'
-  if (rtb_Product > CONTROL_PARAM.FW_P_LIM_MAX) {
-    rtb_Product = CONTROL_PARAM.FW_P_LIM_MAX;
-  } else if (rtb_Product < CONTROL_PARAM.FW_P_LIM_MIN) {
-    rtb_Product = CONTROL_PARAM.FW_P_LIM_MIN;
+  if (FMS_TECS_B.Product > CONTROL_PARAM.FW_P_LIM_MAX) {
+    FMS_TECS_B.Product = CONTROL_PARAM.FW_P_LIM_MAX;
+  } else if (FMS_TECS_B.Product < CONTROL_PARAM.FW_P_LIM_MIN) {
+    FMS_TECS_B.Product = CONTROL_PARAM.FW_P_LIM_MIN;
   }
 
   // End of Saturate: '<S18>/Saturation'
 
   // Delay: '<S12>/Delay'
-  rtb_Product2 = FMS_TECS_DW.Delay_DSTATE;
+  FMS_TECS_B.Product2 = FMS_TECS_DW.Delay_DSTATE;
 
   // MATLAB Function: '<S18>/Pitch_Saturation' incorporates:
   //   Delay: '<S12>/Delay'
@@ -423,14 +410,14 @@ void FMS_TECS::step()
   //  About '<S18>/Weighted Sample Time':
   //   y = K where K = ( w * Ts )
 
-  rtb_out = 0.02F * CONTROL_PARAM.FW_T_VERT_ACC / std::fmax(rtb_new_state_idx_0,
-    1.1920929E-7F);
-  rtb_new_state_idx_0 = rtb_Product2 - rtb_out;
-  FMS_TECS_DW.Delay_DSTATE = rtb_Product2 + rtb_out;
-  if (rtb_Product < rtb_new_state_idx_0) {
-    FMS_TECS_DW.Delay_DSTATE = rtb_new_state_idx_0;
-  } else if (!(rtb_Product > FMS_TECS_DW.Delay_DSTATE)) {
-    FMS_TECS_DW.Delay_DSTATE = rtb_Product;
+  FMS_TECS_B.out = 0.02F * CONTROL_PARAM.FW_T_VERT_ACC / std::fmax
+    (FMS_TECS_B.rtb_new_state_idx_0, 1.1920929E-7F);
+  FMS_TECS_B.rtb_new_state_idx_0 = FMS_TECS_B.Product2 - FMS_TECS_B.out;
+  FMS_TECS_DW.Delay_DSTATE = FMS_TECS_B.Product2 + FMS_TECS_B.out;
+  if (FMS_TECS_B.Product < FMS_TECS_B.rtb_new_state_idx_0) {
+    FMS_TECS_DW.Delay_DSTATE = FMS_TECS_B.rtb_new_state_idx_0;
+  } else if (!(FMS_TECS_B.Product > FMS_TECS_DW.Delay_DSTATE)) {
+    FMS_TECS_DW.Delay_DSTATE = FMS_TECS_B.Product;
   }
 
   // End of MATLAB Function: '<S18>/Pitch_Saturation'
@@ -439,18 +426,18 @@ void FMS_TECS::step()
   //   Constant: '<S4>/Constant'
   //   Product: '<S4>/Product'
 
-  rtb_new_state_idx_0 = std::atan(0.101971619F * rtb_ay_cmd);
+  FMS_TECS_B.rtb_new_state_idx_0 = std::atan(0.101971619F * FMS_TECS_B.ay_cmd);
 
   // Saturate: '<S4>/Saturation'
-  if (rtb_new_state_idx_0 > CONTROL_PARAM.FW_R_LIM) {
+  if (FMS_TECS_B.rtb_new_state_idx_0 > CONTROL_PARAM.FW_R_LIM) {
     // Outport: '<Root>/att_cmd'
     FMS_TECS_Y.att_cmd[0] = CONTROL_PARAM.FW_R_LIM;
-  } else if (rtb_new_state_idx_0 < -CONTROL_PARAM.FW_R_LIM) {
+  } else if (FMS_TECS_B.rtb_new_state_idx_0 < -CONTROL_PARAM.FW_R_LIM) {
     // Outport: '<Root>/att_cmd'
     FMS_TECS_Y.att_cmd[0] = -CONTROL_PARAM.FW_R_LIM;
   } else {
     // Outport: '<Root>/att_cmd'
-    FMS_TECS_Y.att_cmd[0] = rtb_new_state_idx_0;
+    FMS_TECS_Y.att_cmd[0] = FMS_TECS_B.rtb_new_state_idx_0;
   }
 
   // End of Saturate: '<S4>/Saturation'
@@ -463,8 +450,9 @@ void FMS_TECS::step()
   // MATLAB Function: '<S17>/Integrator_Clamping' incorporates:
   //   Product: '<S17>/Divide'
 
-  FMS_TECS_Integrator_Clamping(rtb_Product3 / rtb_out_a, rtb_Product2,
-    &rtb_out_a, CONTROL_PARAM.FW_P_LIM_MIN, CONTROL_PARAM.FW_P_LIM_MAX);
+  FMS_TECS_Integrator_Clamping(FMS_TECS_B.Product3 / FMS_TECS_B.out_d,
+    FMS_TECS_B.Product2, &FMS_TECS_B.out_d, CONTROL_PARAM.FW_P_LIM_MIN,
+    CONTROL_PARAM.FW_P_LIM_MAX);
 
   // Sum: '<S21>/Add5' incorporates:
   //   Bias: '<S25>/Bias'
@@ -475,47 +463,47 @@ void FMS_TECS::step()
   //   Sum: '<S21>/Add1'
   //   Trigonometry: '<S25>/Cos'
 
-  rtb_new_state_idx_0 = (1.0F / std::cos(FMS_TECS_U.INS_Out.phi) - 1.0F) *
-    CONTROL_PARAM.FW_T_RLL2THR + (rtb_DiscreteTimeIntegrator_g +
-    innovation_idx_0);
+  FMS_TECS_B.rtb_new_state_idx_0 = (1.0F / std::cos(FMS_TECS_U.INS_Out.phi) -
+    1.0F) * CONTROL_PARAM.FW_T_RLL2THR + (FMS_TECS_B.DiscreteTimeIntegrator_h +
+    FMS_TECS_B.innovation_idx_0);
 
   // Saturate: '<S21>/Saturation'
-  innovation_idx_0 = -CONTROL_PARAM.FW_T_SINK_MIN * 9.80665F;
-  if (rtb_new_state_idx_0 > rtb_Product_h4) {
-    rtb_new_state_idx_0 = rtb_Product_h4;
-  } else if (rtb_new_state_idx_0 < innovation_idx_0) {
-    rtb_new_state_idx_0 = innovation_idx_0;
+  FMS_TECS_B.innovation_idx_0 = -CONTROL_PARAM.FW_T_SINK_MIN * 9.80665F;
+  if (FMS_TECS_B.rtb_new_state_idx_0 > FMS_TECS_B.Product_h) {
+    FMS_TECS_B.rtb_new_state_idx_0 = FMS_TECS_B.Product_h;
+  } else if (FMS_TECS_B.rtb_new_state_idx_0 < FMS_TECS_B.innovation_idx_0) {
+    FMS_TECS_B.rtb_new_state_idx_0 = FMS_TECS_B.innovation_idx_0;
   }
 
   // Switch: '<S21>/Switch' incorporates:
   //   Constant: '<S21>/throttle_above_trim'
   //   Constant: '<S21>/throttle_below_trim'
 
-  if (rtb_new_state_idx_0 >= 1.1920929E-7F) {
-    rtb_Product_h4 = (CONTROL_PARAM.FW_THR_MAX - CONTROL_PARAM.FW_THR_TRIM) /
-      rtb_Product_h4;
+  if (FMS_TECS_B.rtb_new_state_idx_0 >= 1.1920929E-7F) {
+    FMS_TECS_B.Product_h = (CONTROL_PARAM.FW_THR_MAX - CONTROL_PARAM.FW_THR_TRIM)
+      / FMS_TECS_B.Product_h;
   } else {
-    rtb_Product_h4 = (CONTROL_PARAM.FW_THR_TRIM - CONTROL_PARAM.FW_THR_MIN) /
-      (CONTROL_PARAM.FW_T_SINK_MIN * 9.80665F);
+    FMS_TECS_B.Product_h = (CONTROL_PARAM.FW_THR_TRIM - CONTROL_PARAM.FW_THR_MIN)
+      / (CONTROL_PARAM.FW_T_SINK_MIN * 9.80665F);
   }
 
   // Product: '<S21>/Product' incorporates:
   //   Switch: '<S21>/Switch'
 
-  rtb_Product_h4 *= rtb_new_state_idx_0;
+  FMS_TECS_B.Product_h *= FMS_TECS_B.rtb_new_state_idx_0;
 
   // Sum: '<S21>/Add'
-  rtb_ske_rate += rtb_Add_mp;
+  FMS_TECS_B.ske_rate += FMS_TECS_B.Add_l;
 
   // DiscreteIntegrator: '<S24>/Discrete-Time Integrator5'
   if (FMS_TECS_DW.DiscreteTimeIntegrator5_IC_LOAD != 0) {
-    FMS_TECS_DW.DiscreteTimeIntegrator5_DSTATE = rtb_ske_rate;
+    FMS_TECS_DW.DiscreteTimeIntegrator5_DSTATE = FMS_TECS_B.ske_rate;
   }
 
   // Sum: '<S21>/Add3' incorporates:
   //   DiscreteIntegrator: '<S24>/Discrete-Time Integrator5'
 
-  rtb_new_state_idx_0 -= FMS_TECS_DW.DiscreteTimeIntegrator5_DSTATE;
+  FMS_TECS_B.rtb_new_state_idx_0 -= FMS_TECS_DW.DiscreteTimeIntegrator5_DSTATE;
 
   // DiscreteIntegrator: '<S23>/Discrete-Time Integrator'
   if (FMS_TECS_DW.DiscreteTimeIntegrator_PrevRe_m != 0) {
@@ -534,8 +522,8 @@ void FMS_TECS::step()
 
   FMS_TECS_Y.throttle_cmd = (1.0F / ((CONTROL_PARAM.FW_T_CLMB_MAX +
     CONTROL_PARAM.FW_T_SINK_MAX) * 9.80665F) * (CONTROL_PARAM.FW_T_THR_DAMP *
-    rtb_new_state_idx_0) + (CONTROL_PARAM.FW_THR_TRIM + rtb_Product_h4)) +
-    FMS_TECS_DW.DiscreteTimeIntegrator_DSTATE_l;
+    FMS_TECS_B.rtb_new_state_idx_0) + (CONTROL_PARAM.FW_THR_TRIM +
+    FMS_TECS_B.Product_h)) + FMS_TECS_DW.DiscreteTimeIntegrator_DSTATE_l;
 
   // Saturate: '<S13>/Saturation'
   if (FMS_TECS_Y.throttle_cmd > CONTROL_PARAM.FW_THR_MAX) {
@@ -553,23 +541,23 @@ void FMS_TECS::step()
   //   Delay: '<S13>/Delay'
   //   Product: '<S23>/Product'
 
-  FMS_TECS_Integrator_Clamping(rtb_new_state_idx_0 * (1.0F / (9.80665F *
-    (CONTROL_PARAM.FW_T_CLMB_MAX + CONTROL_PARAM.FW_T_SINK_MAX))),
-    FMS_TECS_DW.Delay_DSTATE_n, &rtb_new_state_idx_0, CONTROL_PARAM.FW_THR_MIN,
-    CONTROL_PARAM.FW_THR_MAX);
+  FMS_TECS_Integrator_Clamping(FMS_TECS_B.rtb_new_state_idx_0 * (1.0F /
+    (9.80665F * (CONTROL_PARAM.FW_T_CLMB_MAX + CONTROL_PARAM.FW_T_SINK_MAX))),
+    FMS_TECS_DW.Delay_DSTATE_n, &FMS_TECS_B.rtb_new_state_idx_0,
+    CONTROL_PARAM.FW_THR_MIN, CONTROL_PARAM.FW_THR_MAX);
 
   // BusCreator generated from: '<Root>/FMS_Out' incorporates:
   //   Outport: '<Root>/FMS_Out'
 
-  FMS_TECS_Y.FMS_Out.ax_cmd = rtb_ax_cmd;
-  FMS_TECS_Y.FMS_Out.ay_cmd = rtb_ay_cmd;
-  FMS_TECS_Y.FMS_Out.vh_cmd = rtb_vh_cmd;
+  FMS_TECS_Y.FMS_Out.ax_cmd = FMS_TECS_B.ax_cmd;
+  FMS_TECS_Y.FMS_Out.ay_cmd = FMS_TECS_B.ay_cmd;
+  FMS_TECS_Y.FMS_Out.vh_cmd = FMS_TECS_B.vh_cmd;
 
   // Update for DiscreteIntegrator: '<S17>/Discrete-Time Integrator' incorporates:
   //   Gain: '<S17>/I_Gain'
 
   FMS_TECS_DW.DiscreteTimeIntegrator_DSTATE += CONTROL_PARAM.FW_T_I_GAIN_PIT *
-    rtb_out_a * 0.02F;
+    FMS_TECS_B.out_d * 0.02F;
   FMS_TECS_DW.DiscreteTimeIntegrator_PrevRese = 0;
 
   // Update for DiscreteIntegrator: '<S24>/Discrete-Time Integrator5' incorporates:
@@ -577,14 +565,14 @@ void FMS_TECS::step()
   //   Sum: '<S24>/Sum5'
 
   FMS_TECS_DW.DiscreteTimeIntegrator5_IC_LOAD = 0U;
-  FMS_TECS_DW.DiscreteTimeIntegrator5_DSTATE += (rtb_ske_rate -
+  FMS_TECS_DW.DiscreteTimeIntegrator5_DSTATE += (FMS_TECS_B.ske_rate -
     FMS_TECS_DW.DiscreteTimeIntegrator5_DSTATE) * 2.5F * 0.02F;
 
   // Update for DiscreteIntegrator: '<S23>/Discrete-Time Integrator' incorporates:
   //   Gain: '<S23>/I_Gain'
 
   FMS_TECS_DW.DiscreteTimeIntegrator_DSTATE_l += CONTROL_PARAM.FW_T_I_GAIN_THR *
-    rtb_new_state_idx_0 * 0.02F;
+    FMS_TECS_B.rtb_new_state_idx_0 * 0.02F;
   FMS_TECS_DW.DiscreteTimeIntegrator_PrevRe_m = 0;
 
   // Update for Delay: '<S13>/Delay'
@@ -600,28 +588,21 @@ void FMS_TECS::initialize()
   ModelMDLOBJ1.setErrorStatusPointer(rtmGetErrorStatusPointer((&FMS_TECS_M)));
   ModelMDLOBJ1.initialize();
 
-  {
-    // local block i/o variables
-    real32_T rtb_ax_cmd;
-    real32_T rtb_ay_cmd;
-    real32_T rtb_vh_cmd;
+  // InitializeConditions for DiscreteIntegrator: '<S24>/Discrete-Time Integrator5' 
+  FMS_TECS_DW.DiscreteTimeIntegrator5_IC_LOAD = 1U;
 
-    // InitializeConditions for DiscreteIntegrator: '<S24>/Discrete-Time Integrator5' 
-    FMS_TECS_DW.DiscreteTimeIntegrator5_IC_LOAD = 1U;
-
-    // SystemInitialize for ModelReference generated from: '<Root>/Model'
-    ModelMDLOBJ1.init(&FMS_TECS_Y.FMS_Out.timestamp, &FMS_TECS_Y.FMS_Out.state,
-                      &rtb_ax_cmd, &rtb_ay_cmd, &rtb_vh_cmd,
-                      &FMS_TECS_Y.Other_Mission_Data.timestamp,
-                      &FMS_TECS_Y.Other_Mission_Data.type[0],
-                      &FMS_TECS_Y.Other_Mission_Data.valid_items[0],
-                      &FMS_TECS_Y.Other_Mission_Data.x[0],
-                      &FMS_TECS_Y.Other_Mission_Data.y[0],
-                      &FMS_TECS_Y.Other_Mission_Data.z[0],
-                      &FMS_TECS_Y.Other_Mission_Data.heading[0],
-                      &FMS_TECS_Y.Other_Mission_Data.ext1[0],
-                      &FMS_TECS_Y.Other_Mission_Data.ext2[0]);
-  }
+  // SystemInitialize for ModelReference generated from: '<Root>/Model'
+  ModelMDLOBJ1.init(&FMS_TECS_Y.FMS_Out.timestamp, &FMS_TECS_Y.FMS_Out.state,
+                    &FMS_TECS_B.ax_cmd, &FMS_TECS_B.ay_cmd, &FMS_TECS_B.vh_cmd,
+                    &FMS_TECS_Y.Other_Mission_Data.timestamp,
+                    &FMS_TECS_Y.Other_Mission_Data.type[0],
+                    &FMS_TECS_Y.Other_Mission_Data.valid_items[0],
+                    &FMS_TECS_Y.Other_Mission_Data.x[0],
+                    &FMS_TECS_Y.Other_Mission_Data.y[0],
+                    &FMS_TECS_Y.Other_Mission_Data.z[0],
+                    &FMS_TECS_Y.Other_Mission_Data.heading[0],
+                    &FMS_TECS_Y.Other_Mission_Data.ext1[0],
+                    &FMS_TECS_Y.Other_Mission_Data.ext2[0]);
 }
 
 // Model terminate function
@@ -634,6 +615,7 @@ void FMS_TECS::terminate()
 FMS_TECS::FMS_TECS() :
   FMS_TECS_U(),
   FMS_TECS_Y(),
+  FMS_TECS_B(),
   FMS_TECS_DW(),
   FMS_TECS_M()
 {

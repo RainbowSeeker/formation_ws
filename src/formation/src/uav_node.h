@@ -16,7 +16,7 @@
 #define AIRCRAFT_TYPE   FIXED_WING
 
 static constexpr int CONTROL_PERIOD_HZ = 50;
-
+static constexpr int CONTROL_PERIOD_MS = 1000 / CONTROL_PERIOD_HZ;
 
 class UavNode : public ros::NodeHandle
 {

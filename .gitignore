@@ -1,1 +1,6 @@
 build/
+devel/
+logs/
+src/mav*
+.cat*
+*.txt

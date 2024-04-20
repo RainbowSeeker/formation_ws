@@ -3,20 +3,20 @@
 // course requirements at degree granting institutions only.  Not for
 // government, commercial, or other organizational use.
 //
-// File: norm_7i8u8z8R.cpp
+// File: norm_FqL2z8vo.cpp
 //
 // Code generated for Simulink model 'Formation_FMS'.
 //
-// Model version                  : 1.183
+// Model version                  : 1.206
 // Simulink Coder version         : 9.8 (R2022b) 13-May-2022
-// C/C++ source code generated on : Sat Apr 13 20:05:24 2024
+// C/C++ source code generated on : Fri Apr 19 19:09:23 2024
 //
 #include "rtwtypes.h"
-#include "norm_7i8u8z8R.h"
+#include "norm_FqL2z8vo.h"
 #include <cmath>
 
-// Function for MATLAB Function: '<S153>/Dubins Closest Point'
-real32_T norm_7i8u8z8R(const real32_T x[2])
+// Function for Chart: '<Root>/FMS State Machine'
+real32_T norm_FqL2z8vo(const real32_T x[2])
 {
   real32_T absxk;
   real32_T scale;

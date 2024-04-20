@@ -7,9 +7,9 @@
 //
 // Code generated for Simulink model 'FMS_TECS'.
 //
-// Model version                  : 1.36
+// Model version                  : 1.41
 // Simulink Coder version         : 9.8 (R2022b) 13-May-2022
-// C/C++ source code generated on : Thu Apr 11 20:36:15 2024
+// C/C++ source code generated on : Sat Apr 20 16:40:13 2024
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -111,7 +111,6 @@ struct Formation_Cross_Bus
   real32_T vn[3];
   real32_T ve[3];
   real32_T vd[3];
-  real32_T left_time[3];
 };
 
 #endif
@@ -125,8 +124,9 @@ enum class VehicleState
   None = 0,                            // Default value
   Hold,
   FormAssemble,
-  FormDisband,
-  FormMission
+  FormHold,
+  FormMission,
+  FormDisband
 };
 
 #endif
@@ -225,10 +225,10 @@ struct struct_FebwIpiU9Ih55vl7WG22GB
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_jAvRTXSPaltgzOYcAEIOhD_
-#define DEFINED_TYPEDEF_FOR_struct_jAvRTXSPaltgzOYcAEIOhD_
+#ifndef DEFINED_TYPEDEF_FOR_struct_J7Uq7gTeDMxAAnCtpLwjSH_
+#define DEFINED_TYPEDEF_FOR_struct_J7Uq7gTeDMxAAnCtpLwjSH_
 
-struct struct_jAvRTXSPaltgzOYcAEIOhD
+struct struct_J7Uq7gTeDMxAAnCtpLwjSH
 {
   uint32_T UAV_ID;
   real_T ADJ_MARTIX[9];
@@ -237,31 +237,31 @@ struct struct_jAvRTXSPaltgzOYcAEIOhD
   real_T REL_Z_MATRIX[9];
   real_T NUM_UAV;
   real_T FORM_POINT[9];
+  real_T DISBAND_POINT[9];
   real32_T FORM_RADIUS;
   real32_T ASSEMBLE_KT;
   real32_T LATERAL_DAMP;
   real32_T LATERAL_PERIOD;
+  real32_T FORM_POS_KP;
+  real32_T FORM_POS_KD;
+  real32_T FORM_VEL_KP;
 };
 
 #endif
 
-#ifndef DEFINED_TYPEDEF_FOR_struct_0ZGjJhw03jURyv4APdfhOF_
-#define DEFINED_TYPEDEF_FOR_struct_0ZGjJhw03jURyv4APdfhOF_
+#ifndef DEFINED_TYPEDEF_FOR_struct_krKDLIJ9OZPHOAucYn9ayF_
+#define DEFINED_TYPEDEF_FOR_struct_krKDLIJ9OZPHOAucYn9ayF_
 
-struct struct_0ZGjJhw03jURyv4APdfhOF
+struct struct_krKDLIJ9OZPHOAucYn9ayF
 {
   real32_T FW_AIRSPD_TRIM;
   real32_T FW_HEIGHT_TRIM;
+  real32_T FW_RADIUS_RATIO;
   real32_T AIRSPD_P;
   real32_T Z_P;
-  real32_T VEL_Z_LIM;
-  real32_T YAW_P;
-  real32_T YAW_RATE_LIM;
-  real32_T ROLL_PITCH_LIM;
   real32_T L1;
   real32_T ACCEPT_R;
   real32_T LOITER_R;
-  real32_T Y_P;
   real32_T ACC_Y_LIM;
 };
 
@@ -275,7 +275,7 @@ struct struct_0ZGjJhw03jURyv4APdfhOF
 //  these parameters and exports their symbols.
 //
 
-extern struct_jAvRTXSPaltgzOYcAEIOhD FORMATION_PARAM;// Variable: FORMATION_PARAM
+extern struct_J7Uq7gTeDMxAAnCtpLwjSH FORMATION_PARAM;// Variable: FORMATION_PARAM
                                                         //  Referenced by: '<Root>/Model'
 
 extern struct_FebwIpiU9Ih55vl7WG22GB CONTROL_PARAM;// Variable: CONTROL_PARAM
@@ -305,7 +305,7 @@ extern struct_FebwIpiU9Ih55vl7WG22GB CONTROL_PARAM;// Variable: CONTROL_PARAM
                                                       //    '<S23>/I_Gain'
                                                       //    '<S25>/load_factor_correction'
 
-extern struct_0ZGjJhw03jURyv4APdfhOF FMS_PARAM;// Variable: FMS_PARAM
+extern struct_krKDLIJ9OZPHOAucYn9ayF FMS_PARAM;// Variable: FMS_PARAM
                                                   //  Referenced by: '<Root>/Model'
 
 
@@ -314,6 +314,24 @@ class FMS_TECS final
 {
   // public data and function members
  public:
+  // Block signals (default storage)
+  struct B_FMS_TECS_T {
+    real32_T ske_rate;                 // '<S11>/Product3'
+    real32_T out_d;                    // '<S17>/Integrator_Clamping'
+    real32_T Product3;                 // '<S14>/Product3'
+    real32_T Add_l;                    // '<S13>/Add'
+    real32_T Product2;                 // '<S14>/Product2'
+    real32_T DiscreteTimeIntegrator_h; // '<S23>/Discrete-Time Integrator'
+    real32_T Product;                  // '<S14>/Product'
+    real32_T out;                      // '<S7>/Integrator_Clamping'
+    real32_T Product_h;                // '<S21>/Product'
+    real32_T rtb_new_state_idx_0;
+    real32_T innovation_idx_0;
+    real32_T ay_cmd;                   // '<Root>/Model'
+    real32_T ax_cmd;                   // '<Root>/Model'
+    real32_T vh_cmd;                   // '<Root>/Model'
+  };
+
   // Block states (default storage) for system '<Root>'
   struct DW_FMS_TECS_T {
     real32_T DiscreteTimeIntegrator_DSTATE;// '<S17>/Discrete-Time Integrator'
@@ -342,7 +360,6 @@ class FMS_TECS final
     real32_T att_cmd[2];               // '<Root>/att_cmd'
     real32_T throttle_cmd;             // '<Root>/throttle_cmd'
     Other_Mission_Data_Bus Other_Mission_Data;// '<Root>/Other_Mission_Data'
-    real32_T Form_Single;              // '<Root>/Form_Single'
   };
 
   // Real-time Model Data Structure
@@ -388,6 +405,9 @@ class FMS_TECS final
 
   // private data and function members
  private:
+  // Block signals
+  B_FMS_TECS_T FMS_TECS_B;
+
   // Block states
   DW_FMS_TECS_T FMS_TECS_DW;
 

@@ -7,25 +7,21 @@
 //
 // Code generated for Simulink model 'Formation_FMS'.
 //
-// Model version                  : 1.179
+// Model version                  : 1.225
 // Simulink Coder version         : 9.8 (R2022b) 13-May-2022
-// C/C++ source code generated on : Thu Apr 11 20:35:49 2024
+// C/C++ source code generated on : Sat Apr 20 16:39:47 2024
 //
 // Target selection: ert.tlc
 // Embedded hardware selection: Intel->x86-64 (Linux 64)
-// Code generation objectives:
-//    1. Execution efficiency
-//    2. RAM efficiency
+// Code generation objectives: Unspecified
 // Validation result: Not run
 //
 #include "Formation_FMS.h"
 #include "rtwtypes.h"
 #include <cmath>
 #include <cstring>
-#include "norm_7i8u8z8R.h"
-#include <xmmintrin.h>
+#include "norm_FqL2z8vo.h"
 #include "rt_atan2f_snf.h"
-#include "mod_ThuC9Kor.h"
 #include "zero_crossing_types.h"
 
 extern "C"
@@ -46,21 +42,19 @@ const uint8_T Formation_FMS_IN_FormMission{ 3U };
 
 const uint8_T Formation_FMS_IN_Formation{ 1U };
 
-const uint8_T Formation_FMS_IN_Forward{ 2U };
+const uint8_T Formation_FMS_IN_Hold{ 1U };
 
 const uint8_T Formation_FMS_IN_InvalidMode{ 4U };
 
-const uint8_T Formation_FMS_IN_NextWP{ 1U };
-
-const uint8_T Formation_FMS_IN_NextWP_d{ 3U };
+const uint8_T Formation_FMS_IN_NextWP{ 2U };
 
 const uint8_T Formation_FMS_IN_Standby{ 2U };
 
-const uint8_T Formation_FMS_IN_WaitForUpdate{ 2U };
+const uint8_T Formation_FMS_IN_WaitForUpdate{ 3U };
 
-const uint8_T Formation_FMS_IN_Waypoint{ 3U };
+const uint8_T Formation_FMS_IN_Waypoint{ 4U };
 
-const uint8_T Formation_FMS_IN_Waypoint_g{ 4U };
+const uint8_T Formation_FMS_IN_Waypoint_g{ 3U };
 
 const uint8_T Formation_FM_IN_NO_ACTIVE_CHILD{ 0U };
 
@@ -83,18 +77,8 @@ const uint8_T Formation_FM_IN_NO_ACTIVE_CHILD{ 0U };
 
 //
 // Output and update for atomic system:
-//    '<S55>/signNoZero'
-//    '<S57>/signNoZero'
-//
-void Formation_FMS::Formation_FMS_signNoZero(real32_T rtu_u, real32_T *rty_y)
-{
-  *rty_y = static_cast<real32_T>((rtu_u >= 0.0F) - (rtu_u < 0.0F));
-}
-
-//
-// Output and update for atomic system:
-//    '<S119>/NearbyRefWP'
-//    '<S25>/NearbyRefWP'
+//    '<S30>/NearbyRefWP'
+//    '<S166>/NearbyRefWP'
 //
 void Formation_FMS::Formation_FMS_NearbyRefWP(const real32_T rtu_P2[2], const
   real32_T rtu_P3[2], real32_T rtu_L1, real32_T rty_P[2], real32_T *rty_d)
@@ -118,8 +102,8 @@ void Formation_FMS::Formation_FMS_NearbyRefWP(const real32_T rtu_P2[2], const
 
 //
 // Output and update for atomic system:
-//    '<S119>/OutRegionRegWP'
-//    '<S25>/OutRegionRegWP'
+//    '<S30>/OutRegionRegWP'
+//    '<S166>/OutRegionRegWP'
 //
 void Formation_FMS::Formation_FMS_OutRegionRegWP(const real32_T rtu_P1[2], const
   real32_T rtu_P2[2], const real32_T rtu_P3[2], real32_T rty_P[2])
@@ -155,28 +139,29 @@ void Formation_FMS::Formation_FMS_OutRegionRegWP(const real32_T rtu_P1[2], const
 
 //
 // Output and update for atomic system:
-//    '<S119>/SearchL1RefWP'
-//    '<S25>/SearchL1RefWP'
+//    '<S30>/SearchL1RefWP'
+//    '<S166>/SearchL1RefWP'
 //
 void Formation_FMS::Formation_FMS_SearchL1RefWP(const real32_T rtu_P1[2], const
   real32_T rtu_P2[2], const real32_T rtu_P3[2], real32_T rtu_L1, real32_T rty_P
   [2], real32_T *rty_u)
 {
   real32_T A;
-  real32_T A_tmp;
   real32_T B;
   real32_T D;
-  real32_T a;
   real32_T a_tmp;
+  real32_T b_a_tmp;
+  real32_T u;
   boolean_T guard1;
   a_tmp = rtu_P2[0] - rtu_P1[0];
-  A_tmp = rtu_P2[1] - rtu_P1[1];
-  A = a_tmp * a_tmp + A_tmp * A_tmp;
-  B = ((rtu_P1[0] - rtu_P3[0]) * a_tmp + (rtu_P1[1] - rtu_P3[1]) * A_tmp) * 2.0F;
+  b_a_tmp = rtu_P2[1] - rtu_P1[1];
+  A = a_tmp * a_tmp + b_a_tmp * b_a_tmp;
+  B = ((rtu_P1[0] - rtu_P3[0]) * a_tmp + (rtu_P1[1] - rtu_P3[1]) * b_a_tmp) *
+    2.0F;
   D = B * B - (((((rtu_P3[0] * rtu_P3[0] + rtu_P3[1] * rtu_P3[1]) + rtu_P1[0] *
                   rtu_P1[0]) + rtu_P1[1] * rtu_P1[1]) - (rtu_P3[0] * rtu_P1[0] +
     rtu_P3[1] * rtu_P1[1]) * 2.0F) - rtu_L1 * rtu_L1) * (4.0F * A);
-  a = -1.0F;
+  u = -1.0F;
   rty_P[0] = 0.0F;
   rty_P[1] = 0.0F;
   guard1 = false;
@@ -187,33 +172,194 @@ void Formation_FMS::Formation_FMS_SearchL1RefWP(const real32_T rtu_P1[2], const
     A = (-B - u1_tmp) / (2.0F * A);
     if ((D >= 0.0F) && (D <= 1.0F) && (A >= 0.0F) && (A <= 1.0F)) {
       if (D > A) {
-        a = D;
+        u = D;
       } else {
-        a = A;
+        u = A;
       }
 
       guard1 = true;
     } else if ((D >= 0.0F) && (D <= 1.0F)) {
-      a = D;
+      u = D;
       guard1 = true;
     } else if ((A >= 0.0F) && (A <= 1.0F)) {
-      a = A;
+      u = A;
       guard1 = true;
     }
   } else if (D == 0.0F) {
     D = -B / (2.0F * A);
     if ((D >= 0.0F) && (D <= 1.0F)) {
-      a = D;
+      u = D;
       guard1 = true;
     }
   }
 
   if (guard1) {
-    rty_P[0] = a_tmp * a + rtu_P1[0];
-    rty_P[1] = A_tmp * a + rtu_P1[1];
+    rty_P[0] = a_tmp * u + rtu_P1[0];
+    rty_P[1] = b_a_tmp * u + rtu_P1[1];
   }
 
-  *rty_u = a;
+  *rty_u = u;
+}
+
+//
+// Output and update for atomic system:
+//    '<S66>/OutRegionRegWP'
+//    '<S48>/OutRegionRegWP'
+//    '<S184>/OutRegionRegWP'
+//
+void Formation_FMS::Formation_FMS_OutRegionRegWP_o(const real32_T rtu_P0[2],
+  const real32_T rtu_P_Vehicle[2], real32_T rtu_R, real32_T rtu_L1, const
+  real32_T rtu_n[2], real32_T rty_P[2])
+{
+  real32_T x;
+  real32_T y_idx_0;
+  x = rtu_P_Vehicle[0] - rtu_P0[0];
+  y_idx_0 = x * x;
+  x = rtu_P_Vehicle[1] - rtu_P0[1];
+  if (x * x + y_idx_0 > rtu_R * rtu_R) {
+    rty_P[0] = rtu_P0[0];
+    rty_P[1] = rtu_P0[1];
+  } else {
+    rty_P[0] = rtu_n[0] * rtu_L1 + rtu_P_Vehicle[0];
+    rty_P[1] = rtu_n[1] * rtu_L1 + rtu_P_Vehicle[1];
+  }
+}
+
+//
+// Output and update for atomic system:
+//    '<S66>/SearchL1RefWP'
+//    '<S48>/SearchL1RefWP'
+//    '<S184>/SearchL1RefWP'
+//
+void Formation_FMS::Formation_FMS_SearchL1RefWP_i(const real32_T rtu_P_0[2],
+  const real32_T rtu_P_Vehicle[2], real32_T rtu_R, real32_T rtu_L1, real32_T
+  rty_P[2], real_T *rty_n)
+{
+  rty_P[0] = 0.0F;
+  rty_P[1] = 0.0F;
+  if ((rtu_P_Vehicle[0] == rtu_P_0[0]) && (rtu_P_Vehicle[1] == rtu_P_0[1]) &&
+      (rtu_R == rtu_L1)) {
+    *rty_n = 0.0;
+  } else {
+    real32_T a;
+    real32_T a_tmp;
+    real32_T d;
+    real32_T n0;
+    real32_T n0_idx_0;
+    n0 = rtu_P_0[0] - rtu_P_Vehicle[0];
+    a = n0 * n0;
+    n0_idx_0 = n0;
+    n0 = rtu_P_0[1] - rtu_P_Vehicle[1];
+    d = std::sqrt(n0 * n0 + a);
+    a_tmp = rtu_L1 * rtu_L1;
+    a = ((d * d + a_tmp) - rtu_R * rtu_R) / (2.0F * d);
+    n0_idx_0 /= d;
+    n0 /= d;
+    d = a * a;
+    if (d > a_tmp) {
+      *rty_n = 0.0;
+    } else if (d == a_tmp) {
+      *rty_n = 1.0;
+      rty_P[0] = a * n0_idx_0 + rtu_P_Vehicle[0];
+      rty_P[1] = a * n0 + rtu_P_Vehicle[1];
+    } else {
+      *rty_n = 2.0;
+      a_tmp = std::sqrt(a_tmp - d);
+      rty_P[0] = (0.0F * n0_idx_0 - n0) * a_tmp + (a * n0_idx_0 + rtu_P_Vehicle
+        [0]);
+      rty_P[1] = (0.0F * n0 + n0_idx_0) * a_tmp + (a * n0 + rtu_P_Vehicle[1]);
+    }
+  }
+}
+
+//
+// Output and update for atomic system:
+//    '<S99>/signNoZero'
+//    '<S101>/signNoZero'
+//
+void Formation_FMS::Formation_FMS_signNoZero(real32_T rtu_u, real32_T *rty_y)
+{
+  *rty_y = static_cast<real32_T>((rtu_u >= 0.0F) - (rtu_u < 0.0F));
+}
+
+//
+// System initialize for action system:
+//    '<S12>/Default'
+//    '<S10>/Default'
+//
+void Formation_FMS::Formation_FMS_Default_Init(DW_Default_Formation_FMS_T
+  *localDW)
+{
+  // InitializeConditions for Delay: '<S22>/Delay'
+  localDW->icLoad = true;
+}
+
+//
+// System reset for action system:
+//    '<S12>/Default'
+//    '<S10>/Default'
+//
+void Formation_FMS::Formation_FMS_Default_Reset(DW_Default_Formation_FMS_T
+  *localDW)
+{
+  // InitializeConditions for Delay: '<S22>/Delay'
+  localDW->icLoad = true;
+}
+
+//
+// Output and update for action system:
+//    '<S12>/Default'
+//    '<S10>/Default'
+//
+void Formation_FMS::Formation_FMS_Default(const real32_T *rtu_FMS_In, const
+  real32_T *rtu_FMS_In_h, FMS_Out_Bus *rty_FMS_Out, DW_Default_Formation_FMS_T
+  *localDW)
+{
+  real32_T rtb_h_err_R_m;
+  real32_T rtb_v_error_d;
+
+  // Sum: '<S21>/Sum' incorporates:
+  //   Constant: '<S21>/Constant'
+
+  rtb_v_error_d = FMS_PARAM.FW_AIRSPD_TRIM - *rtu_FMS_In;
+
+  // Delay: '<S22>/Delay'
+  if (localDW->icLoad) {
+    localDW->Delay_DSTATE = *rtu_FMS_In_h;
+  }
+
+  // Sum: '<S22>/Sum' incorporates:
+  //   Delay: '<S22>/Delay'
+
+  rtb_h_err_R_m = localDW->Delay_DSTATE - *rtu_FMS_In_h;
+  std::memset(rty_FMS_Out, 0, sizeof(FMS_Out_Bus));
+
+  // BusAssignment: '<S16>/Bus Assignment' incorporates:
+  //   Constant: '<S16>/Constant1'
+
+  rty_FMS_Out->state = VehicleState::None;
+  rty_FMS_Out->ax_cmd = rtb_v_error_d;
+  rty_FMS_Out->ay_cmd = 0.0F;
+
+  // Gain: '<S22>/Gain2'
+  rtb_v_error_d = FMS_PARAM.Z_P * rtb_h_err_R_m;
+
+  // Saturate: '<S22>/Saturation'
+  if (rtb_v_error_d > CONTROL_PARAM.FW_T_CLMB_MAX) {
+    // BusAssignment: '<S16>/Bus Assignment'
+    rty_FMS_Out->vh_cmd = CONTROL_PARAM.FW_T_CLMB_MAX;
+  } else if (rtb_v_error_d < -CONTROL_PARAM.FW_T_SINK_MAX) {
+    // BusAssignment: '<S16>/Bus Assignment'
+    rty_FMS_Out->vh_cmd = -CONTROL_PARAM.FW_T_SINK_MAX;
+  } else {
+    // BusAssignment: '<S16>/Bus Assignment'
+    rty_FMS_Out->vh_cmd = rtb_v_error_d;
+  }
+
+  // End of Saturate: '<S22>/Saturation'
+
+  // Update for Delay: '<S22>/Delay'
+  localDW->icLoad = false;
 }
 
 // Function for Chart: '<Root>/FMS State Machine'
@@ -234,29 +380,28 @@ void Formation_FMS::Formation_exit_internal_Vehicle(void)
   }
 }
 
-// Function for MATLAB Function: '<S152>/MATLAB Function'
+// Function for MATLAB Function: '<S199>/MATLAB Function'
 real_T Formation_FMS::Formation_FMS_atan3_9FIHpp9F(real_T x, real_T y, real_T x0,
   real_T b_y0)
 {
   real_T result;
-  Formation_FMS_DW.deltax = x - x0;
-  Formation_FMS_DW.deltay = y - b_y0;
-  if ((Formation_FMS_DW.deltax > 0.0) && (Formation_FMS_DW.deltay > 0.0)) {
-    result = std::atan(Formation_FMS_DW.deltay / Formation_FMS_DW.deltax);
-  } else if ((Formation_FMS_DW.deltax > 0.0) && (Formation_FMS_DW.deltay < 0.0))
-  {
-    result = std::atan(Formation_FMS_DW.deltay / Formation_FMS_DW.deltax) +
+  Formation_FMS_B.deltax = x - x0;
+  Formation_FMS_B.deltay = y - b_y0;
+  if ((Formation_FMS_B.deltax > 0.0) && (Formation_FMS_B.deltay > 0.0)) {
+    result = std::atan(Formation_FMS_B.deltay / Formation_FMS_B.deltax);
+  } else if ((Formation_FMS_B.deltax > 0.0) && (Formation_FMS_B.deltay < 0.0)) {
+    result = std::atan(Formation_FMS_B.deltay / Formation_FMS_B.deltax) +
       6.2831853071795862;
-  } else if (Formation_FMS_DW.deltax < 0.0) {
-    result = std::atan(Formation_FMS_DW.deltay / Formation_FMS_DW.deltax) +
+  } else if (Formation_FMS_B.deltax < 0.0) {
+    result = std::atan(Formation_FMS_B.deltay / Formation_FMS_B.deltax) +
       3.1415926535897931;
-  } else if (Formation_FMS_DW.deltax == 0.0) {
-    if (Formation_FMS_DW.deltay > 0.0) {
+  } else if (Formation_FMS_B.deltax == 0.0) {
+    if (Formation_FMS_B.deltay > 0.0) {
       result = 1.5707963267948966;
     } else {
       result = 4.71238898038469;
     }
-  } else if (Formation_FMS_DW.deltax > 0.0) {
+  } else if (Formation_FMS_B.deltax > 0.0) {
     result = 0.0;
   } else {
     result = 3.1415926535897931;
@@ -265,7 +410,7 @@ real_T Formation_FMS::Formation_FMS_atan3_9FIHpp9F(real_T x, real_T y, real_T x0
   return result;
 }
 
-// Function for MATLAB Function: '<S152>/MATLAB Function'
+// Function for MATLAB Function: '<S199>/MATLAB Function'
 void Formation_FMS::Formation_FMS_Dubins(const captured_var_Formation_FMS_T
   *PhiMaximum, const captured_var_Formation_FMS_T *rad2deg, real_T xs, real_T ys,
   real_T psi_s, real_T xf, real_T yf, real_T psi_f, real_T v, real_T xts[4],
@@ -276,169 +421,169 @@ void Formation_FMS::Formation_FMS_Dubins(const captured_var_Formation_FMS_T
   int32_T idx;
   int32_T ii;
   int32_T jj;
+  int8_T j_data[4];
   boolean_T exitg1;
   *r = v * v / 9.81 / std::tan(PhiMaximum->contents / rad2deg->contents);
-  Formation_FMS_DW.l_best = psi_s / rad2deg->contents;
-  Formation_FMS_DW.pos_tmp = std::sin(Formation_FMS_DW.l_best) * *r;
-  pos[0] = Formation_FMS_DW.pos_tmp + xs;
-  Formation_FMS_DW.l_best = std::cos(Formation_FMS_DW.l_best) * *r;
-  pos[2] = ys - Formation_FMS_DW.l_best;
-  pos[1] = xs - Formation_FMS_DW.pos_tmp;
-  pos[3] = Formation_FMS_DW.l_best + ys;
-  Formation_FMS_DW.l_best = psi_f / rad2deg->contents;
-  Formation_FMS_DW.pos_tmp = std::sin(Formation_FMS_DW.l_best) * *r;
-  pof[0] = Formation_FMS_DW.pos_tmp + xf;
-  Formation_FMS_DW.l_best = std::cos(Formation_FMS_DW.l_best) * *r;
-  pof[2] = yf - Formation_FMS_DW.l_best;
-  pof[1] = xf - Formation_FMS_DW.pos_tmp;
-  pof[3] = Formation_FMS_DW.l_best + yf;
-  Formation_FMS_DW.pos_tmp = Formation_FMS_atan3_9FIHpp9F(pof[0], pof[2], pos[0],
+  Formation_FMS_B.l_best = psi_s / rad2deg->contents;
+  Formation_FMS_B.pos_tmp = std::sin(Formation_FMS_B.l_best) * *r;
+  pos[0] = Formation_FMS_B.pos_tmp + xs;
+  Formation_FMS_B.l_best = std::cos(Formation_FMS_B.l_best) * *r;
+  pos[2] = ys - Formation_FMS_B.l_best;
+  pos[1] = xs - Formation_FMS_B.pos_tmp;
+  pos[3] = Formation_FMS_B.l_best + ys;
+  Formation_FMS_B.l_best = psi_f / rad2deg->contents;
+  Formation_FMS_B.pos_tmp = std::sin(Formation_FMS_B.l_best) * *r;
+  pof[0] = Formation_FMS_B.pos_tmp + xf;
+  Formation_FMS_B.l_best = std::cos(Formation_FMS_B.l_best) * *r;
+  pof[2] = yf - Formation_FMS_B.l_best;
+  pof[1] = xf - Formation_FMS_B.pos_tmp;
+  pof[3] = Formation_FMS_B.l_best + yf;
+  Formation_FMS_B.pos_tmp = Formation_FMS_atan3_9FIHpp9F(pof[0], pof[2], pos[0],
     pos[2]);
-  Formation_FMS_DW.xts_tmp = *r * std::sin(Formation_FMS_DW.pos_tmp);
-  Formation_FMS_DW.l_best = pos[0] - Formation_FMS_DW.xts_tmp;
-  Formation_FMS_DW.yts_tmp = *r * std::cos(Formation_FMS_DW.pos_tmp);
-  Formation_FMS_DW.pos_tmp = Formation_FMS_DW.yts_tmp + pos[2];
-  Formation_FMS_DW.xts_tmp = pof[0] - Formation_FMS_DW.xts_tmp;
-  Formation_FMS_DW.yts_tmp += pof[2];
-  Formation_FMS_DW.cs_tmp = xs - Formation_FMS_DW.l_best;
-  Formation_FMS_DW.cs_tmp_m = ys - Formation_FMS_DW.pos_tmp;
-  Formation_FMS_DW.cs_tmp = std::asin(std::sqrt(Formation_FMS_DW.cs_tmp *
-    Formation_FMS_DW.cs_tmp + Formation_FMS_DW.cs_tmp_m *
-    Formation_FMS_DW.cs_tmp_m) / 2.0 / *r) * (*r * 2.0);
-  Formation_FMS_DW.cs_tmp_m = xf - Formation_FMS_DW.xts_tmp;
-  Formation_FMS_DW.cf_tmp = yf - Formation_FMS_DW.yts_tmp;
-  Formation_FMS_DW.cs_tmp_m = std::asin(std::sqrt(Formation_FMS_DW.cs_tmp_m *
-    Formation_FMS_DW.cs_tmp_m + Formation_FMS_DW.cf_tmp *
-    Formation_FMS_DW.cf_tmp) / 2.0 / *r) * (*r * 2.0);
-  Formation_FMS_DW.cf_tmp = Formation_FMS_DW.xts_tmp - Formation_FMS_DW.l_best;
-  Formation_FMS_DW.lt_tmp = Formation_FMS_DW.yts_tmp - Formation_FMS_DW.pos_tmp;
-  Formation_FMS_DW.cf_tmp = std::sqrt(Formation_FMS_DW.cf_tmp *
-    Formation_FMS_DW.cf_tmp + Formation_FMS_DW.lt_tmp * Formation_FMS_DW.lt_tmp);
-  l[0] = (Formation_FMS_DW.cs_tmp + Formation_FMS_DW.cs_tmp_m) +
-    Formation_FMS_DW.cf_tmp;
-  xts[0] = Formation_FMS_DW.l_best;
-  yts[0] = Formation_FMS_DW.pos_tmp;
-  xtf[0] = Formation_FMS_DW.xts_tmp;
-  ytf[0] = Formation_FMS_DW.yts_tmp;
-  cs[0] = Formation_FMS_DW.cs_tmp;
-  cf[0] = Formation_FMS_DW.cs_tmp_m;
-  lt[0] = Formation_FMS_DW.cf_tmp;
-  Formation_FMS_DW.l_best = pof[3] - pos[2];
-  Formation_FMS_DW.pos_tmp = pof[1] - pos[0];
-  Formation_FMS_DW.pos_tmp = std::acos(*r * 2.0 / std::sqrt
-    (Formation_FMS_DW.l_best * Formation_FMS_DW.l_best +
-     Formation_FMS_DW.pos_tmp * Formation_FMS_DW.pos_tmp)) +
-    Formation_FMS_atan3_9FIHpp9F(pof[1], pof[3], pos[0], pos[2]);
-  Formation_FMS_DW.xts_tmp = *r * std::cos(Formation_FMS_DW.pos_tmp);
-  Formation_FMS_DW.l_best = Formation_FMS_DW.xts_tmp + pos[0];
-  Formation_FMS_DW.yts_tmp = *r * std::sin(Formation_FMS_DW.pos_tmp);
-  Formation_FMS_DW.pos_tmp = Formation_FMS_DW.yts_tmp + pos[2];
-  Formation_FMS_DW.xts_tmp = pof[1] - Formation_FMS_DW.xts_tmp;
-  Formation_FMS_DW.yts_tmp = pof[3] - Formation_FMS_DW.yts_tmp;
-  Formation_FMS_DW.cs_tmp = xs - Formation_FMS_DW.l_best;
-  Formation_FMS_DW.cs_tmp_m = ys - Formation_FMS_DW.pos_tmp;
-  Formation_FMS_DW.cs_tmp = std::asin(std::sqrt(Formation_FMS_DW.cs_tmp *
-    Formation_FMS_DW.cs_tmp + Formation_FMS_DW.cs_tmp_m *
-    Formation_FMS_DW.cs_tmp_m) / 2.0 / *r) * (*r * 2.0);
-  Formation_FMS_DW.cs_tmp_m = xf - Formation_FMS_DW.xts_tmp;
-  Formation_FMS_DW.cf_tmp = yf - Formation_FMS_DW.yts_tmp;
-  Formation_FMS_DW.cs_tmp_m = std::asin(std::sqrt(Formation_FMS_DW.cs_tmp_m *
-    Formation_FMS_DW.cs_tmp_m + Formation_FMS_DW.cf_tmp *
-    Formation_FMS_DW.cf_tmp) / 2.0 / *r) * (*r * 2.0);
-  Formation_FMS_DW.cf_tmp = Formation_FMS_DW.xts_tmp - Formation_FMS_DW.l_best;
-  Formation_FMS_DW.lt_tmp = Formation_FMS_DW.yts_tmp - Formation_FMS_DW.pos_tmp;
-  Formation_FMS_DW.cf_tmp = std::sqrt(Formation_FMS_DW.cf_tmp *
-    Formation_FMS_DW.cf_tmp + Formation_FMS_DW.lt_tmp * Formation_FMS_DW.lt_tmp);
-  l[2] = (Formation_FMS_DW.cs_tmp + Formation_FMS_DW.cs_tmp_m) +
-    Formation_FMS_DW.cf_tmp;
-  xts[2] = Formation_FMS_DW.l_best;
-  yts[2] = Formation_FMS_DW.pos_tmp;
-  xtf[2] = Formation_FMS_DW.xts_tmp;
-  ytf[2] = Formation_FMS_DW.yts_tmp;
-  cs[2] = Formation_FMS_DW.cs_tmp;
-  cf[2] = Formation_FMS_DW.cs_tmp_m;
-  lt[2] = Formation_FMS_DW.cf_tmp;
-  Formation_FMS_DW.l_best = pof[2] - pos[3];
-  Formation_FMS_DW.pos_tmp = pof[0] - pos[1];
-  Formation_FMS_DW.pos_tmp = Formation_FMS_atan3_9FIHpp9F(pof[0], pof[2], pos[1],
-    pos[3]) - std::acos(*r * 2.0 / std::sqrt(Formation_FMS_DW.l_best *
-    Formation_FMS_DW.l_best + Formation_FMS_DW.pos_tmp *
-    Formation_FMS_DW.pos_tmp));
-  Formation_FMS_DW.xts_tmp = *r * std::cos(Formation_FMS_DW.pos_tmp);
-  Formation_FMS_DW.l_best = Formation_FMS_DW.xts_tmp + pos[1];
-  Formation_FMS_DW.yts_tmp = *r * std::sin(Formation_FMS_DW.pos_tmp);
-  Formation_FMS_DW.pos_tmp = Formation_FMS_DW.yts_tmp + pos[3];
-  Formation_FMS_DW.xts_tmp = pof[0] - Formation_FMS_DW.xts_tmp;
-  Formation_FMS_DW.yts_tmp = pof[2] - Formation_FMS_DW.yts_tmp;
-  Formation_FMS_DW.cs_tmp = xs - Formation_FMS_DW.l_best;
-  Formation_FMS_DW.cs_tmp_m = ys - Formation_FMS_DW.pos_tmp;
-  Formation_FMS_DW.cs_tmp = std::asin(std::sqrt(Formation_FMS_DW.cs_tmp *
-    Formation_FMS_DW.cs_tmp + Formation_FMS_DW.cs_tmp_m *
-    Formation_FMS_DW.cs_tmp_m) / 2.0 / *r) * (*r * 2.0);
-  Formation_FMS_DW.cs_tmp_m = xf - Formation_FMS_DW.xts_tmp;
-  Formation_FMS_DW.cf_tmp = yf - Formation_FMS_DW.yts_tmp;
-  Formation_FMS_DW.cs_tmp_m = std::asin(std::sqrt(Formation_FMS_DW.cs_tmp_m *
-    Formation_FMS_DW.cs_tmp_m + Formation_FMS_DW.cf_tmp *
-    Formation_FMS_DW.cf_tmp) / 2.0 / *r) * (*r * 2.0);
-  Formation_FMS_DW.cf_tmp = Formation_FMS_DW.xts_tmp - Formation_FMS_DW.l_best;
-  Formation_FMS_DW.lt_tmp = Formation_FMS_DW.yts_tmp - Formation_FMS_DW.pos_tmp;
-  Formation_FMS_DW.cf_tmp = std::sqrt(Formation_FMS_DW.cf_tmp *
-    Formation_FMS_DW.cf_tmp + Formation_FMS_DW.lt_tmp * Formation_FMS_DW.lt_tmp);
-  l[1] = (Formation_FMS_DW.cs_tmp + Formation_FMS_DW.cs_tmp_m) +
-    Formation_FMS_DW.cf_tmp;
-  xts[1] = Formation_FMS_DW.l_best;
-  yts[1] = Formation_FMS_DW.pos_tmp;
-  xtf[1] = Formation_FMS_DW.xts_tmp;
-  ytf[1] = Formation_FMS_DW.yts_tmp;
-  cs[1] = Formation_FMS_DW.cs_tmp;
-  cf[1] = Formation_FMS_DW.cs_tmp_m;
-  lt[1] = Formation_FMS_DW.cf_tmp;
-  Formation_FMS_DW.pos_tmp = Formation_FMS_atan3_9FIHpp9F(pof[1], pof[3], pos[1],
+  Formation_FMS_B.xts_tmp = *r * std::sin(Formation_FMS_B.pos_tmp);
+  Formation_FMS_B.l_best = pos[0] - Formation_FMS_B.xts_tmp;
+  Formation_FMS_B.yts_tmp = *r * std::cos(Formation_FMS_B.pos_tmp);
+  Formation_FMS_B.pos_tmp = Formation_FMS_B.yts_tmp + pos[2];
+  Formation_FMS_B.xts_tmp = pof[0] - Formation_FMS_B.xts_tmp;
+  Formation_FMS_B.yts_tmp += pof[2];
+  Formation_FMS_B.cs_tmp = xs - Formation_FMS_B.l_best;
+  Formation_FMS_B.cs_tmp_c = ys - Formation_FMS_B.pos_tmp;
+  Formation_FMS_B.cs_tmp = std::asin(std::sqrt(Formation_FMS_B.cs_tmp *
+    Formation_FMS_B.cs_tmp + Formation_FMS_B.cs_tmp_c * Formation_FMS_B.cs_tmp_c)
+    / 2.0 / *r) * (*r * 2.0);
+  Formation_FMS_B.cs_tmp_c = xf - Formation_FMS_B.xts_tmp;
+  Formation_FMS_B.cf_tmp = yf - Formation_FMS_B.yts_tmp;
+  Formation_FMS_B.cs_tmp_c = std::asin(std::sqrt(Formation_FMS_B.cs_tmp_c *
+    Formation_FMS_B.cs_tmp_c + Formation_FMS_B.cf_tmp * Formation_FMS_B.cf_tmp) /
+    2.0 / *r) * (*r * 2.0);
+  Formation_FMS_B.cf_tmp = Formation_FMS_B.xts_tmp - Formation_FMS_B.l_best;
+  Formation_FMS_B.lt_tmp = Formation_FMS_B.yts_tmp - Formation_FMS_B.pos_tmp;
+  Formation_FMS_B.cf_tmp = std::sqrt(Formation_FMS_B.cf_tmp *
+    Formation_FMS_B.cf_tmp + Formation_FMS_B.lt_tmp * Formation_FMS_B.lt_tmp);
+  l[0] = (Formation_FMS_B.cs_tmp + Formation_FMS_B.cs_tmp_c) +
+    Formation_FMS_B.cf_tmp;
+  xts[0] = Formation_FMS_B.l_best;
+  yts[0] = Formation_FMS_B.pos_tmp;
+  xtf[0] = Formation_FMS_B.xts_tmp;
+  ytf[0] = Formation_FMS_B.yts_tmp;
+  cs[0] = Formation_FMS_B.cs_tmp;
+  cf[0] = Formation_FMS_B.cs_tmp_c;
+  lt[0] = Formation_FMS_B.cf_tmp;
+  Formation_FMS_B.l_best = pof[3] - pos[2];
+  Formation_FMS_B.pos_tmp = pof[1] - pos[0];
+  Formation_FMS_B.pos_tmp = std::acos(*r * 2.0 / std::sqrt
+    (Formation_FMS_B.l_best * Formation_FMS_B.l_best + Formation_FMS_B.pos_tmp *
+     Formation_FMS_B.pos_tmp)) + Formation_FMS_atan3_9FIHpp9F(pof[1], pof[3],
+    pos[0], pos[2]);
+  Formation_FMS_B.xts_tmp = *r * std::cos(Formation_FMS_B.pos_tmp);
+  Formation_FMS_B.l_best = Formation_FMS_B.xts_tmp + pos[0];
+  Formation_FMS_B.yts_tmp = *r * std::sin(Formation_FMS_B.pos_tmp);
+  Formation_FMS_B.pos_tmp = Formation_FMS_B.yts_tmp + pos[2];
+  Formation_FMS_B.xts_tmp = pof[1] - Formation_FMS_B.xts_tmp;
+  Formation_FMS_B.yts_tmp = pof[3] - Formation_FMS_B.yts_tmp;
+  Formation_FMS_B.cs_tmp = xs - Formation_FMS_B.l_best;
+  Formation_FMS_B.cs_tmp_c = ys - Formation_FMS_B.pos_tmp;
+  Formation_FMS_B.cs_tmp = std::asin(std::sqrt(Formation_FMS_B.cs_tmp *
+    Formation_FMS_B.cs_tmp + Formation_FMS_B.cs_tmp_c * Formation_FMS_B.cs_tmp_c)
+    / 2.0 / *r) * (*r * 2.0);
+  Formation_FMS_B.cs_tmp_c = xf - Formation_FMS_B.xts_tmp;
+  Formation_FMS_B.cf_tmp = yf - Formation_FMS_B.yts_tmp;
+  Formation_FMS_B.cs_tmp_c = std::asin(std::sqrt(Formation_FMS_B.cs_tmp_c *
+    Formation_FMS_B.cs_tmp_c + Formation_FMS_B.cf_tmp * Formation_FMS_B.cf_tmp) /
+    2.0 / *r) * (*r * 2.0);
+  Formation_FMS_B.cf_tmp = Formation_FMS_B.xts_tmp - Formation_FMS_B.l_best;
+  Formation_FMS_B.lt_tmp = Formation_FMS_B.yts_tmp - Formation_FMS_B.pos_tmp;
+  Formation_FMS_B.cf_tmp = std::sqrt(Formation_FMS_B.cf_tmp *
+    Formation_FMS_B.cf_tmp + Formation_FMS_B.lt_tmp * Formation_FMS_B.lt_tmp);
+  l[2] = (Formation_FMS_B.cs_tmp + Formation_FMS_B.cs_tmp_c) +
+    Formation_FMS_B.cf_tmp;
+  xts[2] = Formation_FMS_B.l_best;
+  yts[2] = Formation_FMS_B.pos_tmp;
+  xtf[2] = Formation_FMS_B.xts_tmp;
+  ytf[2] = Formation_FMS_B.yts_tmp;
+  cs[2] = Formation_FMS_B.cs_tmp;
+  cf[2] = Formation_FMS_B.cs_tmp_c;
+  lt[2] = Formation_FMS_B.cf_tmp;
+  Formation_FMS_B.l_best = pof[2] - pos[3];
+  Formation_FMS_B.pos_tmp = pof[0] - pos[1];
+  Formation_FMS_B.pos_tmp = Formation_FMS_atan3_9FIHpp9F(pof[0], pof[2], pos[1],
+    pos[3]) - std::acos(*r * 2.0 / std::sqrt(Formation_FMS_B.l_best *
+    Formation_FMS_B.l_best + Formation_FMS_B.pos_tmp * Formation_FMS_B.pos_tmp));
+  Formation_FMS_B.xts_tmp = *r * std::cos(Formation_FMS_B.pos_tmp);
+  Formation_FMS_B.l_best = Formation_FMS_B.xts_tmp + pos[1];
+  Formation_FMS_B.yts_tmp = *r * std::sin(Formation_FMS_B.pos_tmp);
+  Formation_FMS_B.pos_tmp = Formation_FMS_B.yts_tmp + pos[3];
+  Formation_FMS_B.xts_tmp = pof[0] - Formation_FMS_B.xts_tmp;
+  Formation_FMS_B.yts_tmp = pof[2] - Formation_FMS_B.yts_tmp;
+  Formation_FMS_B.cs_tmp = xs - Formation_FMS_B.l_best;
+  Formation_FMS_B.cs_tmp_c = ys - Formation_FMS_B.pos_tmp;
+  Formation_FMS_B.cs_tmp = std::asin(std::sqrt(Formation_FMS_B.cs_tmp *
+    Formation_FMS_B.cs_tmp + Formation_FMS_B.cs_tmp_c * Formation_FMS_B.cs_tmp_c)
+    / 2.0 / *r) * (*r * 2.0);
+  Formation_FMS_B.cs_tmp_c = xf - Formation_FMS_B.xts_tmp;
+  Formation_FMS_B.cf_tmp = yf - Formation_FMS_B.yts_tmp;
+  Formation_FMS_B.cs_tmp_c = std::asin(std::sqrt(Formation_FMS_B.cs_tmp_c *
+    Formation_FMS_B.cs_tmp_c + Formation_FMS_B.cf_tmp * Formation_FMS_B.cf_tmp) /
+    2.0 / *r) * (*r * 2.0);
+  Formation_FMS_B.cf_tmp = Formation_FMS_B.xts_tmp - Formation_FMS_B.l_best;
+  Formation_FMS_B.lt_tmp = Formation_FMS_B.yts_tmp - Formation_FMS_B.pos_tmp;
+  Formation_FMS_B.cf_tmp = std::sqrt(Formation_FMS_B.cf_tmp *
+    Formation_FMS_B.cf_tmp + Formation_FMS_B.lt_tmp * Formation_FMS_B.lt_tmp);
+  l[1] = (Formation_FMS_B.cs_tmp + Formation_FMS_B.cs_tmp_c) +
+    Formation_FMS_B.cf_tmp;
+  xts[1] = Formation_FMS_B.l_best;
+  yts[1] = Formation_FMS_B.pos_tmp;
+  xtf[1] = Formation_FMS_B.xts_tmp;
+  ytf[1] = Formation_FMS_B.yts_tmp;
+  cs[1] = Formation_FMS_B.cs_tmp;
+  cf[1] = Formation_FMS_B.cs_tmp_c;
+  lt[1] = Formation_FMS_B.cf_tmp;
+  Formation_FMS_B.pos_tmp = Formation_FMS_atan3_9FIHpp9F(pof[1], pof[3], pos[1],
     pos[3]);
-  Formation_FMS_DW.xts_tmp = *r * std::sin(Formation_FMS_DW.pos_tmp);
-  Formation_FMS_DW.l_best = Formation_FMS_DW.xts_tmp + pos[1];
-  Formation_FMS_DW.yts_tmp = *r * std::cos(Formation_FMS_DW.pos_tmp);
-  Formation_FMS_DW.pos_tmp = pos[3] - Formation_FMS_DW.yts_tmp;
-  Formation_FMS_DW.xts_tmp += pof[1];
-  Formation_FMS_DW.yts_tmp = pof[3] - Formation_FMS_DW.yts_tmp;
-  Formation_FMS_DW.cs_tmp = xs - Formation_FMS_DW.l_best;
-  Formation_FMS_DW.cs_tmp_m = ys - Formation_FMS_DW.pos_tmp;
-  Formation_FMS_DW.cs_tmp = std::asin(std::sqrt(Formation_FMS_DW.cs_tmp *
-    Formation_FMS_DW.cs_tmp + Formation_FMS_DW.cs_tmp_m *
-    Formation_FMS_DW.cs_tmp_m) / 2.0 / *r) * (*r * 2.0);
-  Formation_FMS_DW.cs_tmp_m = xf - Formation_FMS_DW.xts_tmp;
-  Formation_FMS_DW.cf_tmp = yf - Formation_FMS_DW.yts_tmp;
-  Formation_FMS_DW.cs_tmp_m = std::asin(std::sqrt(Formation_FMS_DW.cs_tmp_m *
-    Formation_FMS_DW.cs_tmp_m + Formation_FMS_DW.cf_tmp *
-    Formation_FMS_DW.cf_tmp) / 2.0 / *r) * (*r * 2.0);
-  Formation_FMS_DW.cf_tmp = Formation_FMS_DW.xts_tmp - Formation_FMS_DW.l_best;
-  Formation_FMS_DW.lt_tmp = Formation_FMS_DW.yts_tmp - Formation_FMS_DW.pos_tmp;
-  Formation_FMS_DW.cf_tmp = std::sqrt(Formation_FMS_DW.cf_tmp *
-    Formation_FMS_DW.cf_tmp + Formation_FMS_DW.lt_tmp * Formation_FMS_DW.lt_tmp);
-  l[3] = (Formation_FMS_DW.cs_tmp + Formation_FMS_DW.cs_tmp_m) +
-    Formation_FMS_DW.cf_tmp;
-  xts[3] = Formation_FMS_DW.l_best;
-  yts[3] = Formation_FMS_DW.pos_tmp;
-  xtf[3] = Formation_FMS_DW.xts_tmp;
-  ytf[3] = Formation_FMS_DW.yts_tmp;
-  cs[3] = Formation_FMS_DW.cs_tmp;
-  cf[3] = Formation_FMS_DW.cs_tmp_m;
-  lt[3] = Formation_FMS_DW.cf_tmp;
-  Formation_FMS_DW.l_best = (rtInf);
+  Formation_FMS_B.xts_tmp = *r * std::sin(Formation_FMS_B.pos_tmp);
+  Formation_FMS_B.l_best = Formation_FMS_B.xts_tmp + pos[1];
+  Formation_FMS_B.yts_tmp = *r * std::cos(Formation_FMS_B.pos_tmp);
+  Formation_FMS_B.pos_tmp = pos[3] - Formation_FMS_B.yts_tmp;
+  Formation_FMS_B.xts_tmp += pof[1];
+  Formation_FMS_B.yts_tmp = pof[3] - Formation_FMS_B.yts_tmp;
+  Formation_FMS_B.cs_tmp = xs - Formation_FMS_B.l_best;
+  Formation_FMS_B.cs_tmp_c = ys - Formation_FMS_B.pos_tmp;
+  Formation_FMS_B.cs_tmp = std::asin(std::sqrt(Formation_FMS_B.cs_tmp *
+    Formation_FMS_B.cs_tmp + Formation_FMS_B.cs_tmp_c * Formation_FMS_B.cs_tmp_c)
+    / 2.0 / *r) * (*r * 2.0);
+  Formation_FMS_B.cs_tmp_c = xf - Formation_FMS_B.xts_tmp;
+  Formation_FMS_B.cf_tmp = yf - Formation_FMS_B.yts_tmp;
+  Formation_FMS_B.cs_tmp_c = std::asin(std::sqrt(Formation_FMS_B.cs_tmp_c *
+    Formation_FMS_B.cs_tmp_c + Formation_FMS_B.cf_tmp * Formation_FMS_B.cf_tmp) /
+    2.0 / *r) * (*r * 2.0);
+  Formation_FMS_B.cf_tmp = Formation_FMS_B.xts_tmp - Formation_FMS_B.l_best;
+  Formation_FMS_B.lt_tmp = Formation_FMS_B.yts_tmp - Formation_FMS_B.pos_tmp;
+  Formation_FMS_B.cf_tmp = std::sqrt(Formation_FMS_B.cf_tmp *
+    Formation_FMS_B.cf_tmp + Formation_FMS_B.lt_tmp * Formation_FMS_B.lt_tmp);
+  l[3] = (Formation_FMS_B.cs_tmp + Formation_FMS_B.cs_tmp_c) +
+    Formation_FMS_B.cf_tmp;
+  xts[3] = Formation_FMS_B.l_best;
+  yts[3] = Formation_FMS_B.pos_tmp;
+  xtf[3] = Formation_FMS_B.xts_tmp;
+  ytf[3] = Formation_FMS_B.yts_tmp;
+  cs[3] = Formation_FMS_B.cs_tmp;
+  cf[3] = Formation_FMS_B.cs_tmp_c;
+  lt[3] = Formation_FMS_B.cf_tmp;
+  Formation_FMS_B.l_best = (rtInf);
   if ((l[0] >= 0.0) && (l[0] < (rtInf))) {
-    Formation_FMS_DW.l_best = l[0];
+    Formation_FMS_B.l_best = l[0];
   }
 
-  if ((l[1] >= 0.0) && (l[1] < Formation_FMS_DW.l_best)) {
-    Formation_FMS_DW.l_best = l[1];
+  if ((l[1] >= 0.0) && (l[1] < Formation_FMS_B.l_best)) {
+    Formation_FMS_B.l_best = l[1];
   }
 
-  if ((l[2] >= 0.0) && (l[2] < Formation_FMS_DW.l_best)) {
-    Formation_FMS_DW.l_best = l[2];
+  if ((l[2] >= 0.0) && (l[2] < Formation_FMS_B.l_best)) {
+    Formation_FMS_B.l_best = l[2];
   }
 
-  if ((l[3] >= 0.0) && (l[3] < Formation_FMS_DW.l_best)) {
-    Formation_FMS_DW.l_best = l[3];
+  if ((l[3] >= 0.0) && (l[3] < Formation_FMS_B.l_best)) {
+    Formation_FMS_B.l_best = l[3];
   }
 
   idx = -1;
@@ -448,10 +593,10 @@ void Formation_FMS::Formation_FMS_Dubins(const captured_var_Formation_FMS_T
   while ((!exitg1) && (jj <= 2)) {
     boolean_T guard1;
     guard1 = false;
-    if (l[(((jj - 1) << 1) + ii) - 1] == Formation_FMS_DW.l_best) {
+    if (l[(((jj - 1) << 1) + ii) - 1] == Formation_FMS_B.l_best) {
       idx++;
-      Formation_FMS_DW.i_data[idx] = ii;
-      Formation_FMS_DW.j_data[idx] = static_cast<int8_T>(jj);
+      Formation_FMS_B.i_data[idx] = ii;
+      j_data[idx] = static_cast<int8_T>(jj);
       if (idx + 1 >= 4) {
         exitg1 = true;
       } else {
@@ -478,7 +623,7 @@ void Formation_FMS::Formation_FMS_Dubins(const captured_var_Formation_FMS_T
 
   *m_size = jj + 1;
   for (ii = 0; ii <= jj; ii++) {
-    m_data[ii] = Formation_FMS_DW.i_data[ii];
+    m_data[ii] = Formation_FMS_B.i_data[ii];
   }
 
   if (idx + 1 < 1) {
@@ -487,7 +632,7 @@ void Formation_FMS::Formation_FMS_Dubins(const captured_var_Formation_FMS_T
 
   *n_size = idx + 1;
   for (ii = 0; ii <= idx; ii++) {
-    n_data[ii] = Formation_FMS_DW.j_data[ii];
+    n_data[ii] = j_data[ii];
   }
 
   if ((jj + 1 != 1) || (idx + 1 != 1)) {
@@ -503,112 +648,119 @@ void Formation_FMS::Formation_FMS_Dubins(const captured_var_Formation_FMS_T
 // Function for Chart: '<Root>/FMS State Machine'
 void Formation_FMS::Format_enter_internal_Formation(const INS_Out_Bus
   *BusConversion_InsertedFor_FMS_c, const Formation_Cross_Bus
-  *BusConversion_InsertedFor_FMS_p, const PilotMode *Switch)
+  *BusConversion_InsertedFor_FMS_p)
 {
   static const real_T d[8]{ 1000.0, 100.0, 10.0, 1.0, 0.1, 0.01, 0.001, 0.0001 };
 
-  if (*Switch == PilotMode::FormAssemble) {
+  int32_T b_size;
+  int32_T c_size;
+
+  // Delay: '<S5>/Delay' incorporates:
+  //   MATLAB Function: '<S199>/MATLAB Function'
+
+  if (Formation_FMS_DW.Delay_DSTATE_j == PilotMode::FormAssemble) {
     Formation_FMS_DW.is_Formation = Formation_FMS_IN_FormAssemble;
-    Formation_FMS_DW.Cmd_In.sp_waypoint[0] =
-      BusConversion_InsertedFor_FMS_c->x_R;
-    Formation_FMS_DW.Cmd_In.sp_waypoint[1] =
-      BusConversion_InsertedFor_FMS_c->y_R;
-    Formation_FMS_DW.Cmd_In.sp_waypoint[2] =
-      BusConversion_InsertedFor_FMS_c->h_R;
+    Formation_FMS_B.Cmd_In.sp_waypoint[0] = BusConversion_InsertedFor_FMS_c->x_R;
+    Formation_FMS_B.Cmd_In.sp_waypoint[1] = BusConversion_InsertedFor_FMS_c->y_R;
+    Formation_FMS_B.Cmd_In.sp_waypoint[2] = BusConversion_InsertedFor_FMS_c->h_R;
     if (FORMATION_PARAM.UAV_ID == 1U) {
+      int32_T i;
+
       // Outputs for Function Call SubSystem: '<S3>/Vehicle.Formation.FormAssemble.dubinsPath' 
-      // MATLAB Function: '<S152>/MATLAB Function'
-      Formation_FMS_DW.PhiMaximum.contents = 40.0;
-      Formation_FMS_DW.rad2deg.contents = 57.295779513082323;
-      Formation_FMS_DW.obj.xs = 0.0;
-      Formation_FMS_DW.obj.ys = 0.0;
-      Formation_FMS_DW.obj.psi_s = 0.0;
-      Formation_FMS_DW.obj.xf = 0.0;
-      Formation_FMS_DW.obj.yf = 0.0;
-      Formation_FMS_DW.obj.psi_f = 0.0;
-      Formation_FMS_DW.obj.v = 0.0;
-      Formation_FMS_DW.obj.r = 0.0;
-      Formation_FMS_DW.obj.pos[0] = 0.0;
-      Formation_FMS_DW.obj.pof[0] = 0.0;
-      Formation_FMS_DW.obj.xts[0] = 0.0;
-      Formation_FMS_DW.obj.yts[0] = 0.0;
-      Formation_FMS_DW.obj.xtf[0] = 0.0;
-      Formation_FMS_DW.obj.ytf[0] = 0.0;
-      Formation_FMS_DW.obj.cs[0] = 0.0;
-      Formation_FMS_DW.obj.cf[0] = 0.0;
-      Formation_FMS_DW.obj.lt[0] = 0.0;
-      Formation_FMS_DW.obj.l[0] = 0.0;
-      Formation_FMS_DW.obj.pos[1] = 0.0;
-      Formation_FMS_DW.obj.pof[1] = 0.0;
-      Formation_FMS_DW.obj.xts[1] = 0.0;
-      Formation_FMS_DW.obj.yts[1] = 0.0;
-      Formation_FMS_DW.obj.xtf[1] = 0.0;
-      Formation_FMS_DW.obj.ytf[1] = 0.0;
-      Formation_FMS_DW.obj.cs[1] = 0.0;
-      Formation_FMS_DW.obj.cf[1] = 0.0;
-      Formation_FMS_DW.obj.lt[1] = 0.0;
-      Formation_FMS_DW.obj.l[1] = 0.0;
-      Formation_FMS_DW.obj.pos[2] = 0.0;
-      Formation_FMS_DW.obj.pof[2] = 0.0;
-      Formation_FMS_DW.obj.xts[2] = 0.0;
-      Formation_FMS_DW.obj.yts[2] = 0.0;
-      Formation_FMS_DW.obj.xtf[2] = 0.0;
-      Formation_FMS_DW.obj.ytf[2] = 0.0;
-      Formation_FMS_DW.obj.cs[2] = 0.0;
-      Formation_FMS_DW.obj.cf[2] = 0.0;
-      Formation_FMS_DW.obj.lt[2] = 0.0;
-      Formation_FMS_DW.obj.l[2] = 0.0;
-      Formation_FMS_DW.obj.pos[3] = 0.0;
-      Formation_FMS_DW.obj.pof[3] = 0.0;
-      Formation_FMS_DW.obj.xts[3] = 0.0;
-      Formation_FMS_DW.obj.yts[3] = 0.0;
-      Formation_FMS_DW.obj.xtf[3] = 0.0;
-      Formation_FMS_DW.obj.ytf[3] = 0.0;
-      Formation_FMS_DW.obj.cs[3] = 0.0;
-      Formation_FMS_DW.obj.cf[3] = 0.0;
-      Formation_FMS_DW.obj.lt[3] = 0.0;
-      Formation_FMS_DW.obj.l[3] = 0.0;
-      Formation_FMS_DW.obj.index_dubins[0] = 0.0;
-      Formation_FMS_DW.obj.index_dubins[1] = 0.0;
-      Formation_FMS_DW.obj.l_ad = 0.0;
-      Formation_FMS_DW.obj.precision_flag = 0.0;
-      Formation_FMS_DW.obj.xm = 0.0;
-      Formation_FMS_DW.obj.ym = 0.0;
-      Formation_FMS_DW.object[0] = Formation_FMS_DW.obj;
-      Formation_FMS_DW.object[1] = Formation_FMS_DW.obj;
-      Formation_FMS_DW.object[2] = Formation_FMS_DW.obj;
-      Formation_FMS_DW.object[0].xs = BusConversion_InsertedFor_FMS_p->x_R[0];
-      Formation_FMS_DW.object[0].ys = BusConversion_InsertedFor_FMS_p->y_R[0];
-      Formation_FMS_DW.object[0].psi_s = rt_atan2f_snf
+      // MATLAB Function: '<S199>/MATLAB Function'
+      Formation_FMS_B.PhiMaximum.contents = 40.0;
+      Formation_FMS_B.rad2deg.contents = 57.295779513082323;
+      Formation_FMS_B.obj.xs = 0.0;
+      Formation_FMS_B.obj.ys = 0.0;
+      Formation_FMS_B.obj.psi_s = 0.0;
+      Formation_FMS_B.obj.xf = 0.0;
+      Formation_FMS_B.obj.yf = 0.0;
+      Formation_FMS_B.obj.psi_f = 0.0;
+      Formation_FMS_B.obj.v = 0.0;
+      Formation_FMS_B.obj.r = 0.0;
+      Formation_FMS_B.obj.pos[0] = 0.0;
+      Formation_FMS_B.obj.pof[0] = 0.0;
+      Formation_FMS_B.obj.xts[0] = 0.0;
+      Formation_FMS_B.obj.yts[0] = 0.0;
+      Formation_FMS_B.obj.xtf[0] = 0.0;
+      Formation_FMS_B.obj.ytf[0] = 0.0;
+      Formation_FMS_B.obj.cs[0] = 0.0;
+      Formation_FMS_B.obj.cf[0] = 0.0;
+      Formation_FMS_B.obj.lt[0] = 0.0;
+      Formation_FMS_B.obj.l[0] = 0.0;
+      Formation_FMS_B.obj.pos[1] = 0.0;
+      Formation_FMS_B.obj.pof[1] = 0.0;
+      Formation_FMS_B.obj.xts[1] = 0.0;
+      Formation_FMS_B.obj.yts[1] = 0.0;
+      Formation_FMS_B.obj.xtf[1] = 0.0;
+      Formation_FMS_B.obj.ytf[1] = 0.0;
+      Formation_FMS_B.obj.cs[1] = 0.0;
+      Formation_FMS_B.obj.cf[1] = 0.0;
+      Formation_FMS_B.obj.lt[1] = 0.0;
+      Formation_FMS_B.obj.l[1] = 0.0;
+      Formation_FMS_B.obj.pos[2] = 0.0;
+      Formation_FMS_B.obj.pof[2] = 0.0;
+      Formation_FMS_B.obj.xts[2] = 0.0;
+      Formation_FMS_B.obj.yts[2] = 0.0;
+      Formation_FMS_B.obj.xtf[2] = 0.0;
+      Formation_FMS_B.obj.ytf[2] = 0.0;
+      Formation_FMS_B.obj.cs[2] = 0.0;
+      Formation_FMS_B.obj.cf[2] = 0.0;
+      Formation_FMS_B.obj.lt[2] = 0.0;
+      Formation_FMS_B.obj.l[2] = 0.0;
+      Formation_FMS_B.obj.pos[3] = 0.0;
+      Formation_FMS_B.obj.pof[3] = 0.0;
+      Formation_FMS_B.obj.xts[3] = 0.0;
+      Formation_FMS_B.obj.yts[3] = 0.0;
+      Formation_FMS_B.obj.xtf[3] = 0.0;
+      Formation_FMS_B.obj.ytf[3] = 0.0;
+      Formation_FMS_B.obj.cs[3] = 0.0;
+      Formation_FMS_B.obj.cf[3] = 0.0;
+      Formation_FMS_B.obj.lt[3] = 0.0;
+      Formation_FMS_B.obj.l[3] = 0.0;
+      Formation_FMS_B.obj.index_dubins[0] = 0.0;
+      Formation_FMS_B.obj.index_dubins[1] = 0.0;
+      Formation_FMS_B.obj.l_ad = 0.0;
+      Formation_FMS_B.obj.precision_flag = 0.0;
+      Formation_FMS_B.obj.xm = 0.0;
+      Formation_FMS_B.obj.ym = 0.0;
+      Formation_FMS_B.object[0] = Formation_FMS_B.obj;
+      Formation_FMS_B.object[1] = Formation_FMS_B.obj;
+      Formation_FMS_B.object[2] = Formation_FMS_B.obj;
+      Formation_FMS_B.object[0].xs = BusConversion_InsertedFor_FMS_p->x_R[0];
+      Formation_FMS_B.object[0].ys = BusConversion_InsertedFor_FMS_p->y_R[0];
+      Formation_FMS_B.object[0].psi_s = rt_atan2f_snf
         (BusConversion_InsertedFor_FMS_p->ve[0],
          BusConversion_InsertedFor_FMS_p->vn[0]);
-      Formation_FMS_DW.object[0].xf = FORMATION_PARAM.FORM_POINT[0];
-      Formation_FMS_DW.object[0].yf = FORMATION_PARAM.FORM_POINT[3];
-      Formation_FMS_DW.object[0].psi_f = FORMATION_PARAM.FORM_POINT[6];
-      Formation_FMS_DW.object[0].v = 25.0;
-      Formation_FMS_DW.object[1].xs = BusConversion_InsertedFor_FMS_p->x_R[1];
-      Formation_FMS_DW.object[1].ys = BusConversion_InsertedFor_FMS_p->y_R[1];
-      Formation_FMS_DW.object[1].psi_s = rt_atan2f_snf
+      Formation_FMS_B.object[0].xf = FORMATION_PARAM.FORM_POINT[0];
+      Formation_FMS_B.object[0].yf = FORMATION_PARAM.FORM_POINT[3];
+      Formation_FMS_B.object[0].psi_f = FORMATION_PARAM.FORM_POINT[6];
+      Formation_FMS_B.object[0].v = 25.0;
+      Formation_FMS_B.object[1].xs = BusConversion_InsertedFor_FMS_p->x_R[1];
+      Formation_FMS_B.object[1].ys = BusConversion_InsertedFor_FMS_p->y_R[1];
+      Formation_FMS_B.object[1].psi_s = rt_atan2f_snf
         (BusConversion_InsertedFor_FMS_p->ve[1],
          BusConversion_InsertedFor_FMS_p->vn[1]);
-      Formation_FMS_DW.object[1].xf = FORMATION_PARAM.FORM_POINT[1];
-      Formation_FMS_DW.object[1].yf = FORMATION_PARAM.FORM_POINT[4];
-      Formation_FMS_DW.object[1].psi_f = FORMATION_PARAM.FORM_POINT[7];
-      Formation_FMS_DW.object[1].v = 25.0;
-      Formation_FMS_DW.object[2].xs = BusConversion_InsertedFor_FMS_p->x_R[2];
-      Formation_FMS_DW.object[2].ys = BusConversion_InsertedFor_FMS_p->y_R[2];
-      Formation_FMS_DW.object[2].psi_s = rt_atan2f_snf
+      Formation_FMS_B.object[1].xf = FORMATION_PARAM.FORM_POINT[1];
+      Formation_FMS_B.object[1].yf = FORMATION_PARAM.FORM_POINT[4];
+      Formation_FMS_B.object[1].psi_f = FORMATION_PARAM.FORM_POINT[7];
+      Formation_FMS_B.object[1].v = 25.0;
+      Formation_FMS_B.object[2].xs = BusConversion_InsertedFor_FMS_p->x_R[2];
+      Formation_FMS_B.object[2].ys = BusConversion_InsertedFor_FMS_p->y_R[2];
+      Formation_FMS_B.object[2].psi_s = rt_atan2f_snf
         (BusConversion_InsertedFor_FMS_p->ve[2],
          BusConversion_InsertedFor_FMS_p->vn[2]);
-      Formation_FMS_DW.object[2].xf = FORMATION_PARAM.FORM_POINT[2];
-      Formation_FMS_DW.object[2].yf = FORMATION_PARAM.FORM_POINT[5];
-      Formation_FMS_DW.object[2].psi_f = FORMATION_PARAM.FORM_POINT[8];
-      Formation_FMS_DW.object[2].v = 25.0;
-      Formation_FMS_DW.target = -1;
-      Formation_FMS_DW.l_ref = -1.0;
-      Formation_FMS_DW.obj = Formation_FMS_DW.object[0];
-      Formation_FMS_Dubins(&Formation_FMS_DW.PhiMaximum,
-                           &Formation_FMS_DW.rad2deg, static_cast<real_T>
+      Formation_FMS_B.object[2].xf = FORMATION_PARAM.FORM_POINT[2];
+      Formation_FMS_B.object[2].yf = FORMATION_PARAM.FORM_POINT[5];
+      Formation_FMS_B.object[2].psi_f = FORMATION_PARAM.FORM_POINT[8];
+      Formation_FMS_B.object[2].v = 25.0;
+      Formation_FMS_B.target = -1;
+      Formation_FMS_B.l_ref = -1.0;
+      Formation_FMS_B.obj = Formation_FMS_B.object[0];
+
+      // MATLAB Function: '<S199>/MATLAB Function'
+      Formation_FMS_Dubins(&Formation_FMS_B.PhiMaximum, &Formation_FMS_B.rad2deg,
+                           static_cast<real_T>
                            (BusConversion_InsertedFor_FMS_p->x_R[0]),
                            static_cast<real_T>
                            (BusConversion_InsertedFor_FMS_p->y_R[0]),
@@ -617,28 +769,29 @@ void Formation_FMS::Format_enter_internal_Formation(const INS_Out_Bus
          BusConversion_InsertedFor_FMS_p->vn[0])), FORMATION_PARAM.FORM_POINT[0],
                            FORMATION_PARAM.FORM_POINT[3],
                            FORMATION_PARAM.FORM_POINT[6], 25.0,
-                           Formation_FMS_DW.obj.xts, Formation_FMS_DW.obj.yts,
-                           Formation_FMS_DW.obj.xtf, Formation_FMS_DW.obj.ytf,
-                           Formation_FMS_DW.obj.cs, Formation_FMS_DW.obj.cf,
-                           Formation_FMS_DW.obj.lt, Formation_FMS_DW.obj.l,
-                           Formation_FMS_DW.obj.pos, Formation_FMS_DW.obj.pof,
-                           &Formation_FMS_DW.obj.r, Formation_FMS_DW.b_data,
-                           &Formation_FMS_DW.b_size, Formation_FMS_DW.c_data,
-                           &Formation_FMS_DW.c_size);
-      Formation_FMS_DW.obj.index_dubins[0] = Formation_FMS_DW.b_data[0];
-      Formation_FMS_DW.obj.index_dubins[1] = Formation_FMS_DW.c_data[0];
-      Formation_FMS_DW.goal = Formation_FMS_DW.obj.l[(((static_cast<int32_T>
-        (Formation_FMS_DW.c_data[0]) - 1) << 1) + static_cast<int32_T>
-        (Formation_FMS_DW.b_data[0])) - 1];
-      if (Formation_FMS_DW.goal > -1.0) {
-        Formation_FMS_DW.l_ref = Formation_FMS_DW.goal;
-        Formation_FMS_DW.target = 1;
+                           Formation_FMS_B.obj.xts, Formation_FMS_B.obj.yts,
+                           Formation_FMS_B.obj.xtf, Formation_FMS_B.obj.ytf,
+                           Formation_FMS_B.obj.cs, Formation_FMS_B.obj.cf,
+                           Formation_FMS_B.obj.lt, Formation_FMS_B.obj.l,
+                           Formation_FMS_B.obj.pos, Formation_FMS_B.obj.pof,
+                           &Formation_FMS_B.obj.r, Formation_FMS_B.b_data,
+                           &b_size, Formation_FMS_B.c_data, &c_size);
+      Formation_FMS_B.obj.index_dubins[0] = Formation_FMS_B.b_data[0];
+      Formation_FMS_B.obj.index_dubins[1] = Formation_FMS_B.c_data[0];
+      Formation_FMS_B.goal = Formation_FMS_B.obj.l[(((static_cast<int32_T>
+        (Formation_FMS_B.c_data[0]) - 1) << 1) + static_cast<int32_T>
+        (Formation_FMS_B.b_data[0])) - 1];
+      if (Formation_FMS_B.goal > -1.0) {
+        Formation_FMS_B.l_ref = Formation_FMS_B.goal;
+        Formation_FMS_B.target = 1;
       }
 
-      Formation_FMS_DW.object[0] = Formation_FMS_DW.obj;
-      Formation_FMS_DW.obj = Formation_FMS_DW.object[1];
-      Formation_FMS_Dubins(&Formation_FMS_DW.PhiMaximum,
-                           &Formation_FMS_DW.rad2deg, static_cast<real_T>
+      Formation_FMS_B.object[0] = Formation_FMS_B.obj;
+      Formation_FMS_B.obj = Formation_FMS_B.object[1];
+
+      // MATLAB Function: '<S199>/MATLAB Function'
+      Formation_FMS_Dubins(&Formation_FMS_B.PhiMaximum, &Formation_FMS_B.rad2deg,
+                           static_cast<real_T>
                            (BusConversion_InsertedFor_FMS_p->x_R[1]),
                            static_cast<real_T>
                            (BusConversion_InsertedFor_FMS_p->y_R[1]),
@@ -647,28 +800,29 @@ void Formation_FMS::Format_enter_internal_Formation(const INS_Out_Bus
          BusConversion_InsertedFor_FMS_p->vn[1])), FORMATION_PARAM.FORM_POINT[1],
                            FORMATION_PARAM.FORM_POINT[4],
                            FORMATION_PARAM.FORM_POINT[7], 25.0,
-                           Formation_FMS_DW.obj.xts, Formation_FMS_DW.obj.yts,
-                           Formation_FMS_DW.obj.xtf, Formation_FMS_DW.obj.ytf,
-                           Formation_FMS_DW.obj.cs, Formation_FMS_DW.obj.cf,
-                           Formation_FMS_DW.obj.lt, Formation_FMS_DW.obj.l,
-                           Formation_FMS_DW.obj.pos, Formation_FMS_DW.obj.pof,
-                           &Formation_FMS_DW.obj.r, Formation_FMS_DW.b_data,
-                           &Formation_FMS_DW.b_size, Formation_FMS_DW.c_data,
-                           &Formation_FMS_DW.c_size);
-      Formation_FMS_DW.obj.index_dubins[0] = Formation_FMS_DW.b_data[0];
-      Formation_FMS_DW.obj.index_dubins[1] = Formation_FMS_DW.c_data[0];
-      Formation_FMS_DW.goal = Formation_FMS_DW.obj.l[(((static_cast<int32_T>
-        (Formation_FMS_DW.c_data[0]) - 1) << 1) + static_cast<int32_T>
-        (Formation_FMS_DW.b_data[0])) - 1];
-      if (Formation_FMS_DW.goal > Formation_FMS_DW.l_ref) {
-        Formation_FMS_DW.l_ref = Formation_FMS_DW.goal;
-        Formation_FMS_DW.target = 2;
+                           Formation_FMS_B.obj.xts, Formation_FMS_B.obj.yts,
+                           Formation_FMS_B.obj.xtf, Formation_FMS_B.obj.ytf,
+                           Formation_FMS_B.obj.cs, Formation_FMS_B.obj.cf,
+                           Formation_FMS_B.obj.lt, Formation_FMS_B.obj.l,
+                           Formation_FMS_B.obj.pos, Formation_FMS_B.obj.pof,
+                           &Formation_FMS_B.obj.r, Formation_FMS_B.b_data,
+                           &b_size, Formation_FMS_B.c_data, &c_size);
+      Formation_FMS_B.obj.index_dubins[0] = Formation_FMS_B.b_data[0];
+      Formation_FMS_B.obj.index_dubins[1] = Formation_FMS_B.c_data[0];
+      Formation_FMS_B.goal = Formation_FMS_B.obj.l[(((static_cast<int32_T>
+        (Formation_FMS_B.c_data[0]) - 1) << 1) + static_cast<int32_T>
+        (Formation_FMS_B.b_data[0])) - 1];
+      if (Formation_FMS_B.goal > Formation_FMS_B.l_ref) {
+        Formation_FMS_B.l_ref = Formation_FMS_B.goal;
+        Formation_FMS_B.target = 2;
       }
 
-      Formation_FMS_DW.object[1] = Formation_FMS_DW.obj;
-      Formation_FMS_DW.obj = Formation_FMS_DW.object[2];
-      Formation_FMS_Dubins(&Formation_FMS_DW.PhiMaximum,
-                           &Formation_FMS_DW.rad2deg, static_cast<real_T>
+      Formation_FMS_B.object[1] = Formation_FMS_B.obj;
+      Formation_FMS_B.obj = Formation_FMS_B.object[2];
+
+      // MATLAB Function: '<S199>/MATLAB Function'
+      Formation_FMS_Dubins(&Formation_FMS_B.PhiMaximum, &Formation_FMS_B.rad2deg,
+                           static_cast<real_T>
                            (BusConversion_InsertedFor_FMS_p->x_R[2]),
                            static_cast<real_T>
                            (BusConversion_InsertedFor_FMS_p->y_R[2]),
@@ -677,669 +831,492 @@ void Formation_FMS::Format_enter_internal_Formation(const INS_Out_Bus
          BusConversion_InsertedFor_FMS_p->vn[2])), FORMATION_PARAM.FORM_POINT[2],
                            FORMATION_PARAM.FORM_POINT[5],
                            FORMATION_PARAM.FORM_POINT[8], 25.0,
-                           Formation_FMS_DW.obj.xts, Formation_FMS_DW.obj.yts,
-                           Formation_FMS_DW.obj.xtf, Formation_FMS_DW.obj.ytf,
-                           Formation_FMS_DW.obj.cs, Formation_FMS_DW.obj.cf,
-                           Formation_FMS_DW.obj.lt, Formation_FMS_DW.obj.l,
-                           Formation_FMS_DW.obj.pos, Formation_FMS_DW.obj.pof,
-                           &Formation_FMS_DW.obj.r, Formation_FMS_DW.b_data,
-                           &Formation_FMS_DW.b_size, Formation_FMS_DW.c_data,
-                           &Formation_FMS_DW.c_size);
-      Formation_FMS_DW.obj.index_dubins[0] = Formation_FMS_DW.b_data[0];
-      Formation_FMS_DW.obj.index_dubins[1] = Formation_FMS_DW.c_data[0];
-      Formation_FMS_DW.goal = Formation_FMS_DW.obj.l[(((static_cast<int32_T>
-        (Formation_FMS_DW.c_data[0]) - 1) << 1) + static_cast<int32_T>
-        (Formation_FMS_DW.b_data[0])) - 1];
-      if (Formation_FMS_DW.goal > Formation_FMS_DW.l_ref) {
-        Formation_FMS_DW.l_ref = Formation_FMS_DW.goal;
-        Formation_FMS_DW.target = 3;
+                           Formation_FMS_B.obj.xts, Formation_FMS_B.obj.yts,
+                           Formation_FMS_B.obj.xtf, Formation_FMS_B.obj.ytf,
+                           Formation_FMS_B.obj.cs, Formation_FMS_B.obj.cf,
+                           Formation_FMS_B.obj.lt, Formation_FMS_B.obj.l,
+                           Formation_FMS_B.obj.pos, Formation_FMS_B.obj.pof,
+                           &Formation_FMS_B.obj.r, Formation_FMS_B.b_data,
+                           &b_size, Formation_FMS_B.c_data, &c_size);
+      Formation_FMS_B.obj.index_dubins[0] = Formation_FMS_B.b_data[0];
+      Formation_FMS_B.obj.index_dubins[1] = Formation_FMS_B.c_data[0];
+      Formation_FMS_B.goal = Formation_FMS_B.obj.l[(((static_cast<int32_T>
+        (Formation_FMS_B.c_data[0]) - 1) << 1) + static_cast<int32_T>
+        (Formation_FMS_B.b_data[0])) - 1];
+      if (Formation_FMS_B.goal > Formation_FMS_B.l_ref) {
+        Formation_FMS_B.l_ref = Formation_FMS_B.goal;
+        Formation_FMS_B.target = 3;
       }
 
-      Formation_FMS_DW.object[2] = Formation_FMS_DW.obj;
-      for (Formation_FMS_DW.i_g = 0; Formation_FMS_DW.i_g < 3;
-           Formation_FMS_DW.i_g++) {
-        if (Formation_FMS_DW.i_g + 1 != Formation_FMS_DW.target) {
-          Formation_FMS_DW.search_floor = 0.0;
-          Formation_FMS_DW.search = 0.0;
-          Formation_FMS_DW.stop_flag = 1;
-          for (Formation_FMS_DW.j = 0; Formation_FMS_DW.j < 7;
-               Formation_FMS_DW.j++) {
+      Formation_FMS_B.object[2] = Formation_FMS_B.obj;
+
+      // MATLAB Function: '<S199>/MATLAB Function'
+      for (Formation_FMS_B.d_i = 0; Formation_FMS_B.d_i < 3; Formation_FMS_B.d_i
+           ++) {
+        if (Formation_FMS_B.d_i + 1 != Formation_FMS_B.target) {
+          Formation_FMS_B.search_floor = 0.0;
+          Formation_FMS_B.search = 0.0;
+          Formation_FMS_B.stop_flag = 1;
+          for (i = 0; i < 7; i++) {
             boolean_T exitg1;
             exitg1 = false;
-            while ((!exitg1) && (Formation_FMS_DW.stop_flag != 0)) {
-              Formation_FMS_DW.search += d[Formation_FMS_DW.j];
-              Formation_FMS_DW.goal =
-                Formation_FMS_DW.object[Formation_FMS_DW.i_g].psi_f /
-                57.295779513082323;
-              Formation_FMS_DW.object[Formation_FMS_DW.i_g].xm =
-                Formation_FMS_DW.object[Formation_FMS_DW.i_g].xf - std::cos
-                (Formation_FMS_DW.goal) * Formation_FMS_DW.search;
-              Formation_FMS_DW.object[Formation_FMS_DW.i_g].ym =
-                Formation_FMS_DW.object[Formation_FMS_DW.i_g].yf - std::sin
-                (Formation_FMS_DW.goal) * Formation_FMS_DW.search;
-              Formation_FMS_Dubins(&Formation_FMS_DW.PhiMaximum,
-                                   &Formation_FMS_DW.rad2deg,
-                                   Formation_FMS_DW.object[Formation_FMS_DW.i_g]
-                                   .xs,
-                                   Formation_FMS_DW.object[Formation_FMS_DW.i_g]
-                                   .ys,
-                                   Formation_FMS_DW.object[Formation_FMS_DW.i_g]
-                                   .psi_s,
-                                   Formation_FMS_DW.object[Formation_FMS_DW.i_g]
-                                   .xm,
-                                   Formation_FMS_DW.object[Formation_FMS_DW.i_g]
-                                   .ym,
-                                   Formation_FMS_DW.object[Formation_FMS_DW.i_g]
-                                   .psi_f,
-                                   Formation_FMS_DW.object[Formation_FMS_DW.i_g]
-                                   .v,
-                                   Formation_FMS_DW.object[Formation_FMS_DW.i_g]
-                                   .xts,
-                                   Formation_FMS_DW.object[Formation_FMS_DW.i_g]
-                                   .yts,
-                                   Formation_FMS_DW.object[Formation_FMS_DW.i_g]
-                                   .xtf,
-                                   Formation_FMS_DW.object[Formation_FMS_DW.i_g]
-                                   .ytf,
-                                   Formation_FMS_DW.object[Formation_FMS_DW.i_g]
-                                   .cs,
-                                   Formation_FMS_DW.object[Formation_FMS_DW.i_g]
-                                   .cf,
-                                   Formation_FMS_DW.object[Formation_FMS_DW.i_g]
-                                   .lt,
-                                   Formation_FMS_DW.object[Formation_FMS_DW.i_g]
-                                   .l,
-                                   Formation_FMS_DW.object[Formation_FMS_DW.i_g]
-                                   .pos,
-                                   Formation_FMS_DW.object[Formation_FMS_DW.i_g]
-                                   .pof, &Formation_FMS_DW.goal,
-                                   Formation_FMS_DW.b_data,
-                                   &Formation_FMS_DW.b_size,
-                                   Formation_FMS_DW.c_data,
-                                   &Formation_FMS_DW.c_size);
-              Formation_FMS_DW.object[Formation_FMS_DW.i_g].index_dubins[0] =
-                Formation_FMS_DW.b_data[0];
-              Formation_FMS_DW.object[Formation_FMS_DW.i_g].index_dubins[1] =
-                Formation_FMS_DW.c_data[0];
-              Formation_FMS_DW.goal =
-                (Formation_FMS_DW.object[Formation_FMS_DW.i_g].l
-                 [(((static_cast<int32_T>
-                     (Formation_FMS_DW.object[Formation_FMS_DW.i_g]
-                      .index_dubins[1]) - 1) << 1) + static_cast<int32_T>
-                   (Formation_FMS_DW.object[Formation_FMS_DW.i_g].index_dubins[0]))
-                 - 1] + Formation_FMS_DW.search) - Formation_FMS_DW.l_ref;
-              if (Formation_FMS_DW.goal > 0.0) {
-                Formation_FMS_DW.object[Formation_FMS_DW.i_g].l_ad =
-                  Formation_FMS_DW.search_floor;
-                Formation_FMS_DW.object[Formation_FMS_DW.i_g].precision_flag =
-                  d[Formation_FMS_DW.j];
-                Formation_FMS_DW.search = Formation_FMS_DW.search_floor;
+            while ((!exitg1) && (Formation_FMS_B.stop_flag != 0)) {
+              Formation_FMS_B.search += d[i];
+              Formation_FMS_B.goal = Formation_FMS_B.object[Formation_FMS_B.d_i]
+                .psi_f / 57.295779513082323;
+              Formation_FMS_B.object[Formation_FMS_B.d_i].xm =
+                Formation_FMS_B.object[Formation_FMS_B.d_i].xf - std::cos
+                (Formation_FMS_B.goal) * Formation_FMS_B.search;
+              Formation_FMS_B.object[Formation_FMS_B.d_i].ym =
+                Formation_FMS_B.object[Formation_FMS_B.d_i].yf - std::sin
+                (Formation_FMS_B.goal) * Formation_FMS_B.search;
+              Formation_FMS_Dubins(&Formation_FMS_B.PhiMaximum,
+                                   &Formation_FMS_B.rad2deg,
+                                   Formation_FMS_B.object[Formation_FMS_B.d_i].
+                                   xs,
+                                   Formation_FMS_B.object[Formation_FMS_B.d_i].
+                                   ys,
+                                   Formation_FMS_B.object[Formation_FMS_B.d_i].
+                                   psi_s,
+                                   Formation_FMS_B.object[Formation_FMS_B.d_i].
+                                   xm,
+                                   Formation_FMS_B.object[Formation_FMS_B.d_i].
+                                   ym,
+                                   Formation_FMS_B.object[Formation_FMS_B.d_i].
+                                   psi_f,
+                                   Formation_FMS_B.object[Formation_FMS_B.d_i].v,
+                                   Formation_FMS_B.object[Formation_FMS_B.d_i].
+                                   xts,
+                                   Formation_FMS_B.object[Formation_FMS_B.d_i].
+                                   yts,
+                                   Formation_FMS_B.object[Formation_FMS_B.d_i].
+                                   xtf,
+                                   Formation_FMS_B.object[Formation_FMS_B.d_i].
+                                   ytf,
+                                   Formation_FMS_B.object[Formation_FMS_B.d_i].
+                                   cs,
+                                   Formation_FMS_B.object[Formation_FMS_B.d_i].
+                                   cf,
+                                   Formation_FMS_B.object[Formation_FMS_B.d_i].
+                                   lt,
+                                   Formation_FMS_B.object[Formation_FMS_B.d_i].l,
+                                   Formation_FMS_B.object[Formation_FMS_B.d_i].
+                                   pos,
+                                   Formation_FMS_B.object[Formation_FMS_B.d_i].
+                                   pof, &Formation_FMS_B.goal,
+                                   Formation_FMS_B.b_data, &b_size,
+                                   Formation_FMS_B.c_data, &c_size);
+              Formation_FMS_B.object[Formation_FMS_B.d_i].index_dubins[0] =
+                Formation_FMS_B.b_data[0];
+              Formation_FMS_B.object[Formation_FMS_B.d_i].index_dubins[1] =
+                Formation_FMS_B.c_data[0];
+              Formation_FMS_B.goal = (Formation_FMS_B.object[Formation_FMS_B.d_i]
+                .l[(((static_cast<int32_T>
+                      (Formation_FMS_B.object[Formation_FMS_B.d_i].index_dubins
+                       [1]) - 1) << 1) + static_cast<int32_T>
+                    (Formation_FMS_B.object[Formation_FMS_B.d_i].index_dubins[0]))
+                - 1] + Formation_FMS_B.search) - Formation_FMS_B.l_ref;
+              if (Formation_FMS_B.goal > 0.0) {
+                Formation_FMS_B.object[Formation_FMS_B.d_i].l_ad =
+                  Formation_FMS_B.search_floor;
+                Formation_FMS_B.object[Formation_FMS_B.d_i].precision_flag = d[i];
+                Formation_FMS_B.search = Formation_FMS_B.search_floor;
                 exitg1 = true;
-              } else if (Formation_FMS_DW.goal < 0.0) {
-                Formation_FMS_DW.search_floor = Formation_FMS_DW.search;
+              } else if (Formation_FMS_B.goal < 0.0) {
+                Formation_FMS_B.search_floor = Formation_FMS_B.search;
               } else {
-                Formation_FMS_DW.object[Formation_FMS_DW.i_g].l_ad =
-                  Formation_FMS_DW.search;
-                Formation_FMS_DW.object[Formation_FMS_DW.i_g].precision_flag =
-                  0.0;
-                Formation_FMS_DW.stop_flag = 0;
+                Formation_FMS_B.object[Formation_FMS_B.d_i].l_ad =
+                  Formation_FMS_B.search;
+                Formation_FMS_B.object[Formation_FMS_B.d_i].precision_flag = 0.0;
+                Formation_FMS_B.stop_flag = 0;
               }
             }
           }
         } else {
-          Formation_FMS_DW.object[Formation_FMS_DW.i_g].xm =
-            Formation_FMS_DW.object[Formation_FMS_DW.i_g].xf;
-          Formation_FMS_DW.object[Formation_FMS_DW.i_g].ym =
-            Formation_FMS_DW.object[Formation_FMS_DW.i_g].yf;
+          Formation_FMS_B.object[Formation_FMS_B.d_i].xm =
+            Formation_FMS_B.object[Formation_FMS_B.d_i].xf;
+          Formation_FMS_B.object[Formation_FMS_B.d_i].ym =
+            Formation_FMS_B.object[Formation_FMS_B.d_i].yf;
         }
       }
 
-      if (Formation_FMS_DW.target == 1) {
-        Formation_FMS_DW.result[0] = Formation_FMS_DW.object[0].xs;
-        Formation_FMS_DW.result[15] = Formation_FMS_DW.object[0].ys;
-        Formation_FMS_DW.result[30] = Formation_FMS_DW.object[0].psi_s;
-        Formation_FMS_DW.result[45] = Formation_FMS_DW.object[0].r;
-        Formation_FMS_DW.i_g = (((static_cast<int32_T>(Formation_FMS_DW.object[0]
-          .index_dubins[1]) - 1) << 1) + static_cast<int32_T>
-          (Formation_FMS_DW.object[0].index_dubins[0])) - 1;
-        Formation_FMS_DW.result[60] = Formation_FMS_DW.object[0]
-          .cs[Formation_FMS_DW.i_g];
-        Formation_FMS_DW.result[3] = Formation_FMS_DW.object[0]
-          .xts[Formation_FMS_DW.i_g];
-        Formation_FMS_DW.result[18] = Formation_FMS_DW.object[0]
-          .yts[Formation_FMS_DW.i_g];
-        Formation_FMS_DW.l_ref = Formation_FMS_atan3_9FIHpp9F
-          (Formation_FMS_DW.object[0].xtf[Formation_FMS_DW.i_g],
-           Formation_FMS_DW.object[0].ytf[Formation_FMS_DW.i_g],
-           Formation_FMS_DW.object[0].xts[Formation_FMS_DW.i_g],
-           Formation_FMS_DW.object[0].yts[Formation_FMS_DW.i_g]) *
+      if (Formation_FMS_B.target == 1) {
+        Formation_FMS_B.result[0] = Formation_FMS_B.object[0].xs;
+        Formation_FMS_B.result[15] = Formation_FMS_B.object[0].ys;
+        Formation_FMS_B.result[30] = Formation_FMS_B.object[0].psi_s;
+        Formation_FMS_B.result[45] = Formation_FMS_B.object[0].r;
+        Formation_FMS_B.d_i = (((static_cast<int32_T>(Formation_FMS_B.object[0].
+          index_dubins[1]) - 1) << 1) + static_cast<int32_T>
+          (Formation_FMS_B.object[0].index_dubins[0])) - 1;
+        Formation_FMS_B.result[60] = Formation_FMS_B.object[0]
+          .cs[Formation_FMS_B.d_i];
+        Formation_FMS_B.result[3] = Formation_FMS_B.object[0]
+          .xts[Formation_FMS_B.d_i];
+        Formation_FMS_B.result[18] = Formation_FMS_B.object[0]
+          .yts[Formation_FMS_B.d_i];
+        Formation_FMS_B.l_ref = Formation_FMS_atan3_9FIHpp9F
+          (Formation_FMS_B.object[0].xtf[Formation_FMS_B.d_i],
+           Formation_FMS_B.object[0].ytf[Formation_FMS_B.d_i],
+           Formation_FMS_B.object[0].xts[Formation_FMS_B.d_i],
+           Formation_FMS_B.object[0].yts[Formation_FMS_B.d_i]) *
           57.295779513082323;
-        Formation_FMS_DW.result[33] = Formation_FMS_DW.l_ref;
-        Formation_FMS_DW.result[48] = 0.0;
-        Formation_FMS_DW.result[63] = Formation_FMS_DW.object[0]
-          .lt[Formation_FMS_DW.i_g];
-        Formation_FMS_DW.result[6] = Formation_FMS_DW.object[0]
-          .xtf[Formation_FMS_DW.i_g];
-        Formation_FMS_DW.result[21] = Formation_FMS_DW.object[0]
-          .ytf[Formation_FMS_DW.i_g];
-        Formation_FMS_DW.result[36] = Formation_FMS_DW.l_ref;
-        Formation_FMS_DW.result[51] = Formation_FMS_DW.object[0].r;
-        Formation_FMS_DW.result[66] = Formation_FMS_DW.object[0]
-          .cf[Formation_FMS_DW.i_g];
-        Formation_FMS_DW.result[9] = Formation_FMS_DW.object[0].xm;
-        Formation_FMS_DW.result[24] = Formation_FMS_DW.object[0].ym;
-        Formation_FMS_DW.result[39] = Formation_FMS_DW.object[0].psi_f;
-        Formation_FMS_DW.result[54] = 0.0;
-        Formation_FMS_DW.result[69] = 0.0;
-        Formation_FMS_DW.result[12] = Formation_FMS_DW.object[0].xf;
-        Formation_FMS_DW.result[27] = Formation_FMS_DW.object[0].yf;
-        Formation_FMS_DW.result[42] = Formation_FMS_DW.object[0].psi_f;
-        Formation_FMS_DW.result[57] = 0.0;
-        Formation_FMS_DW.result[72] = Formation_FMS_DW.object[0]
-          .l[Formation_FMS_DW.i_g];
+        Formation_FMS_B.result[33] = Formation_FMS_B.l_ref;
+        Formation_FMS_B.result[48] = 0.0;
+        Formation_FMS_B.result[63] = Formation_FMS_B.object[0]
+          .lt[Formation_FMS_B.d_i];
+        Formation_FMS_B.result[6] = Formation_FMS_B.object[0]
+          .xtf[Formation_FMS_B.d_i];
+        Formation_FMS_B.result[21] = Formation_FMS_B.object[0]
+          .ytf[Formation_FMS_B.d_i];
+        Formation_FMS_B.result[36] = Formation_FMS_B.l_ref;
+        Formation_FMS_B.result[51] = Formation_FMS_B.object[0].r;
+        Formation_FMS_B.result[66] = Formation_FMS_B.object[0]
+          .cf[Formation_FMS_B.d_i];
+        Formation_FMS_B.result[9] = Formation_FMS_B.object[0].xm;
+        Formation_FMS_B.result[24] = Formation_FMS_B.object[0].ym;
+        Formation_FMS_B.result[39] = Formation_FMS_B.object[0].psi_f;
+        Formation_FMS_B.result[54] = 0.0;
+        Formation_FMS_B.result[69] = 0.0;
+        Formation_FMS_B.result[12] = Formation_FMS_B.object[0].xf;
+        Formation_FMS_B.result[27] = Formation_FMS_B.object[0].yf;
+        Formation_FMS_B.result[42] = Formation_FMS_B.object[0].psi_f;
+        Formation_FMS_B.result[57] = 0.0;
+        Formation_FMS_B.result[72] = Formation_FMS_B.object[0]
+          .l[Formation_FMS_B.d_i];
       } else {
-        Formation_FMS_DW.result[0] = Formation_FMS_DW.object[0].xs;
-        Formation_FMS_DW.result[15] = Formation_FMS_DW.object[0].ys;
-        Formation_FMS_DW.result[30] = Formation_FMS_DW.object[0].psi_s;
-        Formation_FMS_DW.result[45] = Formation_FMS_DW.object[0].r;
-        Formation_FMS_DW.i_g = (((static_cast<int32_T>(Formation_FMS_DW.object[0]
-          .index_dubins[1]) - 1) << 1) + static_cast<int32_T>
-          (Formation_FMS_DW.object[0].index_dubins[0])) - 1;
-        Formation_FMS_DW.result[60] = Formation_FMS_DW.object[0]
-          .cs[Formation_FMS_DW.i_g];
-        Formation_FMS_DW.l_ref = Formation_FMS_DW.object[0]
-          .xts[Formation_FMS_DW.i_g];
-        Formation_FMS_DW.result[3] = Formation_FMS_DW.l_ref;
-        Formation_FMS_DW.search_floor = Formation_FMS_DW.object[0]
-          .yts[Formation_FMS_DW.i_g];
-        Formation_FMS_DW.result[18] = Formation_FMS_DW.search_floor;
-        Formation_FMS_DW.search = Formation_FMS_DW.object[0]
-          .xtf[Formation_FMS_DW.i_g];
-        Formation_FMS_DW.goal = Formation_FMS_DW.object[0]
-          .ytf[Formation_FMS_DW.i_g];
-        Formation_FMS_DW.l_ref = Formation_FMS_atan3_9FIHpp9F
-          (Formation_FMS_DW.search, Formation_FMS_DW.goal,
-           Formation_FMS_DW.l_ref, Formation_FMS_DW.search_floor) *
-          57.295779513082323;
-        Formation_FMS_DW.result[33] = Formation_FMS_DW.l_ref;
-        Formation_FMS_DW.result[48] = 0.0;
-        Formation_FMS_DW.result[63] = Formation_FMS_DW.object[0]
-          .lt[Formation_FMS_DW.i_g];
-        Formation_FMS_DW.result[6] = Formation_FMS_DW.search;
-        Formation_FMS_DW.result[21] = Formation_FMS_DW.goal;
-        Formation_FMS_DW.result[36] = Formation_FMS_DW.l_ref;
-        Formation_FMS_DW.result[51] = Formation_FMS_DW.object[0].r;
-        Formation_FMS_DW.result[66] = Formation_FMS_DW.object[0]
-          .cf[Formation_FMS_DW.i_g];
-        Formation_FMS_DW.result[9] = Formation_FMS_DW.object[0].xm;
-        Formation_FMS_DW.result[24] = Formation_FMS_DW.object[0].ym;
-        Formation_FMS_DW.result[39] = Formation_FMS_DW.object[0].psi_f;
-        Formation_FMS_DW.result[54] = 0.0;
-        Formation_FMS_DW.result[69] = Formation_FMS_DW.object[0].l_ad;
-        Formation_FMS_DW.result[12] = Formation_FMS_DW.object[0].xf;
-        Formation_FMS_DW.result[27] = Formation_FMS_DW.object[0].yf;
-        Formation_FMS_DW.result[42] = Formation_FMS_DW.object[0].psi_f;
-        Formation_FMS_DW.result[57] = 0.0;
-        Formation_FMS_DW.result[72] = Formation_FMS_DW.object[0]
-          .l[Formation_FMS_DW.i_g] + Formation_FMS_DW.object[0].l_ad;
+        Formation_FMS_B.result[0] = Formation_FMS_B.object[0].xs;
+        Formation_FMS_B.result[15] = Formation_FMS_B.object[0].ys;
+        Formation_FMS_B.result[30] = Formation_FMS_B.object[0].psi_s;
+        Formation_FMS_B.result[45] = Formation_FMS_B.object[0].r;
+        Formation_FMS_B.d_i = (((static_cast<int32_T>(Formation_FMS_B.object[0].
+          index_dubins[1]) - 1) << 1) + static_cast<int32_T>
+          (Formation_FMS_B.object[0].index_dubins[0])) - 1;
+        Formation_FMS_B.result[60] = Formation_FMS_B.object[0]
+          .cs[Formation_FMS_B.d_i];
+        Formation_FMS_B.l_ref = Formation_FMS_B.object[0]
+          .xts[Formation_FMS_B.d_i];
+        Formation_FMS_B.result[3] = Formation_FMS_B.l_ref;
+        Formation_FMS_B.search_floor = Formation_FMS_B.object[0]
+          .yts[Formation_FMS_B.d_i];
+        Formation_FMS_B.result[18] = Formation_FMS_B.search_floor;
+        Formation_FMS_B.search = Formation_FMS_B.object[0]
+          .xtf[Formation_FMS_B.d_i];
+        Formation_FMS_B.goal = Formation_FMS_B.object[0].ytf[Formation_FMS_B.d_i];
+        Formation_FMS_B.l_ref = Formation_FMS_atan3_9FIHpp9F
+          (Formation_FMS_B.search, Formation_FMS_B.goal, Formation_FMS_B.l_ref,
+           Formation_FMS_B.search_floor) * 57.295779513082323;
+        Formation_FMS_B.result[33] = Formation_FMS_B.l_ref;
+        Formation_FMS_B.result[48] = 0.0;
+        Formation_FMS_B.result[63] = Formation_FMS_B.object[0]
+          .lt[Formation_FMS_B.d_i];
+        Formation_FMS_B.result[6] = Formation_FMS_B.search;
+        Formation_FMS_B.result[21] = Formation_FMS_B.goal;
+        Formation_FMS_B.result[36] = Formation_FMS_B.l_ref;
+        Formation_FMS_B.result[51] = Formation_FMS_B.object[0].r;
+        Formation_FMS_B.result[66] = Formation_FMS_B.object[0]
+          .cf[Formation_FMS_B.d_i];
+        Formation_FMS_B.result[9] = Formation_FMS_B.object[0].xm;
+        Formation_FMS_B.result[24] = Formation_FMS_B.object[0].ym;
+        Formation_FMS_B.result[39] = Formation_FMS_B.object[0].psi_f;
+        Formation_FMS_B.result[54] = 0.0;
+        Formation_FMS_B.result[69] = Formation_FMS_B.object[0].l_ad;
+        Formation_FMS_B.result[12] = Formation_FMS_B.object[0].xf;
+        Formation_FMS_B.result[27] = Formation_FMS_B.object[0].yf;
+        Formation_FMS_B.result[42] = Formation_FMS_B.object[0].psi_f;
+        Formation_FMS_B.result[57] = 0.0;
+        Formation_FMS_B.result[72] = Formation_FMS_B.object[0]
+          .l[Formation_FMS_B.d_i] + Formation_FMS_B.object[0].l_ad;
       }
 
-      if (Formation_FMS_DW.target == 2) {
-        Formation_FMS_DW.result[1] = Formation_FMS_DW.object[1].xs;
-        Formation_FMS_DW.result[16] = Formation_FMS_DW.object[1].ys;
-        Formation_FMS_DW.result[31] = Formation_FMS_DW.object[1].psi_s;
-        Formation_FMS_DW.result[46] = Formation_FMS_DW.object[1].r;
-        Formation_FMS_DW.i_g = (((static_cast<int32_T>(Formation_FMS_DW.object[1]
-          .index_dubins[1]) - 1) << 1) + static_cast<int32_T>
-          (Formation_FMS_DW.object[1].index_dubins[0])) - 1;
-        Formation_FMS_DW.result[61] = Formation_FMS_DW.object[1]
-          .cs[Formation_FMS_DW.i_g];
-        Formation_FMS_DW.result[4] = Formation_FMS_DW.object[1]
-          .xts[Formation_FMS_DW.i_g];
-        Formation_FMS_DW.result[19] = Formation_FMS_DW.object[1]
-          .yts[Formation_FMS_DW.i_g];
-        Formation_FMS_DW.l_ref = Formation_FMS_atan3_9FIHpp9F
-          (Formation_FMS_DW.object[1].xtf[Formation_FMS_DW.i_g],
-           Formation_FMS_DW.object[1].ytf[Formation_FMS_DW.i_g],
-           Formation_FMS_DW.object[1].xts[Formation_FMS_DW.i_g],
-           Formation_FMS_DW.object[1].yts[Formation_FMS_DW.i_g]) *
+      if (Formation_FMS_B.target == 2) {
+        Formation_FMS_B.result[1] = Formation_FMS_B.object[1].xs;
+        Formation_FMS_B.result[16] = Formation_FMS_B.object[1].ys;
+        Formation_FMS_B.result[31] = Formation_FMS_B.object[1].psi_s;
+        Formation_FMS_B.result[46] = Formation_FMS_B.object[1].r;
+        Formation_FMS_B.d_i = (((static_cast<int32_T>(Formation_FMS_B.object[1].
+          index_dubins[1]) - 1) << 1) + static_cast<int32_T>
+          (Formation_FMS_B.object[1].index_dubins[0])) - 1;
+        Formation_FMS_B.result[61] = Formation_FMS_B.object[1]
+          .cs[Formation_FMS_B.d_i];
+        Formation_FMS_B.result[4] = Formation_FMS_B.object[1]
+          .xts[Formation_FMS_B.d_i];
+        Formation_FMS_B.result[19] = Formation_FMS_B.object[1]
+          .yts[Formation_FMS_B.d_i];
+        Formation_FMS_B.l_ref = Formation_FMS_atan3_9FIHpp9F
+          (Formation_FMS_B.object[1].xtf[Formation_FMS_B.d_i],
+           Formation_FMS_B.object[1].ytf[Formation_FMS_B.d_i],
+           Formation_FMS_B.object[1].xts[Formation_FMS_B.d_i],
+           Formation_FMS_B.object[1].yts[Formation_FMS_B.d_i]) *
           57.295779513082323;
-        Formation_FMS_DW.result[34] = Formation_FMS_DW.l_ref;
-        Formation_FMS_DW.result[49] = 0.0;
-        Formation_FMS_DW.result[64] = Formation_FMS_DW.object[1]
-          .lt[Formation_FMS_DW.i_g];
-        Formation_FMS_DW.result[7] = Formation_FMS_DW.object[1]
-          .xtf[Formation_FMS_DW.i_g];
-        Formation_FMS_DW.result[22] = Formation_FMS_DW.object[1]
-          .ytf[Formation_FMS_DW.i_g];
-        Formation_FMS_DW.result[37] = Formation_FMS_DW.l_ref;
-        Formation_FMS_DW.result[52] = Formation_FMS_DW.object[1].r;
-        Formation_FMS_DW.result[67] = Formation_FMS_DW.object[1]
-          .cf[Formation_FMS_DW.i_g];
-        Formation_FMS_DW.result[10] = Formation_FMS_DW.object[1].xm;
-        Formation_FMS_DW.result[25] = Formation_FMS_DW.object[1].ym;
-        Formation_FMS_DW.result[40] = Formation_FMS_DW.object[1].psi_f;
-        Formation_FMS_DW.result[55] = 0.0;
-        Formation_FMS_DW.result[70] = 0.0;
-        Formation_FMS_DW.result[13] = Formation_FMS_DW.object[1].xf;
-        Formation_FMS_DW.result[28] = Formation_FMS_DW.object[1].yf;
-        Formation_FMS_DW.result[43] = Formation_FMS_DW.object[1].psi_f;
-        Formation_FMS_DW.result[58] = 0.0;
-        Formation_FMS_DW.result[73] = Formation_FMS_DW.object[1]
-          .l[Formation_FMS_DW.i_g];
+        Formation_FMS_B.result[34] = Formation_FMS_B.l_ref;
+        Formation_FMS_B.result[49] = 0.0;
+        Formation_FMS_B.result[64] = Formation_FMS_B.object[1]
+          .lt[Formation_FMS_B.d_i];
+        Formation_FMS_B.result[7] = Formation_FMS_B.object[1]
+          .xtf[Formation_FMS_B.d_i];
+        Formation_FMS_B.result[22] = Formation_FMS_B.object[1]
+          .ytf[Formation_FMS_B.d_i];
+        Formation_FMS_B.result[37] = Formation_FMS_B.l_ref;
+        Formation_FMS_B.result[52] = Formation_FMS_B.object[1].r;
+        Formation_FMS_B.result[67] = Formation_FMS_B.object[1]
+          .cf[Formation_FMS_B.d_i];
+        Formation_FMS_B.result[10] = Formation_FMS_B.object[1].xm;
+        Formation_FMS_B.result[25] = Formation_FMS_B.object[1].ym;
+        Formation_FMS_B.result[40] = Formation_FMS_B.object[1].psi_f;
+        Formation_FMS_B.result[55] = 0.0;
+        Formation_FMS_B.result[70] = 0.0;
+        Formation_FMS_B.result[13] = Formation_FMS_B.object[1].xf;
+        Formation_FMS_B.result[28] = Formation_FMS_B.object[1].yf;
+        Formation_FMS_B.result[43] = Formation_FMS_B.object[1].psi_f;
+        Formation_FMS_B.result[58] = 0.0;
+        Formation_FMS_B.result[73] = Formation_FMS_B.object[1]
+          .l[Formation_FMS_B.d_i];
       } else {
-        Formation_FMS_DW.result[1] = Formation_FMS_DW.object[1].xs;
-        Formation_FMS_DW.result[16] = Formation_FMS_DW.object[1].ys;
-        Formation_FMS_DW.result[31] = Formation_FMS_DW.object[1].psi_s;
-        Formation_FMS_DW.result[46] = Formation_FMS_DW.object[1].r;
-        Formation_FMS_DW.i_g = (((static_cast<int32_T>(Formation_FMS_DW.object[1]
-          .index_dubins[1]) - 1) << 1) + static_cast<int32_T>
-          (Formation_FMS_DW.object[1].index_dubins[0])) - 1;
-        Formation_FMS_DW.result[61] = Formation_FMS_DW.object[1]
-          .cs[Formation_FMS_DW.i_g];
-        Formation_FMS_DW.l_ref = Formation_FMS_DW.object[1]
-          .xts[Formation_FMS_DW.i_g];
-        Formation_FMS_DW.result[4] = Formation_FMS_DW.l_ref;
-        Formation_FMS_DW.search_floor = Formation_FMS_DW.object[1]
-          .yts[Formation_FMS_DW.i_g];
-        Formation_FMS_DW.result[19] = Formation_FMS_DW.search_floor;
-        Formation_FMS_DW.search = Formation_FMS_DW.object[1]
-          .xtf[Formation_FMS_DW.i_g];
-        Formation_FMS_DW.goal = Formation_FMS_DW.object[1]
-          .ytf[Formation_FMS_DW.i_g];
-        Formation_FMS_DW.l_ref = Formation_FMS_atan3_9FIHpp9F
-          (Formation_FMS_DW.search, Formation_FMS_DW.goal,
-           Formation_FMS_DW.l_ref, Formation_FMS_DW.search_floor) *
-          57.295779513082323;
-        Formation_FMS_DW.result[34] = Formation_FMS_DW.l_ref;
-        Formation_FMS_DW.result[49] = 0.0;
-        Formation_FMS_DW.result[64] = Formation_FMS_DW.object[1]
-          .lt[Formation_FMS_DW.i_g];
-        Formation_FMS_DW.result[7] = Formation_FMS_DW.search;
-        Formation_FMS_DW.result[22] = Formation_FMS_DW.goal;
-        Formation_FMS_DW.result[37] = Formation_FMS_DW.l_ref;
-        Formation_FMS_DW.result[52] = Formation_FMS_DW.object[1].r;
-        Formation_FMS_DW.result[67] = Formation_FMS_DW.object[1]
-          .cf[Formation_FMS_DW.i_g];
-        Formation_FMS_DW.result[10] = Formation_FMS_DW.object[1].xm;
-        Formation_FMS_DW.result[25] = Formation_FMS_DW.object[1].ym;
-        Formation_FMS_DW.result[40] = Formation_FMS_DW.object[1].psi_f;
-        Formation_FMS_DW.result[55] = 0.0;
-        Formation_FMS_DW.result[70] = Formation_FMS_DW.object[1].l_ad;
-        Formation_FMS_DW.result[13] = Formation_FMS_DW.object[1].xf;
-        Formation_FMS_DW.result[28] = Formation_FMS_DW.object[1].yf;
-        Formation_FMS_DW.result[43] = Formation_FMS_DW.object[1].psi_f;
-        Formation_FMS_DW.result[58] = 0.0;
-        Formation_FMS_DW.result[73] = Formation_FMS_DW.object[1]
-          .l[Formation_FMS_DW.i_g] + Formation_FMS_DW.object[1].l_ad;
+        Formation_FMS_B.result[1] = Formation_FMS_B.object[1].xs;
+        Formation_FMS_B.result[16] = Formation_FMS_B.object[1].ys;
+        Formation_FMS_B.result[31] = Formation_FMS_B.object[1].psi_s;
+        Formation_FMS_B.result[46] = Formation_FMS_B.object[1].r;
+        Formation_FMS_B.d_i = (((static_cast<int32_T>(Formation_FMS_B.object[1].
+          index_dubins[1]) - 1) << 1) + static_cast<int32_T>
+          (Formation_FMS_B.object[1].index_dubins[0])) - 1;
+        Formation_FMS_B.result[61] = Formation_FMS_B.object[1]
+          .cs[Formation_FMS_B.d_i];
+        Formation_FMS_B.l_ref = Formation_FMS_B.object[1]
+          .xts[Formation_FMS_B.d_i];
+        Formation_FMS_B.result[4] = Formation_FMS_B.l_ref;
+        Formation_FMS_B.search_floor = Formation_FMS_B.object[1]
+          .yts[Formation_FMS_B.d_i];
+        Formation_FMS_B.result[19] = Formation_FMS_B.search_floor;
+        Formation_FMS_B.search = Formation_FMS_B.object[1]
+          .xtf[Formation_FMS_B.d_i];
+        Formation_FMS_B.goal = Formation_FMS_B.object[1].ytf[Formation_FMS_B.d_i];
+        Formation_FMS_B.l_ref = Formation_FMS_atan3_9FIHpp9F
+          (Formation_FMS_B.search, Formation_FMS_B.goal, Formation_FMS_B.l_ref,
+           Formation_FMS_B.search_floor) * 57.295779513082323;
+        Formation_FMS_B.result[34] = Formation_FMS_B.l_ref;
+        Formation_FMS_B.result[49] = 0.0;
+        Formation_FMS_B.result[64] = Formation_FMS_B.object[1]
+          .lt[Formation_FMS_B.d_i];
+        Formation_FMS_B.result[7] = Formation_FMS_B.search;
+        Formation_FMS_B.result[22] = Formation_FMS_B.goal;
+        Formation_FMS_B.result[37] = Formation_FMS_B.l_ref;
+        Formation_FMS_B.result[52] = Formation_FMS_B.object[1].r;
+        Formation_FMS_B.result[67] = Formation_FMS_B.object[1]
+          .cf[Formation_FMS_B.d_i];
+        Formation_FMS_B.result[10] = Formation_FMS_B.object[1].xm;
+        Formation_FMS_B.result[25] = Formation_FMS_B.object[1].ym;
+        Formation_FMS_B.result[40] = Formation_FMS_B.object[1].psi_f;
+        Formation_FMS_B.result[55] = 0.0;
+        Formation_FMS_B.result[70] = Formation_FMS_B.object[1].l_ad;
+        Formation_FMS_B.result[13] = Formation_FMS_B.object[1].xf;
+        Formation_FMS_B.result[28] = Formation_FMS_B.object[1].yf;
+        Formation_FMS_B.result[43] = Formation_FMS_B.object[1].psi_f;
+        Formation_FMS_B.result[58] = 0.0;
+        Formation_FMS_B.result[73] = Formation_FMS_B.object[1]
+          .l[Formation_FMS_B.d_i] + Formation_FMS_B.object[1].l_ad;
       }
 
-      if (Formation_FMS_DW.target == 3) {
-        Formation_FMS_DW.result[2] = Formation_FMS_DW.object[2].xs;
-        Formation_FMS_DW.result[17] = Formation_FMS_DW.object[2].ys;
-        Formation_FMS_DW.result[32] = Formation_FMS_DW.object[2].psi_s;
-        Formation_FMS_DW.result[47] = Formation_FMS_DW.object[2].r;
-        Formation_FMS_DW.i_g = (((static_cast<int32_T>(Formation_FMS_DW.object[2]
-          .index_dubins[1]) - 1) << 1) + static_cast<int32_T>
-          (Formation_FMS_DW.object[2].index_dubins[0])) - 1;
-        Formation_FMS_DW.result[62] = Formation_FMS_DW.object[2]
-          .cs[Formation_FMS_DW.i_g];
-        Formation_FMS_DW.result[5] = Formation_FMS_DW.object[2]
-          .xts[Formation_FMS_DW.i_g];
-        Formation_FMS_DW.result[20] = Formation_FMS_DW.object[2]
-          .yts[Formation_FMS_DW.i_g];
-        Formation_FMS_DW.l_ref = Formation_FMS_atan3_9FIHpp9F
-          (Formation_FMS_DW.object[2].xtf[Formation_FMS_DW.i_g],
-           Formation_FMS_DW.object[2].ytf[Formation_FMS_DW.i_g],
-           Formation_FMS_DW.object[2].xts[Formation_FMS_DW.i_g],
-           Formation_FMS_DW.object[2].yts[Formation_FMS_DW.i_g]) *
+      if (Formation_FMS_B.target == 3) {
+        Formation_FMS_B.result[2] = Formation_FMS_B.object[2].xs;
+        Formation_FMS_B.result[17] = Formation_FMS_B.object[2].ys;
+        Formation_FMS_B.result[32] = Formation_FMS_B.object[2].psi_s;
+        Formation_FMS_B.result[47] = Formation_FMS_B.object[2].r;
+        Formation_FMS_B.d_i = (((static_cast<int32_T>(Formation_FMS_B.object[2].
+          index_dubins[1]) - 1) << 1) + static_cast<int32_T>
+          (Formation_FMS_B.object[2].index_dubins[0])) - 1;
+        Formation_FMS_B.result[62] = Formation_FMS_B.object[2]
+          .cs[Formation_FMS_B.d_i];
+        Formation_FMS_B.result[5] = Formation_FMS_B.object[2]
+          .xts[Formation_FMS_B.d_i];
+        Formation_FMS_B.result[20] = Formation_FMS_B.object[2]
+          .yts[Formation_FMS_B.d_i];
+        Formation_FMS_B.l_ref = Formation_FMS_atan3_9FIHpp9F
+          (Formation_FMS_B.object[2].xtf[Formation_FMS_B.d_i],
+           Formation_FMS_B.object[2].ytf[Formation_FMS_B.d_i],
+           Formation_FMS_B.object[2].xts[Formation_FMS_B.d_i],
+           Formation_FMS_B.object[2].yts[Formation_FMS_B.d_i]) *
           57.295779513082323;
-        Formation_FMS_DW.result[35] = Formation_FMS_DW.l_ref;
-        Formation_FMS_DW.result[50] = 0.0;
-        Formation_FMS_DW.result[65] = Formation_FMS_DW.object[2]
-          .lt[Formation_FMS_DW.i_g];
-        Formation_FMS_DW.result[8] = Formation_FMS_DW.object[2]
-          .xtf[Formation_FMS_DW.i_g];
-        Formation_FMS_DW.result[23] = Formation_FMS_DW.object[2]
-          .ytf[Formation_FMS_DW.i_g];
-        Formation_FMS_DW.result[38] = Formation_FMS_DW.l_ref;
-        Formation_FMS_DW.result[53] = Formation_FMS_DW.object[2].r;
-        Formation_FMS_DW.result[68] = Formation_FMS_DW.object[2]
-          .cf[Formation_FMS_DW.i_g];
-        Formation_FMS_DW.result[11] = Formation_FMS_DW.object[2].xm;
-        Formation_FMS_DW.result[26] = Formation_FMS_DW.object[2].ym;
-        Formation_FMS_DW.result[41] = Formation_FMS_DW.object[2].psi_f;
-        Formation_FMS_DW.result[56] = 0.0;
-        Formation_FMS_DW.result[71] = 0.0;
-        Formation_FMS_DW.result[14] = Formation_FMS_DW.object[2].xf;
-        Formation_FMS_DW.result[29] = Formation_FMS_DW.object[2].yf;
-        Formation_FMS_DW.result[44] = Formation_FMS_DW.object[2].psi_f;
-        Formation_FMS_DW.result[59] = 0.0;
-        Formation_FMS_DW.result[74] = Formation_FMS_DW.object[2]
-          .l[Formation_FMS_DW.i_g];
+        Formation_FMS_B.result[35] = Formation_FMS_B.l_ref;
+        Formation_FMS_B.result[50] = 0.0;
+        Formation_FMS_B.result[65] = Formation_FMS_B.object[2]
+          .lt[Formation_FMS_B.d_i];
+        Formation_FMS_B.result[8] = Formation_FMS_B.object[2]
+          .xtf[Formation_FMS_B.d_i];
+        Formation_FMS_B.result[23] = Formation_FMS_B.object[2]
+          .ytf[Formation_FMS_B.d_i];
+        Formation_FMS_B.result[38] = Formation_FMS_B.l_ref;
+        Formation_FMS_B.result[53] = Formation_FMS_B.object[2].r;
+        Formation_FMS_B.result[68] = Formation_FMS_B.object[2]
+          .cf[Formation_FMS_B.d_i];
+        Formation_FMS_B.result[11] = Formation_FMS_B.object[2].xm;
+        Formation_FMS_B.result[26] = Formation_FMS_B.object[2].ym;
+        Formation_FMS_B.result[41] = Formation_FMS_B.object[2].psi_f;
+        Formation_FMS_B.result[56] = 0.0;
+        Formation_FMS_B.result[71] = 0.0;
+        Formation_FMS_B.result[14] = Formation_FMS_B.object[2].xf;
+        Formation_FMS_B.result[29] = Formation_FMS_B.object[2].yf;
+        Formation_FMS_B.result[44] = Formation_FMS_B.object[2].psi_f;
+        Formation_FMS_B.result[59] = 0.0;
+        Formation_FMS_B.result[74] = Formation_FMS_B.object[2]
+          .l[Formation_FMS_B.d_i];
       } else {
-        Formation_FMS_DW.result[2] = Formation_FMS_DW.object[2].xs;
-        Formation_FMS_DW.result[17] = Formation_FMS_DW.object[2].ys;
-        Formation_FMS_DW.result[32] = Formation_FMS_DW.object[2].psi_s;
-        Formation_FMS_DW.result[47] = Formation_FMS_DW.object[2].r;
-        Formation_FMS_DW.i_g = (((static_cast<int32_T>(Formation_FMS_DW.object[2]
-          .index_dubins[1]) - 1) << 1) + static_cast<int32_T>
-          (Formation_FMS_DW.object[2].index_dubins[0])) - 1;
-        Formation_FMS_DW.result[62] = Formation_FMS_DW.object[2]
-          .cs[Formation_FMS_DW.i_g];
-        Formation_FMS_DW.l_ref = Formation_FMS_DW.object[2]
-          .xts[Formation_FMS_DW.i_g];
-        Formation_FMS_DW.result[5] = Formation_FMS_DW.l_ref;
-        Formation_FMS_DW.search_floor = Formation_FMS_DW.object[2]
-          .yts[Formation_FMS_DW.i_g];
-        Formation_FMS_DW.result[20] = Formation_FMS_DW.search_floor;
-        Formation_FMS_DW.search = Formation_FMS_DW.object[2]
-          .xtf[Formation_FMS_DW.i_g];
-        Formation_FMS_DW.goal = Formation_FMS_DW.object[2]
-          .ytf[Formation_FMS_DW.i_g];
-        Formation_FMS_DW.l_ref = Formation_FMS_atan3_9FIHpp9F
-          (Formation_FMS_DW.search, Formation_FMS_DW.goal,
-           Formation_FMS_DW.l_ref, Formation_FMS_DW.search_floor) *
-          57.295779513082323;
-        Formation_FMS_DW.result[35] = Formation_FMS_DW.l_ref;
-        Formation_FMS_DW.result[50] = 0.0;
-        Formation_FMS_DW.result[65] = Formation_FMS_DW.object[2]
-          .lt[Formation_FMS_DW.i_g];
-        Formation_FMS_DW.result[8] = Formation_FMS_DW.search;
-        Formation_FMS_DW.result[23] = Formation_FMS_DW.goal;
-        Formation_FMS_DW.result[38] = Formation_FMS_DW.l_ref;
-        Formation_FMS_DW.result[53] = Formation_FMS_DW.object[2].r;
-        Formation_FMS_DW.result[68] = Formation_FMS_DW.object[2]
-          .cf[Formation_FMS_DW.i_g];
-        Formation_FMS_DW.result[11] = Formation_FMS_DW.object[2].xm;
-        Formation_FMS_DW.result[26] = Formation_FMS_DW.object[2].ym;
-        Formation_FMS_DW.result[41] = Formation_FMS_DW.object[2].psi_f;
-        Formation_FMS_DW.result[56] = 0.0;
-        Formation_FMS_DW.result[71] = Formation_FMS_DW.object[2].l_ad;
-        Formation_FMS_DW.result[14] = Formation_FMS_DW.object[2].xf;
-        Formation_FMS_DW.result[29] = Formation_FMS_DW.object[2].yf;
-        Formation_FMS_DW.result[44] = Formation_FMS_DW.object[2].psi_f;
-        Formation_FMS_DW.result[59] = 0.0;
-        Formation_FMS_DW.result[74] = Formation_FMS_DW.object[2]
-          .l[Formation_FMS_DW.i_g] + Formation_FMS_DW.object[2].l_ad;
+        Formation_FMS_B.result[2] = Formation_FMS_B.object[2].xs;
+        Formation_FMS_B.result[17] = Formation_FMS_B.object[2].ys;
+        Formation_FMS_B.result[32] = Formation_FMS_B.object[2].psi_s;
+        Formation_FMS_B.result[47] = Formation_FMS_B.object[2].r;
+        Formation_FMS_B.d_i = (((static_cast<int32_T>(Formation_FMS_B.object[2].
+          index_dubins[1]) - 1) << 1) + static_cast<int32_T>
+          (Formation_FMS_B.object[2].index_dubins[0])) - 1;
+        Formation_FMS_B.result[62] = Formation_FMS_B.object[2]
+          .cs[Formation_FMS_B.d_i];
+        Formation_FMS_B.l_ref = Formation_FMS_B.object[2]
+          .xts[Formation_FMS_B.d_i];
+        Formation_FMS_B.result[5] = Formation_FMS_B.l_ref;
+        Formation_FMS_B.search_floor = Formation_FMS_B.object[2]
+          .yts[Formation_FMS_B.d_i];
+        Formation_FMS_B.result[20] = Formation_FMS_B.search_floor;
+        Formation_FMS_B.search = Formation_FMS_B.object[2]
+          .xtf[Formation_FMS_B.d_i];
+        Formation_FMS_B.goal = Formation_FMS_B.object[2].ytf[Formation_FMS_B.d_i];
+        Formation_FMS_B.l_ref = Formation_FMS_atan3_9FIHpp9F
+          (Formation_FMS_B.search, Formation_FMS_B.goal, Formation_FMS_B.l_ref,
+           Formation_FMS_B.search_floor) * 57.295779513082323;
+        Formation_FMS_B.result[35] = Formation_FMS_B.l_ref;
+        Formation_FMS_B.result[50] = 0.0;
+        Formation_FMS_B.result[65] = Formation_FMS_B.object[2]
+          .lt[Formation_FMS_B.d_i];
+        Formation_FMS_B.result[8] = Formation_FMS_B.search;
+        Formation_FMS_B.result[23] = Formation_FMS_B.goal;
+        Formation_FMS_B.result[38] = Formation_FMS_B.l_ref;
+        Formation_FMS_B.result[53] = Formation_FMS_B.object[2].r;
+        Formation_FMS_B.result[68] = Formation_FMS_B.object[2]
+          .cf[Formation_FMS_B.d_i];
+        Formation_FMS_B.result[11] = Formation_FMS_B.object[2].xm;
+        Formation_FMS_B.result[26] = Formation_FMS_B.object[2].ym;
+        Formation_FMS_B.result[41] = Formation_FMS_B.object[2].psi_f;
+        Formation_FMS_B.result[56] = 0.0;
+        Formation_FMS_B.result[71] = Formation_FMS_B.object[2].l_ad;
+        Formation_FMS_B.result[14] = Formation_FMS_B.object[2].xf;
+        Formation_FMS_B.result[29] = Formation_FMS_B.object[2].yf;
+        Formation_FMS_B.result[44] = Formation_FMS_B.object[2].psi_f;
+        Formation_FMS_B.result[59] = 0.0;
+        Formation_FMS_B.result[74] = Formation_FMS_B.object[2]
+          .l[Formation_FMS_B.d_i] + Formation_FMS_B.object[2].l_ad;
       }
 
-      std::memset(&Formation_FMS_DW.Other_Mission_Data.x[0], 0, 24U * sizeof
+      std::memset(&Formation_FMS_B.Other_Mission_Data.x[0], 0, 24U * sizeof
                   (real32_T));
-      std::memset(&Formation_FMS_DW.Other_Mission_Data.y[0], 0, 24U * sizeof
+      std::memset(&Formation_FMS_B.Other_Mission_Data.y[0], 0, 24U * sizeof
                   (real32_T));
-      std::memset(&Formation_FMS_DW.Other_Mission_Data.z[0], 0, 24U * sizeof
+      std::memset(&Formation_FMS_B.Other_Mission_Data.z[0], 0, 24U * sizeof
                   (real32_T));
-      std::memset(&Formation_FMS_DW.Other_Mission_Data.heading[0], 0, 24U *
+      std::memset(&Formation_FMS_B.Other_Mission_Data.heading[0], 0, 24U *
                   sizeof(real32_T));
-      std::memset(&Formation_FMS_DW.Other_Mission_Data.ext1[0], 0, 24U * sizeof
+      std::memset(&Formation_FMS_B.Other_Mission_Data.ext1[0], 0, 24U * sizeof
                   (real32_T));
-      std::memset(&Formation_FMS_DW.Other_Mission_Data.ext2[0], 0, 24U * sizeof
+      std::memset(&Formation_FMS_B.Other_Mission_Data.ext2[0], 0, 24U * sizeof
                   (real32_T));
-      for (Formation_FMS_DW.j = 0; Formation_FMS_DW.j < 5; Formation_FMS_DW.j++)
-      {
-        Formation_FMS_DW.Other_Mission_Data.x[3 * Formation_FMS_DW.j] =
-          static_cast<real32_T>(Formation_FMS_DW.result[3 * Formation_FMS_DW.j]);
-        Formation_FMS_DW.Other_Mission_Data.y[3 * Formation_FMS_DW.j] =
-          static_cast<real32_T>(Formation_FMS_DW.result[3 * Formation_FMS_DW.j +
+      for (Formation_FMS_B.d_i = 0; Formation_FMS_B.d_i < 5; Formation_FMS_B.d_i
+           ++) {
+        Formation_FMS_B.Other_Mission_Data.x[3 * Formation_FMS_B.d_i] =
+          static_cast<real32_T>(Formation_FMS_B.result[3 * Formation_FMS_B.d_i]);
+        Formation_FMS_B.Other_Mission_Data.y[3 * Formation_FMS_B.d_i] =
+          static_cast<real32_T>(Formation_FMS_B.result[3 * Formation_FMS_B.d_i +
           15]);
-        Formation_FMS_DW.i_g = 3 * Formation_FMS_DW.j + 1;
-        Formation_FMS_DW.Other_Mission_Data.x[Formation_FMS_DW.i_g] =
-          static_cast<real32_T>(Formation_FMS_DW.result[Formation_FMS_DW.i_g]);
-        Formation_FMS_DW.Other_Mission_Data.y[Formation_FMS_DW.i_g] =
-          static_cast<real32_T>(Formation_FMS_DW.result[3 * Formation_FMS_DW.j +
-          16]);
-        Formation_FMS_DW.i_g = 3 * Formation_FMS_DW.j + 2;
-        Formation_FMS_DW.Other_Mission_Data.x[Formation_FMS_DW.i_g] =
-          static_cast<real32_T>(Formation_FMS_DW.result[Formation_FMS_DW.i_g]);
-        Formation_FMS_DW.Other_Mission_Data.y[Formation_FMS_DW.i_g] =
-          static_cast<real32_T>(Formation_FMS_DW.result[3 * Formation_FMS_DW.j +
-          17]);
+        i = 3 * Formation_FMS_B.d_i + 1;
+        Formation_FMS_B.Other_Mission_Data.x[i] = static_cast<real32_T>
+          (Formation_FMS_B.result[i]);
+        Formation_FMS_B.Other_Mission_Data.y[i] = static_cast<real32_T>
+          (Formation_FMS_B.result[3 * Formation_FMS_B.d_i + 16]);
+        i = 3 * Formation_FMS_B.d_i + 2;
+        Formation_FMS_B.Other_Mission_Data.x[i] = static_cast<real32_T>
+          (Formation_FMS_B.result[i]);
+        Formation_FMS_B.Other_Mission_Data.y[i] = static_cast<real32_T>
+          (Formation_FMS_B.result[3 * Formation_FMS_B.d_i + 17]);
       }
 
-      for (Formation_FMS_DW.i_g = 0; Formation_FMS_DW.i_g < 3;
-           Formation_FMS_DW.i_g++) {
-        for (Formation_FMS_DW.j = 0; Formation_FMS_DW.j < 5; Formation_FMS_DW.j
-             ++) {
-          Formation_FMS_DW.Other_Mission_Data.z[Formation_FMS_DW.i_g + 3 *
-            Formation_FMS_DW.j] = BusConversion_InsertedFor_FMS_p->
-            h_R[Formation_FMS_DW.i_g];
+      for (i = 0; i < 3; i++) {
+        for (Formation_FMS_B.d_i = 0; Formation_FMS_B.d_i < 5;
+             Formation_FMS_B.d_i++) {
+          Formation_FMS_B.Other_Mission_Data.z[i + 3 * Formation_FMS_B.d_i] =
+            BusConversion_InsertedFor_FMS_p->h_R[i];
         }
       }
 
-      for (Formation_FMS_DW.j = 0; Formation_FMS_DW.j < 5; Formation_FMS_DW.j++)
-      {
-        Formation_FMS_DW.Other_Mission_Data.heading[3 * Formation_FMS_DW.j] =
-          static_cast<real32_T>(Formation_FMS_DW.result[3 * Formation_FMS_DW.j +
+      for (Formation_FMS_B.d_i = 0; Formation_FMS_B.d_i < 5; Formation_FMS_B.d_i
+           ++) {
+        Formation_FMS_B.Other_Mission_Data.heading[3 * Formation_FMS_B.d_i] =
+          static_cast<real32_T>(Formation_FMS_B.result[3 * Formation_FMS_B.d_i +
           30]);
-        Formation_FMS_DW.Other_Mission_Data.ext1[3 * Formation_FMS_DW.j] =
-          static_cast<real32_T>(Formation_FMS_DW.result[3 * Formation_FMS_DW.j +
+        Formation_FMS_B.Other_Mission_Data.ext1[3 * Formation_FMS_B.d_i] =
+          static_cast<real32_T>(Formation_FMS_B.result[3 * Formation_FMS_B.d_i +
           45]);
-        Formation_FMS_DW.Other_Mission_Data.ext2[3 * Formation_FMS_DW.j] =
-          static_cast<real32_T>(Formation_FMS_DW.result[3 * Formation_FMS_DW.j +
+        Formation_FMS_B.Other_Mission_Data.ext2[3 * Formation_FMS_B.d_i] =
+          static_cast<real32_T>(Formation_FMS_B.result[3 * Formation_FMS_B.d_i +
           60]);
-        Formation_FMS_DW.i_g = 3 * Formation_FMS_DW.j + 1;
-        Formation_FMS_DW.Other_Mission_Data.heading[Formation_FMS_DW.i_g] =
-          static_cast<real32_T>(Formation_FMS_DW.result[3 * Formation_FMS_DW.j +
-          31]);
-        Formation_FMS_DW.Other_Mission_Data.ext1[Formation_FMS_DW.i_g] =
-          static_cast<real32_T>(Formation_FMS_DW.result[3 * Formation_FMS_DW.j +
-          46]);
-        Formation_FMS_DW.Other_Mission_Data.ext2[Formation_FMS_DW.i_g] =
-          static_cast<real32_T>(Formation_FMS_DW.result[3 * Formation_FMS_DW.j +
-          61]);
-        Formation_FMS_DW.i_g = 3 * Formation_FMS_DW.j + 2;
-        Formation_FMS_DW.Other_Mission_Data.heading[Formation_FMS_DW.i_g] =
-          static_cast<real32_T>(Formation_FMS_DW.result[3 * Formation_FMS_DW.j +
-          32]);
-        Formation_FMS_DW.Other_Mission_Data.ext1[Formation_FMS_DW.i_g] =
-          static_cast<real32_T>(Formation_FMS_DW.result[3 * Formation_FMS_DW.j +
-          47]);
-        Formation_FMS_DW.Other_Mission_Data.ext2[Formation_FMS_DW.i_g] =
-          static_cast<real32_T>(Formation_FMS_DW.result[3 * Formation_FMS_DW.j +
-          62]);
+        i = 3 * Formation_FMS_B.d_i + 1;
+        Formation_FMS_B.Other_Mission_Data.heading[i] = static_cast<real32_T>
+          (Formation_FMS_B.result[3 * Formation_FMS_B.d_i + 31]);
+        Formation_FMS_B.Other_Mission_Data.ext1[i] = static_cast<real32_T>
+          (Formation_FMS_B.result[3 * Formation_FMS_B.d_i + 46]);
+        Formation_FMS_B.Other_Mission_Data.ext2[i] = static_cast<real32_T>
+          (Formation_FMS_B.result[3 * Formation_FMS_B.d_i + 61]);
+        i = 3 * Formation_FMS_B.d_i + 2;
+        Formation_FMS_B.Other_Mission_Data.heading[i] = static_cast<real32_T>
+          (Formation_FMS_B.result[3 * Formation_FMS_B.d_i + 32]);
+        Formation_FMS_B.Other_Mission_Data.ext1[i] = static_cast<real32_T>
+          (Formation_FMS_B.result[3 * Formation_FMS_B.d_i + 47]);
+        Formation_FMS_B.Other_Mission_Data.ext2[i] = static_cast<real32_T>
+          (Formation_FMS_B.result[3 * Formation_FMS_B.d_i + 62]);
       }
 
-      Formation_FMS_DW.Other_Mission_Data.timestamp = 9999U;
-      Formation_FMS_DW.Other_Mission_Data.type[0] = 1U;
-      Formation_FMS_DW.Other_Mission_Data.valid_items[0] = 5U;
-      Formation_FMS_DW.Other_Mission_Data.type[1] = 1U;
-      Formation_FMS_DW.Other_Mission_Data.valid_items[1] = 5U;
-      Formation_FMS_DW.Other_Mission_Data.type[2] = 1U;
-      Formation_FMS_DW.Other_Mission_Data.valid_items[2] = 5U;
+      Formation_FMS_B.Other_Mission_Data.timestamp = 9999U;
+      Formation_FMS_B.Other_Mission_Data.type[0] = 1U;
+      Formation_FMS_B.Other_Mission_Data.valid_items[0] = 5U;
+      Formation_FMS_B.Other_Mission_Data.type[1] = 1U;
+      Formation_FMS_B.Other_Mission_Data.valid_items[1] = 5U;
+      Formation_FMS_B.Other_Mission_Data.type[2] = 1U;
+      Formation_FMS_B.Other_Mission_Data.valid_items[2] = 5U;
 
-      // End of MATLAB Function: '<S152>/MATLAB Function'
       // End of Outputs for SubSystem: '<S3>/Vehicle.Formation.FormAssemble.dubinsPath' 
     }
 
-    Formation_FMS_DW.state = VehicleState::FormAssemble;
     Formation_FMS_DW.is_FormAssemble = Formation_FMS_IN_WaitForUpdate;
-    Formation_FMS_DW.Cmd_In.l1_enable = false;
+    Formation_FMS_DW.temporalCounter_i1 = 0U;
+    Formation_FMS_B.Cmd_In.cur_waypoint[0] =
+      BusConversion_InsertedFor_FMS_c->x_R;
+    Formation_FMS_B.Cmd_In.cur_waypoint[1] =
+      BusConversion_InsertedFor_FMS_c->y_R;
+    Formation_FMS_B.Cmd_In.cur_waypoint[2] =
+      BusConversion_InsertedFor_FMS_c->h_R;
+    Formation_FMS_B.state = VehicleState::FormHold;
   } else {
-    Formation_FMS_DW.is_Formation = Formation_FMS_IN_InvalidMode;
-  }
-}
-
-// Function for MATLAB Function: '<S153>/Dubins Closest Point'
-void Formation_FMS::Formati_getMinDistanceAtSegment(const real32_T waypoints[25],
-  const real32_T pose[3], uint16_T segment, real32_T *dist, real32_T *ratio)
-{
-  if (segment >= 5) {
-    *dist = (rtInfF);
-    *ratio = 0.0F;
-  } else {
-    Formation_FMS_DW.unit_centre_to_pose_idx_0 = waypoints[segment - 1];
-    Formation_FMS_DW.unit_norm_vector_idx_0 = waypoints[segment];
-    Formation_FMS_DW.unit_point_to_next[0] =
-      Formation_FMS_DW.unit_norm_vector_idx_0 -
-      Formation_FMS_DW.unit_centre_to_pose_idx_0;
-    Formation_FMS_DW.unit_centre_to_pose_idx_1 = waypoints[segment + 4];
-    Formation_FMS_DW.unit_norm_vector_idx_1 = waypoints[segment + 5];
-    Formation_FMS_DW.unit_point_to_next[1] =
-      Formation_FMS_DW.unit_norm_vector_idx_1 -
-      Formation_FMS_DW.unit_centre_to_pose_idx_1;
-    Formation_FMS_DW.dotProduct = norm_7i8u8z8R
-      (Formation_FMS_DW.unit_point_to_next);
-    Formation_FMS_DW.nearest_cross = Formation_FMS_DW.unit_point_to_next[0] /
-      Formation_FMS_DW.dotProduct;
-    Formation_FMS_DW.unit_point_to_next_g = Formation_FMS_DW.unit_point_to_next
-      [1] / Formation_FMS_DW.dotProduct;
-    Formation_FMS_DW.unit_line_idx_0 = waypoints[segment + 9];
-    Formation_FMS_DW.dotProduct = std::cos(Formation_FMS_DW.unit_line_idx_0);
-    Formation_FMS_DW.nearest_cross_tmp = std::sin
-      (Formation_FMS_DW.unit_line_idx_0);
-    Formation_FMS_DW.nearest_cross = Formation_FMS_DW.dotProduct *
-      Formation_FMS_DW.unit_point_to_next_g - Formation_FMS_DW.nearest_cross_tmp
-      * Formation_FMS_DW.nearest_cross;
-    if (std::abs(Formation_FMS_DW.nearest_cross) < 0.017452406437283512) {
-      Formation_FMS_DW.unit_line_idx_0 = Formation_FMS_DW.dotProduct;
-      Formation_FMS_DW.nearest_cross = pose[0] -
-        Formation_FMS_DW.unit_centre_to_pose_idx_0;
-      Formation_FMS_DW.dotProduct *= Formation_FMS_DW.nearest_cross;
-      Formation_FMS_DW.unit_point_to_next[0] = Formation_FMS_DW.nearest_cross;
-      Formation_FMS_DW.nearest_cross = pose[1] -
-        Formation_FMS_DW.unit_centre_to_pose_idx_1;
-      Formation_FMS_DW.dotProduct += Formation_FMS_DW.nearest_cross *
-        Formation_FMS_DW.nearest_cross_tmp;
-      Formation_FMS_DW.unit_point_to_next[0] -= Formation_FMS_DW.dotProduct *
-        Formation_FMS_DW.unit_line_idx_0;
-      Formation_FMS_DW.unit_point_to_next[1] = Formation_FMS_DW.nearest_cross -
-        Formation_FMS_DW.dotProduct * Formation_FMS_DW.nearest_cross_tmp;
-      *dist = norm_7i8u8z8R(Formation_FMS_DW.unit_point_to_next);
-      Formation_FMS_DW.unit_point_to_next[0] =
-        Formation_FMS_DW.unit_centre_to_pose_idx_0 -
-        Formation_FMS_DW.unit_norm_vector_idx_0;
-      Formation_FMS_DW.unit_point_to_next[1] =
-        Formation_FMS_DW.unit_centre_to_pose_idx_1 -
-        Formation_FMS_DW.unit_norm_vector_idx_1;
-      *ratio = Formation_FMS_DW.dotProduct / norm_7i8u8z8R
-        (Formation_FMS_DW.unit_point_to_next);
-    } else if (Formation_FMS_DW.nearest_cross > 0.017452406437283512) {
-      Formation_FMS_DW.unit_norm_vector_idx_0 =
-        -Formation_FMS_DW.nearest_cross_tmp;
-      Formation_FMS_DW.unit_norm_vector_idx_1 = Formation_FMS_DW.dotProduct;
-      Formation_FMS_DW.nearest_cross = waypoints[segment + 14];
-      Formation_FMS_DW.unit_point_to_next[0] = pose[0] -
-        (Formation_FMS_DW.nearest_cross * -Formation_FMS_DW.nearest_cross_tmp +
-         Formation_FMS_DW.unit_centre_to_pose_idx_0);
-      Formation_FMS_DW.unit_point_to_next[1] = pose[1] -
-        (Formation_FMS_DW.nearest_cross * Formation_FMS_DW.dotProduct +
-         Formation_FMS_DW.unit_centre_to_pose_idx_1);
-      Formation_FMS_DW.unit_point_to_next_g = norm_7i8u8z8R
-        (Formation_FMS_DW.unit_point_to_next);
-      Formation_FMS_DW.unit_centre_to_pose_idx_0 =
-        Formation_FMS_DW.unit_point_to_next[0] /
-        Formation_FMS_DW.unit_point_to_next_g;
-      Formation_FMS_DW.unit_centre_to_pose_idx_1 =
-        Formation_FMS_DW.unit_point_to_next[1] /
-        Formation_FMS_DW.unit_point_to_next_g;
-      Formation_FMS_DW.dotProduct = rt_atan2f_snf
-        (Formation_FMS_DW.nearest_cross_tmp *
-         Formation_FMS_DW.unit_centre_to_pose_idx_1 -
-         Formation_FMS_DW.unit_centre_to_pose_idx_0 *
-         -Formation_FMS_DW.dotProduct, Formation_FMS_DW.nearest_cross_tmp *
-         Formation_FMS_DW.unit_centre_to_pose_idx_0 +
-         -Formation_FMS_DW.dotProduct *
-         Formation_FMS_DW.unit_centre_to_pose_idx_1);
-      if (Formation_FMS_DW.dotProduct < 0.0F) {
-        Formation_FMS_DW.dotProduct += ((0.0F - Formation_FMS_DW.dotProduct) /
-          6.28318548F + 1.0F) * 6.28318548F;
-      }
-
-      *dist = Formation_FMS_DW.unit_point_to_next_g -
-        Formation_FMS_DW.nearest_cross;
-      Formation_FMS_DW.nearest_cross = waypoints[segment + 10];
-      Formation_FMS_DW.nearest_cross_tmp = (Formation_FMS_DW.nearest_cross +
-        6.28318548F) - Formation_FMS_DW.unit_line_idx_0;
-      if (Formation_FMS_DW.nearest_cross_tmp < 0.0F) {
-        Formation_FMS_DW.nearest_cross_tmp += ((0.0F -
-          Formation_FMS_DW.nearest_cross_tmp) / 6.28318548F + 1.0F) *
-          6.28318548F;
-      }
-
-      *ratio = mod_ThuC9Kor(Formation_FMS_DW.dotProduct) / mod_ThuC9Kor
-        (Formation_FMS_DW.nearest_cross_tmp);
-      if (*ratio > 1.0F) {
-        Formation_FMS_DW.unit_point_to_next[0] =
-          Formation_FMS_DW.unit_centre_to_pose_idx_0 +
-          Formation_FMS_DW.unit_norm_vector_idx_0;
-        Formation_FMS_DW.unit_point_to_next[1] =
-          Formation_FMS_DW.unit_centre_to_pose_idx_1 +
-          Formation_FMS_DW.unit_norm_vector_idx_1;
-        Formation_FMS_DW.unit_centre_to_pose[0] = -std::sin
-          (Formation_FMS_DW.nearest_cross) +
-          Formation_FMS_DW.unit_centre_to_pose_idx_0;
-        Formation_FMS_DW.unit_centre_to_pose[1] = std::cos
-          (Formation_FMS_DW.nearest_cross) +
-          Formation_FMS_DW.unit_centre_to_pose_idx_1;
-        *ratio = static_cast<real32_T>(!(norm_7i8u8z8R
-          (Formation_FMS_DW.unit_point_to_next) < norm_7i8u8z8R
-          (Formation_FMS_DW.unit_centre_to_pose)));
-      }
+    boolean_T tmp;
+    if (Formation_FMS_DW.Delay_DSTATE_j == PilotMode::FormMission) {
+      tmp = (Formation_FMS_B.Cmd_In.form_valid == 7U);
     } else {
-      Formation_FMS_DW.unit_norm_vector_idx_0 =
-        Formation_FMS_DW.nearest_cross_tmp;
-      Formation_FMS_DW.unit_norm_vector_idx_1 = -Formation_FMS_DW.dotProduct;
-      Formation_FMS_DW.nearest_cross = waypoints[segment + 14];
-      Formation_FMS_DW.unit_point_to_next[0] = pose[0] -
-        (Formation_FMS_DW.nearest_cross * Formation_FMS_DW.nearest_cross_tmp +
-         Formation_FMS_DW.unit_centre_to_pose_idx_0);
-      Formation_FMS_DW.unit_point_to_next[1] = pose[1] -
-        (Formation_FMS_DW.nearest_cross * -Formation_FMS_DW.dotProduct +
-         Formation_FMS_DW.unit_centre_to_pose_idx_1);
-      Formation_FMS_DW.nearest_cross_tmp = norm_7i8u8z8R
-        (Formation_FMS_DW.unit_point_to_next);
-      Formation_FMS_DW.unit_centre_to_pose_idx_1 =
-        Formation_FMS_DW.unit_point_to_next[0] /
-        Formation_FMS_DW.nearest_cross_tmp;
-      Formation_FMS_DW.dotProduct = Formation_FMS_DW.unit_centre_to_pose_idx_1 *
-        -Formation_FMS_DW.unit_norm_vector_idx_0;
-      Formation_FMS_DW.unit_centre_to_pose_idx_0 =
-        Formation_FMS_DW.unit_centre_to_pose_idx_1;
-      Formation_FMS_DW.unit_centre_to_pose_idx_1 =
-        Formation_FMS_DW.unit_point_to_next[1] /
-        Formation_FMS_DW.nearest_cross_tmp;
-      Formation_FMS_DW.dotProduct = rt_atan2f_snf
-        (Formation_FMS_DW.unit_centre_to_pose_idx_0 *
-         -Formation_FMS_DW.unit_norm_vector_idx_1 -
-         -Formation_FMS_DW.unit_norm_vector_idx_0 *
-         Formation_FMS_DW.unit_centre_to_pose_idx_1,
-         Formation_FMS_DW.unit_centre_to_pose_idx_1 *
-         -Formation_FMS_DW.unit_norm_vector_idx_1 + Formation_FMS_DW.dotProduct);
-      if (Formation_FMS_DW.dotProduct < 0.0F) {
-        Formation_FMS_DW.dotProduct += ((0.0F - Formation_FMS_DW.dotProduct) /
-          6.28318548F + 1.0F) * 6.28318548F;
-      }
+      tmp = false;
+    }
 
-      *dist = Formation_FMS_DW.nearest_cross_tmp -
-        Formation_FMS_DW.nearest_cross;
-      Formation_FMS_DW.nearest_cross_tmp = (6.28318548F - waypoints[segment + 10])
-        + Formation_FMS_DW.unit_line_idx_0;
-      if (Formation_FMS_DW.nearest_cross_tmp < 0.0F) {
-        Formation_FMS_DW.nearest_cross_tmp += ((0.0F -
-          Formation_FMS_DW.nearest_cross_tmp) / 6.28318548F + 1.0F) *
-          6.28318548F;
-      }
-
-      *ratio = mod_ThuC9Kor(Formation_FMS_DW.dotProduct) / mod_ThuC9Kor
-        (Formation_FMS_DW.nearest_cross_tmp);
-      if (*ratio > 1.0F) {
-        Formation_FMS_DW.unit_point_to_next[0] =
-          Formation_FMS_DW.unit_centre_to_pose_idx_0 +
-          Formation_FMS_DW.unit_norm_vector_idx_0;
-        Formation_FMS_DW.unit_point_to_next[1] =
-          Formation_FMS_DW.unit_centre_to_pose_idx_1 +
-          Formation_FMS_DW.unit_norm_vector_idx_1;
-        Formation_FMS_DW.unit_centre_to_pose[0] = std::sin(waypoints[segment +
-          10]) + Formation_FMS_DW.unit_centre_to_pose_idx_0;
-        Formation_FMS_DW.unit_centre_to_pose[1] = -std::cos(waypoints[segment +
-          10]) + Formation_FMS_DW.unit_centre_to_pose_idx_1;
-        *ratio = static_cast<real32_T>(!(norm_7i8u8z8R
-          (Formation_FMS_DW.unit_point_to_next) < norm_7i8u8z8R
-          (Formation_FMS_DW.unit_centre_to_pose)));
-      }
+    if (tmp) {
+      Formation_FMS_DW.is_Formation = Formation_FMS_IN_FormMission;
+      Formation_FMS_B.Cmd_In.sp_waypoint[0] =
+        BusConversion_InsertedFor_FMS_c->x_R;
+      Formation_FMS_B.Cmd_In.sp_waypoint[1] =
+        BusConversion_InsertedFor_FMS_c->y_R;
+      Formation_FMS_B.Cmd_In.sp_waypoint[2] =
+        BusConversion_InsertedFor_FMS_c->h_R;
+      Formation_FMS_B.state = VehicleState::FormMission;
+      Formation_FMS_DW.is_FormMission = Formation_FMS_IN_NextWP;
+    } else if (Formation_FMS_DW.Delay_DSTATE_j == PilotMode::FormDisband) {
+      Formation_FMS_DW.is_Formation = Formation_FMS_IN_FormDisband;
+      Formation_FMS_B.state = VehicleState::FormDisband;
+    } else {
+      Formation_FMS_DW.is_Formation = Formation_FMS_IN_InvalidMode;
     }
   }
+
+  // End of Delay: '<S5>/Delay'
 }
 
 // System initialize for referenced model: 'Formation_FMS'
@@ -1356,131 +1333,167 @@ void Formation_FMS::init(uint32_T *rty_FMS_Out_timestamp, VehicleState
   Formation_FMS_DW.SwitchCase_ActiveSubsystem = -1;
 
   // SystemInitialize for Chart: '<Root>/FMS State Machine'
-  Formation_FMS_DW.Cmd_In.form_valid = 0U;
-  Formation_FMS_DW.Cmd_In.l1_enable = false;
-  Formation_FMS_DW.Other_Mission_Data.timestamp = 0U;
-  Formation_FMS_DW.Cmd_In.sp_waypoint[0] = 0.0F;
-  Formation_FMS_DW.Cmd_In.cur_waypoint[0] = 0.0F;
-  Formation_FMS_DW.Other_Mission_Data.type[0] = 0U;
-  Formation_FMS_DW.Other_Mission_Data.valid_items[0] = 0U;
-  Formation_FMS_DW.Cmd_In.sp_waypoint[1] = 0.0F;
-  Formation_FMS_DW.Cmd_In.cur_waypoint[1] = 0.0F;
-  Formation_FMS_DW.Other_Mission_Data.type[1] = 0U;
-  Formation_FMS_DW.Other_Mission_Data.valid_items[1] = 0U;
-  Formation_FMS_DW.Cmd_In.sp_waypoint[2] = 0.0F;
-  Formation_FMS_DW.Cmd_In.cur_waypoint[2] = 0.0F;
-  Formation_FMS_DW.Other_Mission_Data.type[2] = 0U;
-  Formation_FMS_DW.Other_Mission_Data.valid_items[2] = 0U;
+  Formation_FMS_B.Cmd_In.form_valid = 0U;
+  Formation_FMS_B.Other_Mission_Data.timestamp = 0U;
+  Formation_FMS_B.Cmd_In.sp_waypoint[0] = 0.0F;
+  Formation_FMS_B.Cmd_In.cur_waypoint[0] = 0.0F;
+  Formation_FMS_B.Other_Mission_Data.type[0] = 0U;
+  Formation_FMS_B.Other_Mission_Data.valid_items[0] = 0U;
+  Formation_FMS_B.Cmd_In.sp_waypoint[1] = 0.0F;
+  Formation_FMS_B.Cmd_In.cur_waypoint[1] = 0.0F;
+  Formation_FMS_B.Other_Mission_Data.type[1] = 0U;
+  Formation_FMS_B.Other_Mission_Data.valid_items[1] = 0U;
+  Formation_FMS_B.Cmd_In.sp_waypoint[2] = 0.0F;
+  Formation_FMS_B.Cmd_In.cur_waypoint[2] = 0.0F;
+  Formation_FMS_B.Other_Mission_Data.type[2] = 0U;
+  Formation_FMS_B.Other_Mission_Data.valid_items[2] = 0U;
   for (int32_T i{0}; i < 24; i++) {
-    Formation_FMS_DW.Other_Mission_Data.x[i] = 0.0F;
-    Formation_FMS_DW.Other_Mission_Data.y[i] = 0.0F;
-    Formation_FMS_DW.Other_Mission_Data.z[i] = 0.0F;
-    Formation_FMS_DW.Other_Mission_Data.heading[i] = 0.0F;
-    Formation_FMS_DW.Other_Mission_Data.ext1[i] = 0.0F;
-    Formation_FMS_DW.Other_Mission_Data.ext2[i] = 0.0F;
+    Formation_FMS_B.Other_Mission_Data.x[i] = 0.0F;
+    Formation_FMS_B.Other_Mission_Data.y[i] = 0.0F;
+    Formation_FMS_B.Other_Mission_Data.z[i] = 0.0F;
+    Formation_FMS_B.Other_Mission_Data.heading[i] = 0.0F;
+    Formation_FMS_B.Other_Mission_Data.ext1[i] = 0.0F;
+    Formation_FMS_B.Other_Mission_Data.ext2[i] = 0.0F;
 
     // SystemInitialize for SignalConversion generated from: '<Root>/Other_Mission_Data' 
-    rty_Other_Mission_Data_x[i] = Formation_FMS_DW.Other_Mission_Data.x[i];
+    rty_Other_Mission_Data_x[i] = Formation_FMS_B.Other_Mission_Data.x[i];
 
     // SystemInitialize for SignalConversion generated from: '<Root>/Other_Mission_Data' 
-    rty_Other_Mission_Data_y[i] = Formation_FMS_DW.Other_Mission_Data.y[i];
+    rty_Other_Mission_Data_y[i] = Formation_FMS_B.Other_Mission_Data.y[i];
 
     // SystemInitialize for SignalConversion generated from: '<Root>/Other_Mission_Data' 
-    rty_Other_Mission_Data_z[i] = Formation_FMS_DW.Other_Mission_Data.z[i];
+    rty_Other_Mission_Data_z[i] = Formation_FMS_B.Other_Mission_Data.z[i];
 
     // SystemInitialize for SignalConversion generated from: '<Root>/Other_Mission_Data' 
     rty_Other_Mission_Data_heading[i] =
-      Formation_FMS_DW.Other_Mission_Data.heading[i];
+      Formation_FMS_B.Other_Mission_Data.heading[i];
 
     // SystemInitialize for SignalConversion generated from: '<Root>/Other_Mission_Data' 
-    rty_Other_Mission_Data_ext1[i] = Formation_FMS_DW.Other_Mission_Data.ext1[i];
+    rty_Other_Mission_Data_ext1[i] = Formation_FMS_B.Other_Mission_Data.ext1[i];
 
     // SystemInitialize for SignalConversion generated from: '<Root>/Other_Mission_Data' 
-    rty_Other_Mission_Data_ext2[i] = Formation_FMS_DW.Other_Mission_Data.ext2[i];
+    rty_Other_Mission_Data_ext2[i] = Formation_FMS_B.Other_Mission_Data.ext2[i];
   }
 
   // End of SystemInitialize for Chart: '<Root>/FMS State Machine'
 
-  // SystemInitialize for IfAction SubSystem: '<S10>/FormMission'
-  // SystemInitialize for Resettable SubSystem: '<S13>/FormMission_SubSystem'
-  // InitializeConditions for Delay: '<S115>/Delay'
-  Formation_FMS_DW.icLoad_k = true;
+  // SystemInitialize for IfAction SubSystem: '<S10>/Form_Subsystem'
+  // Start for SwitchCase: '<S12>/Switch Case'
+  Formation_FMS_DW.SwitchCase_ActiveSubsystem_c = -1;
 
-  // End of SystemInitialize for SubSystem: '<S13>/FormMission_SubSystem'
-  // End of SystemInitialize for SubSystem: '<S10>/FormMission'
-
-  // SystemInitialize for IfAction SubSystem: '<S10>/FormAssemble'
-  // SystemInitialize for Resettable SubSystem: '<S12>/Mission_SubSystem'
-  // InitializeConditions for Delay: '<S20>/Delay'
+  // SystemInitialize for IfAction SubSystem: '<S12>/FormAssemble'
+  // SystemInitialize for Resettable SubSystem: '<S17>/Mission_SubSystem'
+  // InitializeConditions for Delay: '<S26>/Delay'
   Formation_FMS_DW.icLoad_h = true;
 
-  // End of SystemInitialize for SubSystem: '<S12>/Mission_SubSystem'
-  // End of SystemInitialize for SubSystem: '<S10>/FormAssemble'
+  // End of SystemInitialize for SubSystem: '<S17>/Mission_SubSystem'
+  // End of SystemInitialize for SubSystem: '<S12>/FormAssemble'
+
+  // SystemInitialize for IfAction SubSystem: '<S12>/FormHold'
+  // InitializeConditions for Delay: '<S68>/start_vel'
+  Formation_FMS_DW.icLoad_l3 = true;
+
+  // InitializeConditions for Delay: '<S64>/Delay'
+  Formation_FMS_DW.icLoad_p = true;
+
+  // End of SystemInitialize for SubSystem: '<S12>/FormHold'
+
+  // SystemInitialize for IfAction SubSystem: '<S12>/FormMission'
+  // SystemInitialize for Resettable SubSystem: '<S20>/FormMission_SubSystem'
+  // InitializeConditions for Delay: '<S159>/Delay'
+  Formation_FMS_DW.icLoad_k = true;
+
+  // InitializeConditions for DiscreteIntegrator: '<S97>/Discrete-Time Integrator1' 
+  Formation_FMS_DW.DiscreteTimeIntegrator1_IC_LOAD = 1U;
+
+  // End of SystemInitialize for SubSystem: '<S20>/FormMission_SubSystem'
+  // End of SystemInitialize for SubSystem: '<S12>/FormMission'
+
+  // SystemInitialize for IfAction SubSystem: '<S12>/FormDisband'
+  // InitializeConditions for Delay: '<S50>/start_vel'
+  Formation_FMS_DW.icLoad_a = true;
+
+  // InitializeConditions for Delay: '<S46>/Delay'
+  Formation_FMS_DW.icLoad_l = true;
+
+  // End of SystemInitialize for SubSystem: '<S12>/FormDisband'
+
+  // SystemInitialize for IfAction SubSystem: '<S12>/Default'
+  Formation_FMS_Default_Init(&Formation_FMS_DW.Default_d);
+
+  // End of SystemInitialize for SubSystem: '<S12>/Default'
+  // End of SystemInitialize for SubSystem: '<S10>/Form_Subsystem'
 
   // SystemInitialize for IfAction SubSystem: '<S10>/Hold'
-  // InitializeConditions for Delay: '<S139>/start_vel'
-  Formation_FMS_DW.icLoad_c = true;
+  // InitializeConditions for Delay: '<S186>/start_vel'
+  Formation_FMS_DW.icLoad = true;
 
-  // InitializeConditions for Delay: '<S135>/Delay'
+  // InitializeConditions for Delay: '<S182>/Delay'
   Formation_FMS_DW.icLoad_j = true;
 
   // End of SystemInitialize for SubSystem: '<S10>/Hold'
 
   // SystemInitialize for IfAction SubSystem: '<S10>/Default'
-  // InitializeConditions for Delay: '<S16>/Delay'
-  Formation_FMS_DW.icLoad = true;
+  Formation_FMS_Default_Init(&Formation_FMS_DW.Default);
 
   // End of SystemInitialize for SubSystem: '<S10>/Default'
 
   // SystemInitialize for SignalConversion generated from: '<Root>/Other_Mission_Data' 
-  rty_Other_Mission_Data_type[0] = Formation_FMS_DW.Other_Mission_Data.type[0];
+  rty_Other_Mission_Data_type[0] = Formation_FMS_B.Other_Mission_Data.type[0];
 
   // SystemInitialize for SignalConversion generated from: '<Root>/Other_Mission_Data' 
   rty_Other_Mission_Data_valid_it[0] =
-    Formation_FMS_DW.Other_Mission_Data.valid_items[0];
+    Formation_FMS_B.Other_Mission_Data.valid_items[0];
 
   // SystemInitialize for SignalConversion generated from: '<Root>/Other_Mission_Data' 
-  rty_Other_Mission_Data_type[1] = Formation_FMS_DW.Other_Mission_Data.type[1];
+  rty_Other_Mission_Data_type[1] = Formation_FMS_B.Other_Mission_Data.type[1];
 
   // SystemInitialize for SignalConversion generated from: '<Root>/Other_Mission_Data' 
   rty_Other_Mission_Data_valid_it[1] =
-    Formation_FMS_DW.Other_Mission_Data.valid_items[1];
+    Formation_FMS_B.Other_Mission_Data.valid_items[1];
 
   // SystemInitialize for SignalConversion generated from: '<Root>/Other_Mission_Data' 
-  rty_Other_Mission_Data_type[2] = Formation_FMS_DW.Other_Mission_Data.type[2];
+  rty_Other_Mission_Data_type[2] = Formation_FMS_B.Other_Mission_Data.type[2];
 
   // SystemInitialize for SignalConversion generated from: '<Root>/Other_Mission_Data' 
   rty_Other_Mission_Data_valid_it[2] =
-    Formation_FMS_DW.Other_Mission_Data.valid_items[2];
+    Formation_FMS_B.Other_Mission_Data.valid_items[2];
 
   // SystemInitialize for SignalConversion generated from: '<Root>/Other_Mission_Data' 
   *rty_Other_Mission_Data_timestam =
-    Formation_FMS_DW.Other_Mission_Data.timestamp;
+    Formation_FMS_B.Other_Mission_Data.timestamp;
 
   // SystemInitialize for Merge: '<S10>/Merge'
-  std::memset(&Formation_FMS_DW.Merge, 0, sizeof(FMS_Out_Bus));
+  std::memset(&Formation_FMS_B.Merge, 0, sizeof(FMS_Out_Bus));
 
   // SystemInitialize for SignalConversion generated from: '<Root>/FMS_Out'
-  *rty_FMS_Out_timestamp = Formation_FMS_DW.Merge.timestamp;
+  *rty_FMS_Out_timestamp = Formation_FMS_B.Merge.timestamp;
 
   // SystemInitialize for SignalConversion generated from: '<Root>/FMS_Out'
-  *rty_FMS_Out_state = Formation_FMS_DW.Merge.state;
+  *rty_FMS_Out_state = Formation_FMS_B.Merge.state;
 
   // SystemInitialize for SignalConversion generated from: '<Root>/FMS_Out'
-  *rty_FMS_Out_ax_cmd = Formation_FMS_DW.Merge.ax_cmd;
+  *rty_FMS_Out_ax_cmd = Formation_FMS_B.Merge.ax_cmd;
 
   // SystemInitialize for SignalConversion generated from: '<Root>/FMS_Out'
-  *rty_FMS_Out_ay_cmd = Formation_FMS_DW.Merge.ay_cmd;
+  *rty_FMS_Out_ay_cmd = Formation_FMS_B.Merge.ay_cmd;
 
   // SystemInitialize for SignalConversion generated from: '<Root>/FMS_Out'
-  *rty_FMS_Out_vh_cmd = Formation_FMS_DW.Merge.vh_cmd;
+  *rty_FMS_Out_vh_cmd = Formation_FMS_B.Merge.vh_cmd;
 }
 
 // Disable for referenced model: 'Formation_FMS'
 void Formation_FMS::disable(void)
 {
   // Disable for SwitchCase: '<S10>/Switch Case'
+  if (Formation_FMS_DW.SwitchCase_ActiveSubsystem == 0) {
+    // Disable for SwitchCase: '<S12>/Switch Case'
+    Formation_FMS_DW.SwitchCase_ActiveSubsystem_c = -1;
+  }
+
   Formation_FMS_DW.SwitchCase_ActiveSubsystem = -1;
+
+  // End of Disable for SwitchCase: '<S10>/Switch Case'
 }
 
 // Output and update for referenced model: 'Formation_FMS'
@@ -1488,127 +1501,114 @@ void Formation_FMS::step(const uint32_T *rtu_Pilot_Cmd_timestamp, const uint32_T
   *rtu_Pilot_Cmd_mode, const uint32_T *rtu_Mission_Data_timestamp, const
   uint32_T *rtu_Mission_Data_type, const uint8_T *rtu_Mission_Data_valid_items,
   const real32_T rtu_Mission_Data_x[8], const real32_T rtu_Mission_Data_y[8],
-  const real32_T rtu_Mission_Data_z[8], const real32_T rtu_Mission_Data_heading
-  [8], const real32_T rtu_Mission_Data_ext1[8], const real32_T
-  rtu_Mission_Data_ext2[8], const uint32_T *rtu_INS_Out_timestamp, const
-  real32_T *rtu_INS_Out_phi, const real32_T *rtu_INS_Out_theta, const real32_T
-  *rtu_INS_Out_psi, const real32_T *rtu_INS_Out_p, const real32_T *rtu_INS_Out_q,
-  const real32_T *rtu_INS_Out_r, const real32_T rtu_INS_Out_quat[4], const
-  real32_T *rtu_INS_Out_x_R, const real32_T *rtu_INS_Out_y_R, const real32_T
-  *rtu_INS_Out_h_R, const real32_T *rtu_INS_Out_airspeed, const real32_T
-  *rtu_INS_Out_ax, const real32_T *rtu_INS_Out_ay, const real32_T
-  *rtu_INS_Out_az, const real32_T *rtu_INS_Out_vn, const real32_T
-  *rtu_INS_Out_ve, const real32_T *rtu_INS_Out_vd, const uint32_T
-  rtu_Formation_Cross_timestamp[3], const real32_T rtu_Formation_Cross_x_R[3],
-  const real32_T rtu_Formation_Cross_y_R[3], const real32_T
-  rtu_Formation_Cross_h_R[3], const real32_T rtu_Formation_Cross_vn[3], const
-  real32_T rtu_Formation_Cross_ve[3], const real32_T rtu_Formation_Cross_vd[3],
-  const real32_T rtu_Formation_Cross_left_time[3], uint32_T
-  *rty_FMS_Out_timestamp, VehicleState *rty_FMS_Out_state, real32_T
-  *rty_FMS_Out_ax_cmd, real32_T *rty_FMS_Out_ay_cmd, real32_T
-  *rty_FMS_Out_vh_cmd, uint32_T *rty_Other_Mission_Data_timestam, uint32_T
-  rty_Other_Mission_Data_type[3], uint8_T rty_Other_Mission_Data_valid_it[3],
-  real32_T rty_Other_Mission_Data_x[24], real32_T rty_Other_Mission_Data_y[24],
-  real32_T rty_Other_Mission_Data_z[24], real32_T
-  rty_Other_Mission_Data_heading[24], real32_T rty_Other_Mission_Data_ext1[24],
-  real32_T rty_Other_Mission_Data_ext2[24], real32_T *rty_Form_Single)
+  const real32_T rtu_Mission_Data_z[8], const uint32_T *rtu_INS_Out_timestamp,
+  const real32_T *rtu_INS_Out_phi, const real32_T *rtu_INS_Out_theta, const
+  real32_T *rtu_INS_Out_psi, const real32_T *rtu_INS_Out_p, const real32_T
+  *rtu_INS_Out_q, const real32_T *rtu_INS_Out_r, const real32_T
+  rtu_INS_Out_quat[4], const real32_T *rtu_INS_Out_x_R, const real32_T
+  *rtu_INS_Out_y_R, const real32_T *rtu_INS_Out_h_R, const real32_T
+  *rtu_INS_Out_airspeed, const real32_T *rtu_INS_Out_ax, const real32_T
+  *rtu_INS_Out_ay, const real32_T *rtu_INS_Out_az, const real32_T
+  *rtu_INS_Out_vn, const real32_T *rtu_INS_Out_ve, const real32_T
+  *rtu_INS_Out_vd, const uint32_T rtu_Formation_Cross_timestamp[3], const
+  real32_T rtu_Formation_Cross_x_R[3], const real32_T rtu_Formation_Cross_y_R[3],
+  const real32_T rtu_Formation_Cross_h_R[3], const real32_T
+  rtu_Formation_Cross_vn[3], const real32_T rtu_Formation_Cross_ve[3], const
+  real32_T rtu_Formation_Cross_vd[3], uint32_T *rty_FMS_Out_timestamp,
+  VehicleState *rty_FMS_Out_state, real32_T *rty_FMS_Out_ax_cmd, real32_T
+  *rty_FMS_Out_ay_cmd, real32_T *rty_FMS_Out_vh_cmd, uint32_T
+  *rty_Other_Mission_Data_timestam, uint32_T rty_Other_Mission_Data_type[3],
+  uint8_T rty_Other_Mission_Data_valid_it[3], real32_T rty_Other_Mission_Data_x
+  [24], real32_T rty_Other_Mission_Data_y[24], real32_T
+  rty_Other_Mission_Data_z[24], real32_T rty_Other_Mission_Data_heading[24],
+  real32_T rty_Other_Mission_Data_ext1[24], real32_T
+  rty_Other_Mission_Data_ext2[24])
 {
-  int8_T rtAction;
   int8_T rtPrevAction;
+  boolean_T x[3];
   boolean_T b_x[2];
+  boolean_T exitg1;
   boolean_T rtb_FixPtRelationalOperator_c;
 
   // BusCreator generated from: '<Root>/FMS State Machine'
-  Formation_FMS_DW.BusConversion_InsertedFor_FMS_c.timestamp =
+  Formation_FMS_B.BusConversion_InsertedFor_FMS_c.timestamp =
     *rtu_INS_Out_timestamp;
-  Formation_FMS_DW.BusConversion_InsertedFor_FMS_c.phi = *rtu_INS_Out_phi;
-  Formation_FMS_DW.BusConversion_InsertedFor_FMS_c.theta = *rtu_INS_Out_theta;
-  Formation_FMS_DW.BusConversion_InsertedFor_FMS_c.psi = *rtu_INS_Out_psi;
-  Formation_FMS_DW.BusConversion_InsertedFor_FMS_c.p = *rtu_INS_Out_p;
-  Formation_FMS_DW.BusConversion_InsertedFor_FMS_c.q = *rtu_INS_Out_q;
-  Formation_FMS_DW.BusConversion_InsertedFor_FMS_c.r = *rtu_INS_Out_r;
-  Formation_FMS_DW.BusConversion_InsertedFor_FMS_c.quat[0] = rtu_INS_Out_quat[0];
-  Formation_FMS_DW.BusConversion_InsertedFor_FMS_c.quat[1] = rtu_INS_Out_quat[1];
-  Formation_FMS_DW.BusConversion_InsertedFor_FMS_c.quat[2] = rtu_INS_Out_quat[2];
-  Formation_FMS_DW.BusConversion_InsertedFor_FMS_c.quat[3] = rtu_INS_Out_quat[3];
-  Formation_FMS_DW.BusConversion_InsertedFor_FMS_c.x_R = *rtu_INS_Out_x_R;
-  Formation_FMS_DW.BusConversion_InsertedFor_FMS_c.y_R = *rtu_INS_Out_y_R;
-  Formation_FMS_DW.BusConversion_InsertedFor_FMS_c.h_R = *rtu_INS_Out_h_R;
-  Formation_FMS_DW.BusConversion_InsertedFor_FMS_c.airspeed =
+  Formation_FMS_B.BusConversion_InsertedFor_FMS_c.phi = *rtu_INS_Out_phi;
+  Formation_FMS_B.BusConversion_InsertedFor_FMS_c.theta = *rtu_INS_Out_theta;
+  Formation_FMS_B.BusConversion_InsertedFor_FMS_c.psi = *rtu_INS_Out_psi;
+  Formation_FMS_B.BusConversion_InsertedFor_FMS_c.p = *rtu_INS_Out_p;
+  Formation_FMS_B.BusConversion_InsertedFor_FMS_c.q = *rtu_INS_Out_q;
+  Formation_FMS_B.BusConversion_InsertedFor_FMS_c.r = *rtu_INS_Out_r;
+  Formation_FMS_B.BusConversion_InsertedFor_FMS_c.quat[0] = rtu_INS_Out_quat[0];
+  Formation_FMS_B.BusConversion_InsertedFor_FMS_c.quat[1] = rtu_INS_Out_quat[1];
+  Formation_FMS_B.BusConversion_InsertedFor_FMS_c.quat[2] = rtu_INS_Out_quat[2];
+  Formation_FMS_B.BusConversion_InsertedFor_FMS_c.quat[3] = rtu_INS_Out_quat[3];
+  Formation_FMS_B.BusConversion_InsertedFor_FMS_c.x_R = *rtu_INS_Out_x_R;
+  Formation_FMS_B.BusConversion_InsertedFor_FMS_c.y_R = *rtu_INS_Out_y_R;
+  Formation_FMS_B.BusConversion_InsertedFor_FMS_c.h_R = *rtu_INS_Out_h_R;
+  Formation_FMS_B.BusConversion_InsertedFor_FMS_c.airspeed =
     *rtu_INS_Out_airspeed;
-  Formation_FMS_DW.BusConversion_InsertedFor_FMS_c.ax = *rtu_INS_Out_ax;
-  Formation_FMS_DW.BusConversion_InsertedFor_FMS_c.ay = *rtu_INS_Out_ay;
-  Formation_FMS_DW.BusConversion_InsertedFor_FMS_c.az = *rtu_INS_Out_az;
-  Formation_FMS_DW.BusConversion_InsertedFor_FMS_c.vn = *rtu_INS_Out_vn;
-  Formation_FMS_DW.BusConversion_InsertedFor_FMS_c.ve = *rtu_INS_Out_ve;
-  Formation_FMS_DW.BusConversion_InsertedFor_FMS_c.vd = *rtu_INS_Out_vd;
+  Formation_FMS_B.BusConversion_InsertedFor_FMS_c.ax = *rtu_INS_Out_ax;
+  Formation_FMS_B.BusConversion_InsertedFor_FMS_c.ay = *rtu_INS_Out_ay;
+  Formation_FMS_B.BusConversion_InsertedFor_FMS_c.az = *rtu_INS_Out_az;
+  Formation_FMS_B.BusConversion_InsertedFor_FMS_c.vn = *rtu_INS_Out_vn;
+  Formation_FMS_B.BusConversion_InsertedFor_FMS_c.ve = *rtu_INS_Out_ve;
+  Formation_FMS_B.BusConversion_InsertedFor_FMS_c.vd = *rtu_INS_Out_vd;
 
   // BusCreator generated from: '<Root>/FMS State Machine'
-  Formation_FMS_DW.BusConversion_InsertedFor_FMS_p.timestamp[0] =
+  Formation_FMS_B.BusConversion_InsertedFor_FMS_p.timestamp[0] =
     rtu_Formation_Cross_timestamp[0];
-  Formation_FMS_DW.BusConversion_InsertedFor_FMS_p.x_R[0] =
+  Formation_FMS_B.BusConversion_InsertedFor_FMS_p.x_R[0] =
     rtu_Formation_Cross_x_R[0];
-  Formation_FMS_DW.BusConversion_InsertedFor_FMS_p.y_R[0] =
+  Formation_FMS_B.BusConversion_InsertedFor_FMS_p.y_R[0] =
     rtu_Formation_Cross_y_R[0];
-  Formation_FMS_DW.BusConversion_InsertedFor_FMS_p.h_R[0] =
+  Formation_FMS_B.BusConversion_InsertedFor_FMS_p.h_R[0] =
     rtu_Formation_Cross_h_R[0];
-  Formation_FMS_DW.BusConversion_InsertedFor_FMS_p.vn[0] =
+  Formation_FMS_B.BusConversion_InsertedFor_FMS_p.vn[0] =
     rtu_Formation_Cross_vn[0];
-  Formation_FMS_DW.BusConversion_InsertedFor_FMS_p.ve[0] =
+  Formation_FMS_B.BusConversion_InsertedFor_FMS_p.ve[0] =
     rtu_Formation_Cross_ve[0];
-  Formation_FMS_DW.BusConversion_InsertedFor_FMS_p.vd[0] =
+  Formation_FMS_B.BusConversion_InsertedFor_FMS_p.vd[0] =
     rtu_Formation_Cross_vd[0];
-  Formation_FMS_DW.BusConversion_InsertedFor_FMS_p.left_time[0] =
-    rtu_Formation_Cross_left_time[0];
-  Formation_FMS_DW.BusConversion_InsertedFor_FMS_p.timestamp[1] =
+  Formation_FMS_B.BusConversion_InsertedFor_FMS_p.timestamp[1] =
     rtu_Formation_Cross_timestamp[1];
-  Formation_FMS_DW.BusConversion_InsertedFor_FMS_p.x_R[1] =
+  Formation_FMS_B.BusConversion_InsertedFor_FMS_p.x_R[1] =
     rtu_Formation_Cross_x_R[1];
-  Formation_FMS_DW.BusConversion_InsertedFor_FMS_p.y_R[1] =
+  Formation_FMS_B.BusConversion_InsertedFor_FMS_p.y_R[1] =
     rtu_Formation_Cross_y_R[1];
-  Formation_FMS_DW.BusConversion_InsertedFor_FMS_p.h_R[1] =
+  Formation_FMS_B.BusConversion_InsertedFor_FMS_p.h_R[1] =
     rtu_Formation_Cross_h_R[1];
-  Formation_FMS_DW.BusConversion_InsertedFor_FMS_p.vn[1] =
+  Formation_FMS_B.BusConversion_InsertedFor_FMS_p.vn[1] =
     rtu_Formation_Cross_vn[1];
-  Formation_FMS_DW.BusConversion_InsertedFor_FMS_p.ve[1] =
+  Formation_FMS_B.BusConversion_InsertedFor_FMS_p.ve[1] =
     rtu_Formation_Cross_ve[1];
-  Formation_FMS_DW.BusConversion_InsertedFor_FMS_p.vd[1] =
+  Formation_FMS_B.BusConversion_InsertedFor_FMS_p.vd[1] =
     rtu_Formation_Cross_vd[1];
-  Formation_FMS_DW.BusConversion_InsertedFor_FMS_p.left_time[1] =
-    rtu_Formation_Cross_left_time[1];
-  Formation_FMS_DW.BusConversion_InsertedFor_FMS_p.timestamp[2] =
+  Formation_FMS_B.BusConversion_InsertedFor_FMS_p.timestamp[2] =
     rtu_Formation_Cross_timestamp[2];
-  Formation_FMS_DW.BusConversion_InsertedFor_FMS_p.x_R[2] =
+  Formation_FMS_B.BusConversion_InsertedFor_FMS_p.x_R[2] =
     rtu_Formation_Cross_x_R[2];
-  Formation_FMS_DW.BusConversion_InsertedFor_FMS_p.y_R[2] =
+  Formation_FMS_B.BusConversion_InsertedFor_FMS_p.y_R[2] =
     rtu_Formation_Cross_y_R[2];
-  Formation_FMS_DW.BusConversion_InsertedFor_FMS_p.h_R[2] =
+  Formation_FMS_B.BusConversion_InsertedFor_FMS_p.h_R[2] =
     rtu_Formation_Cross_h_R[2];
-  Formation_FMS_DW.BusConversion_InsertedFor_FMS_p.vn[2] =
+  Formation_FMS_B.BusConversion_InsertedFor_FMS_p.vn[2] =
     rtu_Formation_Cross_vn[2];
-  Formation_FMS_DW.BusConversion_InsertedFor_FMS_p.ve[2] =
+  Formation_FMS_B.BusConversion_InsertedFor_FMS_p.ve[2] =
     rtu_Formation_Cross_ve[2];
-  Formation_FMS_DW.BusConversion_InsertedFor_FMS_p.vd[2] =
+  Formation_FMS_B.BusConversion_InsertedFor_FMS_p.vd[2] =
     rtu_Formation_Cross_vd[2];
-  Formation_FMS_DW.BusConversion_InsertedFor_FMS_p.left_time[2] =
-    rtu_Formation_Cross_left_time[2];
 
   // BusCreator generated from: '<Root>/FMS State Machine'
-  Formation_FMS_DW.BusConversion_InsertedFor_FMS_m = *rtu_Mission_Data_timestamp;
-  Formation_FMS_DW.BusConversion_InsertedFor_FMS_n = *rtu_Mission_Data_type;
-  for (Formation_FMS_DW.i = 0; Formation_FMS_DW.i < 8; Formation_FMS_DW.i++) {
-    Formation_FMS_DW.BusConversion_InsertedFor_FMSSt[Formation_FMS_DW.i] =
-      rtu_Mission_Data_x[Formation_FMS_DW.i];
-    Formation_FMS_DW.BusConversion_InsertedFor_FMS_k[Formation_FMS_DW.i] =
-      rtu_Mission_Data_y[Formation_FMS_DW.i];
-    Formation_FMS_DW.BusConversion_InsertedFor_FM_cx[Formation_FMS_DW.i] =
-      rtu_Mission_Data_z[Formation_FMS_DW.i];
-    Formation_FMS_DW.BusConversion_InsertedFor_FMS_b[Formation_FMS_DW.i] =
-      rtu_Mission_Data_heading[Formation_FMS_DW.i];
-    Formation_FMS_DW.BusConversion_InsertedFor_FM_pb[Formation_FMS_DW.i] =
-      rtu_Mission_Data_ext1[Formation_FMS_DW.i];
-    Formation_FMS_DW.BusConversion_InsertedFor_FM_cv[Formation_FMS_DW.i] =
-      rtu_Mission_Data_ext2[Formation_FMS_DW.i];
+  Formation_FMS_B.BusConversion_InsertedFor_FMS_b = *rtu_Mission_Data_timestamp;
+  Formation_FMS_B.BusConversion_InsertedFor_FM_pb = *rtu_Mission_Data_type;
+  for (Formation_FMS_B.i = 0; Formation_FMS_B.i < 8; Formation_FMS_B.i++) {
+    Formation_FMS_B.BusConversion_InsertedFor_FMSSt[Formation_FMS_B.i] =
+      rtu_Mission_Data_x[Formation_FMS_B.i];
+    Formation_FMS_B.BusConversion_InsertedFor_FM_cl[Formation_FMS_B.i] =
+      rtu_Mission_Data_y[Formation_FMS_B.i];
+    Formation_FMS_B.BusConversion_InsertedFor_FMS_k[Formation_FMS_B.i] =
+      rtu_Mission_Data_z[Formation_FMS_B.i];
   }
 
   // End of BusCreator generated from: '<Root>/FMS State Machine'
@@ -1626,7 +1626,7 @@ void Formation_FMS::step(const uint32_T *rtu_Pilot_Cmd_timestamp, const uint32_T
 
   // DiscreteIntegrator: '<S4>/Discrete-Time Integrator1'
   if (rtb_FixPtRelationalOperator_c) {
-    Formation_FMS_DW.DiscreteTimeIntegrator1_DSTATE = 0.0F;
+    Formation_FMS_DW.DiscreteTimeIntegrator1_DSTAT_l = 0.0F;
   }
 
   // RelationalOperator: '<S8>/Compare' incorporates:
@@ -1641,16 +1641,11 @@ void Formation_FMS::step(const uint32_T *rtu_Pilot_Cmd_timestamp, const uint32_T
   //   RelationalOperator: '<S6>/Compare'
 
   if (rtb_FixPtRelationalOperator_c &&
-      (Formation_FMS_DW.DiscreteTimeIntegrator1_DSTATE < 0.5F)) {
-    // Switch: '<S5>/Switch' incorporates:
+      (Formation_FMS_DW.DiscreteTimeIntegrator1_DSTAT_l < 0.5F)) {
+    // Delay: '<S5>/Delay' incorporates:
     //   DataTypeConversion: '<S5>/Data Type Conversion2'
 
-    Formation_FMS_DW.Switch = static_cast<PilotMode>(*rtu_Pilot_Cmd_mode);
-  } else {
-    // Switch: '<S5>/Switch' incorporates:
-    //   Delay: '<S5>/Delay'
-
-    Formation_FMS_DW.Switch = Formation_FMS_DW.Delay_DSTATE_j;
+    Formation_FMS_DW.Delay_DSTATE_j = static_cast<PilotMode>(*rtu_Pilot_Cmd_mode);
   }
 
   // End of Switch: '<S5>/Switch'
@@ -1664,73 +1659,75 @@ void Formation_FMS::step(const uint32_T *rtu_Pilot_Cmd_timestamp, const uint32_T
   Formation_FMS_DW.DelayInput1_DSTATE = *rtu_Pilot_Cmd_timestamp;
 
   // Update for DiscreteIntegrator: '<S4>/Discrete-Time Integrator1'
-  Formation_FMS_DW.DiscreteTimeIntegrator1_DSTATE += 0.02F;
-
-  // Update for Delay: '<S5>/Delay'
-  Formation_FMS_DW.Delay_DSTATE_j = Formation_FMS_DW.Switch;
+  Formation_FMS_DW.DiscreteTimeIntegrator1_DSTAT_l += 0.02F;
 
   // End of Outputs for SubSystem: '<Root>/CommandProcess'
 
   // Chart: '<Root>/FMS State Machine' incorporates:
   //   Constant: '<Root>/ACCEPT_R'
-  //   MATLAB Function: '<S154>/MATLAB Function'
+  //   Delay: '<S5>/Delay'
+  //   MATLAB Function: '<S200>/MATLAB Function'
+
+  if (Formation_FMS_DW.temporalCounter_i1 < 511U) {
+    Formation_FMS_DW.temporalCounter_i1 = static_cast<uint16_T>
+      (Formation_FMS_DW.temporalCounter_i1 + 1);
+  }
 
   Formation_FMS_DW.Mission_Data_timestamp_prev =
     Formation_FMS_DW.Mission_Data_timestamp_start;
   Formation_FMS_DW.Mission_Data_timestamp_start =
-    Formation_FMS_DW.BusConversion_InsertedFor_FMS_m;
+    Formation_FMS_B.BusConversion_InsertedFor_FMS_b;
   Formation_FMS_DW.mode_prev = Formation_FMS_DW.mode_start;
-  Formation_FMS_DW.mode_start = Formation_FMS_DW.Switch;
+  Formation_FMS_DW.mode_start = Formation_FMS_DW.Delay_DSTATE_j;
   if (Formation_FMS_DW.is_active_c3_Formation_FMS == 0U) {
-    boolean_T exitg1;
     Formation_FMS_DW.Mission_Data_timestamp_prev =
-      Formation_FMS_DW.BusConversion_InsertedFor_FMS_m;
-    Formation_FMS_DW.mode_prev = Formation_FMS_DW.Switch;
+      Formation_FMS_B.BusConversion_InsertedFor_FMS_b;
+    Formation_FMS_DW.mode_prev = Formation_FMS_DW.Delay_DSTATE_j;
     Formation_FMS_DW.is_active_c3_Formation_FMS = 1U;
-    b_x[0] = (Formation_FMS_DW.Switch == PilotMode::FormAssemble);
-    b_x[1] = (Formation_FMS_DW.Switch == PilotMode::FormDisband);
+    x[0] = (Formation_FMS_DW.Delay_DSTATE_j == PilotMode::FormAssemble);
+    x[1] = (Formation_FMS_DW.Delay_DSTATE_j == PilotMode::FormMission);
+    x[2] = (Formation_FMS_DW.Delay_DSTATE_j == PilotMode::FormDisband);
     rtb_FixPtRelationalOperator_c = false;
-    Formation_FMS_DW.i = 0;
+    Formation_FMS_B.i = 0;
     exitg1 = false;
-    while ((!exitg1) && (Formation_FMS_DW.i < 2)) {
-      if (b_x[Formation_FMS_DW.i]) {
+    while ((!exitg1) && (Formation_FMS_B.i < 3)) {
+      if (x[Formation_FMS_B.i]) {
         rtb_FixPtRelationalOperator_c = true;
         exitg1 = true;
       } else {
-        Formation_FMS_DW.i++;
+        Formation_FMS_B.i++;
       }
     }
 
     if (rtb_FixPtRelationalOperator_c) {
       Formation_FMS_DW.is_Vehicle = Formation_FMS_IN_Formation;
       Format_enter_internal_Formation
-        (&Formation_FMS_DW.BusConversion_InsertedFor_FMS_c,
-         &Formation_FMS_DW.BusConversion_InsertedFor_FMS_p,
-         &Formation_FMS_DW.Switch);
+        (&Formation_FMS_B.BusConversion_InsertedFor_FMS_c,
+         &Formation_FMS_B.BusConversion_InsertedFor_FMS_p);
     } else {
       Formation_FMS_DW.is_Vehicle = Formation_FMS_IN_Standby;
-      Formation_FMS_DW.Cmd_In.cur_waypoint[0] =
-        Formation_FMS_DW.BusConversion_InsertedFor_FMS_c.x_R;
-      Formation_FMS_DW.Cmd_In.cur_waypoint[1] =
-        Formation_FMS_DW.BusConversion_InsertedFor_FMS_c.y_R;
-      Formation_FMS_DW.Cmd_In.cur_waypoint[2] =
-        Formation_FMS_DW.BusConversion_InsertedFor_FMS_c.h_R;
-      Formation_FMS_DW.state = VehicleState::Hold;
+      Formation_FMS_B.Cmd_In.cur_waypoint[0] =
+        Formation_FMS_B.BusConversion_InsertedFor_FMS_c.x_R;
+      Formation_FMS_B.Cmd_In.cur_waypoint[1] =
+        Formation_FMS_B.BusConversion_InsertedFor_FMS_c.y_R;
+      Formation_FMS_B.Cmd_In.cur_waypoint[2] =
+        Formation_FMS_B.BusConversion_InsertedFor_FMS_c.h_R;
+      Formation_FMS_B.state = VehicleState::Hold;
     }
   } else if ((Formation_FMS_DW.mode_prev != Formation_FMS_DW.mode_start) &&
-             (Formation_FMS_DW.Switch != PilotMode::None)) {
-    boolean_T exitg1;
-    b_x[0] = (Formation_FMS_DW.Switch == PilotMode::FormAssemble);
-    b_x[1] = (Formation_FMS_DW.Switch == PilotMode::FormDisband);
+             (Formation_FMS_DW.Delay_DSTATE_j != PilotMode::None)) {
+    x[0] = (Formation_FMS_DW.Delay_DSTATE_j == PilotMode::FormAssemble);
+    x[1] = (Formation_FMS_DW.Delay_DSTATE_j == PilotMode::FormMission);
+    x[2] = (Formation_FMS_DW.Delay_DSTATE_j == PilotMode::FormDisband);
     rtb_FixPtRelationalOperator_c = false;
-    Formation_FMS_DW.mask = 0;
+    Formation_FMS_B.i = 0;
     exitg1 = false;
-    while ((!exitg1) && (Formation_FMS_DW.mask < 2)) {
-      if (b_x[Formation_FMS_DW.mask]) {
+    while ((!exitg1) && (Formation_FMS_B.i < 3)) {
+      if (x[Formation_FMS_B.i]) {
         rtb_FixPtRelationalOperator_c = true;
         exitg1 = true;
       } else {
-        Formation_FMS_DW.mask++;
+        Formation_FMS_B.i++;
       }
     }
 
@@ -1738,387 +1735,237 @@ void Formation_FMS::step(const uint32_T *rtu_Pilot_Cmd_timestamp, const uint32_T
       Formation_exit_internal_Vehicle();
       Formation_FMS_DW.is_Vehicle = Formation_FMS_IN_Formation;
       Format_enter_internal_Formation
-        (&Formation_FMS_DW.BusConversion_InsertedFor_FMS_c,
-         &Formation_FMS_DW.BusConversion_InsertedFor_FMS_p,
-         &Formation_FMS_DW.Switch);
+        (&Formation_FMS_B.BusConversion_InsertedFor_FMS_c,
+         &Formation_FMS_B.BusConversion_InsertedFor_FMS_p);
     } else {
       Formation_exit_internal_Vehicle();
       Formation_FMS_DW.is_Vehicle = Formation_FMS_IN_Standby;
-      Formation_FMS_DW.Cmd_In.cur_waypoint[0] =
-        Formation_FMS_DW.BusConversion_InsertedFor_FMS_c.x_R;
-      Formation_FMS_DW.Cmd_In.cur_waypoint[1] =
-        Formation_FMS_DW.BusConversion_InsertedFor_FMS_c.y_R;
-      Formation_FMS_DW.Cmd_In.cur_waypoint[2] =
-        Formation_FMS_DW.BusConversion_InsertedFor_FMS_c.h_R;
-      Formation_FMS_DW.state = VehicleState::Hold;
+      Formation_FMS_B.Cmd_In.cur_waypoint[0] =
+        Formation_FMS_B.BusConversion_InsertedFor_FMS_c.x_R;
+      Formation_FMS_B.Cmd_In.cur_waypoint[1] =
+        Formation_FMS_B.BusConversion_InsertedFor_FMS_c.y_R;
+      Formation_FMS_B.Cmd_In.cur_waypoint[2] =
+        Formation_FMS_B.BusConversion_InsertedFor_FMS_c.h_R;
+      Formation_FMS_B.state = VehicleState::Hold;
     }
   } else if (Formation_FMS_DW.is_Vehicle == Formation_FMS_IN_Formation) {
     // Outputs for Function Call SubSystem: '<S3>/Vehicle.Formation.check_form_valid' 
-    // MATLAB Function: '<S154>/MATLAB Function'
-    Formation_FMS_DW.BusConversion_InsertedFor_FMS_m = 0U;
-    for (Formation_FMS_DW.i = 0; Formation_FMS_DW.i < 3; Formation_FMS_DW.i++) {
-      if (static_cast<uint32_T>(Formation_FMS_DW.i + 1) !=
-          FORMATION_PARAM.UAV_ID) {
-        Formation_FMS_DW.Reshape2_bi[0] =
-          Formation_FMS_DW.BusConversion_InsertedFor_FMS_p.x_R[Formation_FMS_DW.i]
-          - Formation_FMS_DW.BusConversion_InsertedFor_FMS_c.x_R;
-        Formation_FMS_DW.Reshape2_bi[1] =
-          Formation_FMS_DW.BusConversion_InsertedFor_FMS_p.y_R[Formation_FMS_DW.i]
-          - Formation_FMS_DW.BusConversion_InsertedFor_FMS_c.y_R;
-        Formation_FMS_DW.scale = 1.29246971E-26F;
-        Formation_FMS_DW.absxk = std::abs(Formation_FMS_DW.Reshape2_bi[0]);
-        if (Formation_FMS_DW.absxk > 1.29246971E-26F) {
-          Formation_FMS_DW.path_ratio = 1.0F;
-          Formation_FMS_DW.scale = Formation_FMS_DW.absxk;
-        } else {
-          Formation_FMS_DW.t_f = Formation_FMS_DW.absxk / 1.29246971E-26F;
-          Formation_FMS_DW.path_ratio = Formation_FMS_DW.t_f *
-            Formation_FMS_DW.t_f;
-        }
+    // MATLAB Function: '<S200>/MATLAB Function'
+    Formation_FMS_B.BusConversion_InsertedFor_FMS_b = 0U;
+    for (Formation_FMS_B.i = 0; Formation_FMS_B.i < 3; Formation_FMS_B.i++) {
+      Formation_FMS_B.scale = 1.29246971E-26F;
+      Formation_FMS_B.absxk = std::abs
+        (Formation_FMS_B.BusConversion_InsertedFor_FMS_p.x_R[Formation_FMS_B.i]
+         - Formation_FMS_B.BusConversion_InsertedFor_FMS_c.x_R);
+      if (Formation_FMS_B.absxk > 1.29246971E-26F) {
+        Formation_FMS_B.rtb_vn_idx_1 = 1.0F;
+        Formation_FMS_B.scale = Formation_FMS_B.absxk;
+      } else {
+        Formation_FMS_B.t = Formation_FMS_B.absxk / 1.29246971E-26F;
+        Formation_FMS_B.rtb_vn_idx_1 = Formation_FMS_B.t * Formation_FMS_B.t;
+      }
 
-        Formation_FMS_DW.absxk = std::abs(Formation_FMS_DW.Reshape2_bi[1]);
-        if (Formation_FMS_DW.absxk > Formation_FMS_DW.scale) {
-          Formation_FMS_DW.t_f = Formation_FMS_DW.scale / Formation_FMS_DW.absxk;
-          Formation_FMS_DW.path_ratio = Formation_FMS_DW.path_ratio *
-            Formation_FMS_DW.t_f * Formation_FMS_DW.t_f + 1.0F;
-          Formation_FMS_DW.scale = Formation_FMS_DW.absxk;
-        } else {
-          Formation_FMS_DW.t_f = Formation_FMS_DW.absxk / Formation_FMS_DW.scale;
-          Formation_FMS_DW.path_ratio += Formation_FMS_DW.t_f *
-            Formation_FMS_DW.t_f;
-        }
+      Formation_FMS_B.absxk = std::abs
+        (Formation_FMS_B.BusConversion_InsertedFor_FMS_p.y_R[Formation_FMS_B.i]
+         - Formation_FMS_B.BusConversion_InsertedFor_FMS_c.y_R);
+      if (Formation_FMS_B.absxk > Formation_FMS_B.scale) {
+        Formation_FMS_B.t = Formation_FMS_B.scale / Formation_FMS_B.absxk;
+        Formation_FMS_B.rtb_vn_idx_1 = Formation_FMS_B.rtb_vn_idx_1 *
+          Formation_FMS_B.t * Formation_FMS_B.t + 1.0F;
+        Formation_FMS_B.scale = Formation_FMS_B.absxk;
+      } else {
+        Formation_FMS_B.t = Formation_FMS_B.absxk / Formation_FMS_B.scale;
+        Formation_FMS_B.rtb_vn_idx_1 += Formation_FMS_B.t * Formation_FMS_B.t;
+      }
 
-        if (Formation_FMS_DW.scale * std::sqrt(Formation_FMS_DW.path_ratio) <=
-            FORMATION_PARAM.FORM_RADIUS) {
-          Formation_FMS_DW.BusConversion_InsertedFor_FMS_m |= 1U <<
-            Formation_FMS_DW.i;
-        } else {
-          Formation_FMS_DW.BusConversion_InsertedFor_FMS_m &= ~(1U <<
-            Formation_FMS_DW.i);
-        }
+      if (Formation_FMS_B.scale * std::sqrt(Formation_FMS_B.rtb_vn_idx_1) <=
+          FORMATION_PARAM.FORM_RADIUS) {
+        Formation_FMS_B.BusConversion_InsertedFor_FMS_b |= 1U <<
+          Formation_FMS_B.i;
+      } else {
+        Formation_FMS_B.BusConversion_InsertedFor_FMS_b &= ~(1U <<
+          Formation_FMS_B.i);
       }
     }
 
-    Formation_FMS_DW.Cmd_In.form_valid =
-      Formation_FMS_DW.BusConversion_InsertedFor_FMS_m;
+    Formation_FMS_B.Cmd_In.form_valid =
+      Formation_FMS_B.BusConversion_InsertedFor_FMS_b;
 
     // End of Outputs for SubSystem: '<S3>/Vehicle.Formation.check_form_valid'
     switch (Formation_FMS_DW.is_Formation) {
      case Formation_FMS_IN_FormAssemble:
-      {
-        switch (Formation_FMS_DW.is_FormAssemble) {
-         case Formation_FMS_IN_NextWP:
-          {
-            if (Formation_FMS_DW.wp_index <= *rtu_Mission_Data_valid_items) {
-              boolean_T exitg1;
-              Formation_FMS_DW.is_FormAssemble = Formation_FMS_IN_Waypoint;
-              Formation_FMS_DW.Cmd_In.cur_waypoint[0] =
-                Formation_FMS_DW.Cmd_In.sp_waypoint[0];
-              Formation_FMS_DW.Cmd_In.cur_waypoint[1] =
-                Formation_FMS_DW.Cmd_In.sp_waypoint[1];
-              Formation_FMS_DW.Cmd_In.cur_waypoint[2] =
-                Formation_FMS_DW.Cmd_In.sp_waypoint[2];
-              Formation_FMS_DW.Cmd_In.sp_waypoint[0] =
-                Formation_FMS_DW.BusConversion_InsertedFor_FMSSt[Formation_FMS_DW.wp_index
-                - 1];
-              Formation_FMS_DW.Cmd_In.sp_waypoint[1] =
-                Formation_FMS_DW.BusConversion_InsertedFor_FMS_k[Formation_FMS_DW.wp_index
-                - 1];
-              Formation_FMS_DW.Cmd_In.sp_waypoint[2] =
-                Formation_FMS_DW.BusConversion_InsertedFor_FM_cx[Formation_FMS_DW.wp_index
-                - 1];
-              b_x[0] = (Formation_FMS_DW.Cmd_In.cur_waypoint[0] ==
-                        Formation_FMS_DW.Cmd_In.sp_waypoint[0]);
-              b_x[1] = (Formation_FMS_DW.Cmd_In.cur_waypoint[1] ==
-                        Formation_FMS_DW.Cmd_In.sp_waypoint[1]);
-              rtb_FixPtRelationalOperator_c = true;
-              Formation_FMS_DW.i = 0;
-              exitg1 = false;
-              while ((!exitg1) && (Formation_FMS_DW.i < 2)) {
-                if (!b_x[Formation_FMS_DW.i]) {
-                  rtb_FixPtRelationalOperator_c = false;
-                  exitg1 = true;
-                } else {
-                  Formation_FMS_DW.i++;
-                }
-              }
-
-              if (rtb_FixPtRelationalOperator_c) {
-                Formation_FMS_DW.Cmd_In.sp_waypoint[0] += 0.01F;
-                Formation_FMS_DW.Cmd_In.sp_waypoint[1] += 0.01F;
-              }
-
-              for (Formation_FMS_DW.i = 0; Formation_FMS_DW.i <= 0;
-                   Formation_FMS_DW.i += 4) {
-                __m128 tmp;
-                tmp = _mm_loadu_ps
-                  (&Formation_FMS_DW.BusConversion_InsertedFor_FMSSt[Formation_FMS_DW.i]);
-                _mm_storeu_ps(&Formation_FMS_DW.waypoints[Formation_FMS_DW.i],
-                              tmp);
-                tmp = _mm_loadu_ps
-                  (&Formation_FMS_DW.BusConversion_InsertedFor_FMS_k[Formation_FMS_DW.i]);
-                _mm_storeu_ps(&Formation_FMS_DW.waypoints[Formation_FMS_DW.i + 5],
-                              tmp);
-                tmp = _mm_loadu_ps
-                  (&Formation_FMS_DW.BusConversion_InsertedFor_FMS_b[Formation_FMS_DW.i]);
-                _mm_storeu_ps(&Formation_FMS_DW.waypoints[Formation_FMS_DW.i +
-                              10], _mm_mul_ps(_mm_set1_ps(0.0174532924F), tmp));
-                tmp = _mm_loadu_ps
-                  (&Formation_FMS_DW.BusConversion_InsertedFor_FM_pb[Formation_FMS_DW.i]);
-                _mm_storeu_ps(&Formation_FMS_DW.waypoints[Formation_FMS_DW.i +
-                              15], tmp);
-                tmp = _mm_loadu_ps
-                  (&Formation_FMS_DW.BusConversion_InsertedFor_FM_cv[Formation_FMS_DW.i]);
-                _mm_storeu_ps(&Formation_FMS_DW.waypoints[Formation_FMS_DW.i +
-                              20], tmp);
-              }
-
-              for (Formation_FMS_DW.i = 4; Formation_FMS_DW.i < 5;
-                   Formation_FMS_DW.i++) {
-                Formation_FMS_DW.waypoints[Formation_FMS_DW.i] =
-                  Formation_FMS_DW.BusConversion_InsertedFor_FMSSt[Formation_FMS_DW.i];
-                Formation_FMS_DW.waypoints[Formation_FMS_DW.i + 5] =
-                  Formation_FMS_DW.BusConversion_InsertedFor_FMS_k[Formation_FMS_DW.i];
-                Formation_FMS_DW.waypoints[Formation_FMS_DW.i + 10] =
-                  0.0174532924F *
-                  Formation_FMS_DW.BusConversion_InsertedFor_FMS_b[Formation_FMS_DW.i];
-                Formation_FMS_DW.waypoints[Formation_FMS_DW.i + 15] =
-                  Formation_FMS_DW.BusConversion_InsertedFor_FM_pb[Formation_FMS_DW.i];
-                Formation_FMS_DW.waypoints[Formation_FMS_DW.i + 20] =
-                  Formation_FMS_DW.BusConversion_InsertedFor_FM_cv[Formation_FMS_DW.i];
-              }
-            } else {
-              Formation_FMS_DW.is_FormAssemble = Formation_FM_IN_NO_ACTIVE_CHILD;
-              Formation_FMS_DW.is_Formation = Formation_FMS_IN_FormMission;
-              Formation_FMS_DW.Cmd_In.sp_waypoint[0] =
-                Formation_FMS_DW.BusConversion_InsertedFor_FMS_c.x_R;
-              Formation_FMS_DW.Cmd_In.sp_waypoint[1] =
-                Formation_FMS_DW.BusConversion_InsertedFor_FMS_c.y_R;
-              Formation_FMS_DW.Cmd_In.sp_waypoint[2] =
-                Formation_FMS_DW.BusConversion_InsertedFor_FMS_c.h_R;
-              Formation_FMS_DW.state = VehicleState::FormMission;
-              Formation_FMS_DW.is_FormMission = Formation_FMS_IN_NextWP_d;
-            }
-          }
-          break;
-
-         case Formation_FMS_IN_WaitForUpdate:
-          if ((Formation_FMS_DW.Mission_Data_timestamp_prev !=
-               Formation_FMS_DW.Mission_Data_timestamp_start) &&
-              (Formation_FMS_DW.BusConversion_InsertedFor_FMS_n == 1U)) {
-            Formation_FMS_DW.wp_index = 1U;
-            Formation_FMS_DW.is_FormAssemble = Formation_FMS_IN_NextWP;
-            Formation_FMS_DW.Cmd_In.l1_enable = true;
-          }
-          break;
-
-         default:
-          {
-            // case IN_Waypoint:
-            Formation_FMS_DW.P_mr[0] =
-              Formation_FMS_DW.BusConversion_InsertedFor_FMS_c.x_R -
-              Formation_FMS_DW.Cmd_In.sp_waypoint[0];
-            Formation_FMS_DW.P_mr[1] =
-              Formation_FMS_DW.BusConversion_InsertedFor_FMS_c.y_R -
-              Formation_FMS_DW.Cmd_In.sp_waypoint[1];
-            if (norm_7i8u8z8R(Formation_FMS_DW.P_mr) <= FMS_PARAM.ACCEPT_R) {
-              Formation_FMS_DW.BusConversion_InsertedFor_FMS_m =
-                Formation_FMS_DW.wp_index + 1U;
-              if (Formation_FMS_DW.wp_index + 1U > 65535U) {
-                Formation_FMS_DW.BusConversion_InsertedFor_FMS_m = 65535U;
-              }
-
-              Formation_FMS_DW.wp_index = static_cast<uint16_T>
-                (Formation_FMS_DW.BusConversion_InsertedFor_FMS_m);
-              Formation_FMS_DW.is_FormAssemble = Formation_FMS_IN_NextWP;
-              Formation_FMS_DW.Cmd_In.l1_enable = true;
-            } else {
-              uint16_T wp_index_f;
-              Formation_FMS_DW.BusConversion_InsertedFor_FMS_m =
-                Formation_FMS_DW.wp_index - 1U;
-              if (Formation_FMS_DW.wp_index - 1U > Formation_FMS_DW.wp_index) {
-                Formation_FMS_DW.BusConversion_InsertedFor_FMS_m = 0U;
-              }
-
-              wp_index_f = static_cast<uint16_T>
-                (Formation_FMS_DW.BusConversion_InsertedFor_FMS_m);
-              if (static_cast<uint16_T>
-                  (Formation_FMS_DW.BusConversion_InsertedFor_FMS_m) < 1) {
-                wp_index_f = 1U;
-              }
-
-              Formation_FMS_DW.pose[0] =
-                Formation_FMS_DW.BusConversion_InsertedFor_FMS_c.x_R;
-              Formation_FMS_DW.pose[1] =
-                Formation_FMS_DW.BusConversion_InsertedFor_FMS_c.y_R;
-              Formation_FMS_DW.pose[2] =
-                Formation_FMS_DW.BusConversion_InsertedFor_FMS_c.psi;
-
-              // Outputs for Function Call SubSystem: '<S3>/Vehicle.Formation.FormAssemble.dubinsPathRatio' 
-              // MATLAB Function: '<S153>/Dubins Closest Point'
-              Formati_getMinDistanceAtSegment(Formation_FMS_DW.waypoints,
-                Formation_FMS_DW.pose, wp_index_f, &Formation_FMS_DW.t_f,
-                &Formation_FMS_DW.scale);
-              Formation_FMS_DW.BusConversion_InsertedFor_FMS_m = wp_index_f + 1U;
-              if (wp_index_f + 1U > 65535U) {
-                Formation_FMS_DW.BusConversion_InsertedFor_FMS_m = 65535U;
-              }
-
-              Formati_getMinDistanceAtSegment(Formation_FMS_DW.waypoints,
-                Formation_FMS_DW.pose, static_cast<uint16_T>
-                (Formation_FMS_DW.BusConversion_InsertedFor_FMS_m),
-                &Formation_FMS_DW.path_ratio, &Formation_FMS_DW.absxk);
-              if (Formation_FMS_DW.t_f <= Formation_FMS_DW.path_ratio) {
-                Formation_FMS_DW.i = static_cast<int32_T>(wp_index_f -
-                  /*MW:OvSatOk*/ 1U);
-                if (wp_index_f - 1U > wp_index_f) {
-                  Formation_FMS_DW.i = 0;
-                }
-
-                if (static_cast<uint16_T>(Formation_FMS_DW.i) < 1) {
-                  Formation_FMS_DW.t_f = 0.0F;
-                } else {
-                  Formation_FMS_DW.mask = static_cast<uint16_T>
-                    (Formation_FMS_DW.i);
-                  Formation_FMS_DW.t_f = Formation_FMS_DW.waypoints[20];
-                  for (Formation_FMS_DW.i = 2; Formation_FMS_DW.i <=
-                       Formation_FMS_DW.mask; Formation_FMS_DW.i++) {
-                    Formation_FMS_DW.t_f +=
-                      Formation_FMS_DW.waypoints[Formation_FMS_DW.i + 19];
-                  }
-                }
-
-                Formation_FMS_DW.path_ratio =
-                  (Formation_FMS_DW.waypoints[wp_index_f + 19] *
-                   Formation_FMS_DW.scale + Formation_FMS_DW.t_f) /
-                  Formation_FMS_DW.waypoints[24];
-              } else {
-                Formation_FMS_DW.i = wp_index_f;
-                Formation_FMS_DW.t_f = Formation_FMS_DW.waypoints[20];
-                for (Formation_FMS_DW.mask = 2; Formation_FMS_DW.mask <=
-                     Formation_FMS_DW.i; Formation_FMS_DW.mask++) {
-                  Formation_FMS_DW.t_f +=
-                    Formation_FMS_DW.waypoints[Formation_FMS_DW.mask + 19];
-                }
-
-                Formation_FMS_DW.BusConversion_InsertedFor_FMS_m = wp_index_f +
-                  1U;
-                if (wp_index_f + 1U > 65535U) {
-                  Formation_FMS_DW.BusConversion_InsertedFor_FMS_m = 65535U;
-                }
-
-                Formation_FMS_DW.path_ratio = (Formation_FMS_DW.waypoints[
-                  static_cast<int32_T>
-                  (Formation_FMS_DW.BusConversion_InsertedFor_FMS_m) + 19] *
-                  Formation_FMS_DW.absxk + Formation_FMS_DW.t_f) /
-                  Formation_FMS_DW.waypoints[24];
-              }
-
-              // End of MATLAB Function: '<S153>/Dubins Closest Point'
-              // End of Outputs for SubSystem: '<S3>/Vehicle.Formation.FormAssemble.dubinsPathRatio' 
-              Formation_FMS_DW.scale = 1.29246971E-26F;
-              Formation_FMS_DW.absxk = std::abs
-                (Formation_FMS_DW.BusConversion_InsertedFor_FMS_c.vn);
-              if (Formation_FMS_DW.absxk > 1.29246971E-26F) {
-                Formation_FMS_DW.Multiply1_f = 1.0F;
-                Formation_FMS_DW.scale = Formation_FMS_DW.absxk;
-              } else {
-                Formation_FMS_DW.t_f = Formation_FMS_DW.absxk / 1.29246971E-26F;
-                Formation_FMS_DW.Multiply1_f = Formation_FMS_DW.t_f *
-                  Formation_FMS_DW.t_f;
-              }
-
-              Formation_FMS_DW.absxk = std::abs
-                (Formation_FMS_DW.BusConversion_InsertedFor_FMS_c.ve);
-              if (Formation_FMS_DW.absxk > Formation_FMS_DW.scale) {
-                Formation_FMS_DW.t_f = Formation_FMS_DW.scale /
-                  Formation_FMS_DW.absxk;
-                Formation_FMS_DW.Multiply1_f = Formation_FMS_DW.Multiply1_f *
-                  Formation_FMS_DW.t_f * Formation_FMS_DW.t_f + 1.0F;
-                Formation_FMS_DW.scale = Formation_FMS_DW.absxk;
-              } else {
-                Formation_FMS_DW.t_f = Formation_FMS_DW.absxk /
-                  Formation_FMS_DW.scale;
-                Formation_FMS_DW.Multiply1_f += Formation_FMS_DW.t_f *
-                  Formation_FMS_DW.t_f;
-              }
-
-              *rty_Form_Single = (1.0F - Formation_FMS_DW.path_ratio) *
-                Formation_FMS_DW.BusConversion_InsertedFor_FM_cv[4] /
-                (Formation_FMS_DW.scale * std::sqrt(Formation_FMS_DW.Multiply1_f));
-            }
-          }
-          break;
+      switch (Formation_FMS_DW.is_FormAssemble) {
+       case Formation_FMS_IN_Hold:
+        Formation_FMS_B.state = VehicleState::FormHold;
+        if (Formation_FMS_B.Cmd_In.form_valid == 7U) {
+          Formation_FMS_DW.is_FormAssemble = Formation_FM_IN_NO_ACTIVE_CHILD;
+          Formation_FMS_DW.is_Formation = Formation_FMS_IN_FormMission;
+          Formation_FMS_B.Cmd_In.sp_waypoint[0] =
+            Formation_FMS_B.BusConversion_InsertedFor_FMS_c.x_R;
+          Formation_FMS_B.Cmd_In.sp_waypoint[1] =
+            Formation_FMS_B.BusConversion_InsertedFor_FMS_c.y_R;
+          Formation_FMS_B.Cmd_In.sp_waypoint[2] =
+            Formation_FMS_B.BusConversion_InsertedFor_FMS_c.h_R;
+          Formation_FMS_B.state = VehicleState::FormMission;
+          Formation_FMS_DW.is_FormMission = Formation_FMS_IN_NextWP;
         }
+        break;
+
+       case Formation_FMS_IN_NextWP:
+        Formation_FMS_B.state = VehicleState::FormAssemble;
+        if (Formation_FMS_B.wp_index <= *rtu_Mission_Data_valid_items) {
+          Formation_FMS_DW.is_FormAssemble = Formation_FMS_IN_Waypoint;
+          Formation_FMS_B.Cmd_In.cur_waypoint[0] =
+            Formation_FMS_B.Cmd_In.sp_waypoint[0];
+          Formation_FMS_B.Cmd_In.cur_waypoint[1] =
+            Formation_FMS_B.Cmd_In.sp_waypoint[1];
+          Formation_FMS_B.Cmd_In.cur_waypoint[2] =
+            Formation_FMS_B.Cmd_In.sp_waypoint[2];
+          Formation_FMS_B.Cmd_In.sp_waypoint[0] =
+            Formation_FMS_B.BusConversion_InsertedFor_FMSSt[Formation_FMS_B.wp_index
+            - 1];
+          Formation_FMS_B.Cmd_In.sp_waypoint[1] =
+            Formation_FMS_B.BusConversion_InsertedFor_FM_cl[Formation_FMS_B.wp_index
+            - 1];
+          Formation_FMS_B.Cmd_In.sp_waypoint[2] =
+            Formation_FMS_B.BusConversion_InsertedFor_FMS_k[Formation_FMS_B.wp_index
+            - 1];
+          b_x[0] = (Formation_FMS_B.Cmd_In.cur_waypoint[0] ==
+                    Formation_FMS_B.Cmd_In.sp_waypoint[0]);
+          b_x[1] = (Formation_FMS_B.Cmd_In.cur_waypoint[1] ==
+                    Formation_FMS_B.Cmd_In.sp_waypoint[1]);
+          rtb_FixPtRelationalOperator_c = true;
+          Formation_FMS_B.i = 0;
+          exitg1 = false;
+          while ((!exitg1) && (Formation_FMS_B.i < 2)) {
+            if (!b_x[Formation_FMS_B.i]) {
+              rtb_FixPtRelationalOperator_c = false;
+              exitg1 = true;
+            } else {
+              Formation_FMS_B.i++;
+            }
+          }
+
+          if (rtb_FixPtRelationalOperator_c) {
+            Formation_FMS_B.Cmd_In.sp_waypoint[0] += 0.01F;
+            Formation_FMS_B.Cmd_In.sp_waypoint[1] += 0.01F;
+          }
+        } else {
+          Formation_FMS_DW.is_FormAssemble = Formation_FMS_IN_Hold;
+          Formation_FMS_B.Cmd_In.cur_waypoint[0] =
+            Formation_FMS_B.Cmd_In.sp_waypoint[0];
+          Formation_FMS_B.Cmd_In.cur_waypoint[1] =
+            Formation_FMS_B.Cmd_In.sp_waypoint[1];
+          Formation_FMS_B.Cmd_In.cur_waypoint[2] =
+            Formation_FMS_B.Cmd_In.sp_waypoint[2];
+          Formation_FMS_B.state = VehicleState::FormHold;
+        }
+        break;
+
+       case Formation_FMS_IN_WaitForUpdate:
+        Formation_FMS_B.state = VehicleState::FormHold;
+        if ((Formation_FMS_DW.Mission_Data_timestamp_prev !=
+             Formation_FMS_DW.Mission_Data_timestamp_start) &&
+            (Formation_FMS_B.BusConversion_InsertedFor_FM_pb == 1U)) {
+          Formation_FMS_B.wp_index = 1U;
+          Formation_FMS_DW.is_FormAssemble = Formation_FMS_IN_NextWP;
+          Formation_FMS_B.state = VehicleState::FormAssemble;
+        } else if (Formation_FMS_DW.temporalCounter_i1 >= 500U) {
+          Formation_FMS_DW.is_FormAssemble = Formation_FM_IN_NO_ACTIVE_CHILD;
+          Formation_FMS_DW.is_Formation = Formation_FM_IN_NO_ACTIVE_CHILD;
+          Formation_FMS_DW.is_Vehicle = Formation_FMS_IN_Standby;
+          Formation_FMS_B.Cmd_In.cur_waypoint[0] =
+            Formation_FMS_B.BusConversion_InsertedFor_FMS_c.x_R;
+          Formation_FMS_B.Cmd_In.cur_waypoint[1] =
+            Formation_FMS_B.BusConversion_InsertedFor_FMS_c.y_R;
+          Formation_FMS_B.Cmd_In.cur_waypoint[2] =
+            Formation_FMS_B.BusConversion_InsertedFor_FMS_c.h_R;
+          Formation_FMS_B.state = VehicleState::Hold;
+        }
+        break;
+
+       default:
+        // case IN_Waypoint:
+        Formation_FMS_B.P[0] =
+          Formation_FMS_B.BusConversion_InsertedFor_FMS_c.x_R -
+          Formation_FMS_B.Cmd_In.sp_waypoint[0];
+        Formation_FMS_B.P[1] =
+          Formation_FMS_B.BusConversion_InsertedFor_FMS_c.y_R -
+          Formation_FMS_B.Cmd_In.sp_waypoint[1];
+        if (norm_FqL2z8vo(Formation_FMS_B.P) <= FMS_PARAM.ACCEPT_R) {
+          Formation_FMS_B.BusConversion_InsertedFor_FM_pb =
+            Formation_FMS_B.wp_index + 1U;
+          if (Formation_FMS_B.wp_index + 1U > 65535U) {
+            Formation_FMS_B.BusConversion_InsertedFor_FM_pb = 65535U;
+          }
+
+          Formation_FMS_B.wp_index = static_cast<uint16_T>
+            (Formation_FMS_B.BusConversion_InsertedFor_FM_pb);
+          Formation_FMS_DW.is_FormAssemble = Formation_FMS_IN_NextWP;
+          Formation_FMS_B.state = VehicleState::FormAssemble;
+        }
+        break;
       }
       break;
 
      case Formation_FMS_IN_FormDisband:
+      Formation_FMS_B.state = VehicleState::FormDisband;
       break;
 
      case Formation_FMS_IN_FormMission:
-      if (Formation_FMS_DW.Switch == PilotMode::FormDisband) {
-        Formation_FMS_DW.is_FormMission = Formation_FM_IN_NO_ACTIVE_CHILD;
-        Formation_FMS_DW.is_Formation = Formation_FMS_IN_FormDisband;
-        Formation_FMS_DW.state = VehicleState::FormDisband;
-      } else if ((Formation_FMS_DW.Mission_Data_timestamp_prev !=
-                  Formation_FMS_DW.Mission_Data_timestamp_start) &&
-                 (Formation_FMS_DW.BusConversion_InsertedFor_FMS_n == 3U)) {
-        Formation_FMS_DW.wp_index = 1U;
-        Formation_FMS_DW.is_FormMission = Formation_FMS_IN_NextWP_d;
+      Formation_FMS_B.state = VehicleState::FormMission;
+      if ((Formation_FMS_DW.Mission_Data_timestamp_prev !=
+           Formation_FMS_DW.Mission_Data_timestamp_start) &&
+          (Formation_FMS_B.BusConversion_InsertedFor_FM_pb == 3U)) {
+        Formation_FMS_B.wp_index = 1U;
+        Formation_FMS_DW.is_FormMission = Formation_FMS_IN_NextWP;
       } else {
         switch (Formation_FMS_DW.is_FormMission) {
          case Formation_FMS_IN_Follower:
-         case Formation_FMS_IN_Forward:
           break;
 
-         case Formation_FMS_IN_NextWP_d:
+         case Formation_FMS_IN_NextWP:
           if (FORMATION_PARAM.UAV_ID != 1U) {
             Formation_FMS_DW.is_FormMission = Formation_FMS_IN_Follower;
-            Formation_FMS_DW.Cmd_In.l1_enable = false;
-          } else if (Formation_FMS_DW.wp_index <= *rtu_Mission_Data_valid_items)
+          } else if (Formation_FMS_B.wp_index <= *rtu_Mission_Data_valid_items)
           {
             Formation_FMS_DW.is_FormMission = Formation_FMS_IN_Waypoint_g;
-            Formation_FMS_DW.Cmd_In.cur_waypoint[0] =
-              Formation_FMS_DW.Cmd_In.sp_waypoint[0];
-            Formation_FMS_DW.Cmd_In.cur_waypoint[1] =
-              Formation_FMS_DW.Cmd_In.sp_waypoint[1];
-            Formation_FMS_DW.Cmd_In.cur_waypoint[2] =
-              Formation_FMS_DW.Cmd_In.sp_waypoint[2];
-            Formation_FMS_DW.Cmd_In.sp_waypoint[0] =
-              Formation_FMS_DW.BusConversion_InsertedFor_FMSSt[Formation_FMS_DW.wp_index
+            Formation_FMS_B.Cmd_In.cur_waypoint[0] =
+              Formation_FMS_B.Cmd_In.sp_waypoint[0];
+            Formation_FMS_B.Cmd_In.cur_waypoint[1] =
+              Formation_FMS_B.Cmd_In.sp_waypoint[1];
+            Formation_FMS_B.Cmd_In.cur_waypoint[2] =
+              Formation_FMS_B.Cmd_In.sp_waypoint[2];
+            Formation_FMS_B.Cmd_In.sp_waypoint[0] =
+              Formation_FMS_B.BusConversion_InsertedFor_FMSSt[Formation_FMS_B.wp_index
               - 1];
-            Formation_FMS_DW.Cmd_In.sp_waypoint[1] =
-              Formation_FMS_DW.BusConversion_InsertedFor_FMS_k[Formation_FMS_DW.wp_index
+            Formation_FMS_B.Cmd_In.sp_waypoint[1] =
+              Formation_FMS_B.BusConversion_InsertedFor_FM_cl[Formation_FMS_B.wp_index
               - 1];
-            Formation_FMS_DW.Cmd_In.sp_waypoint[2] =
-              Formation_FMS_DW.BusConversion_InsertedFor_FM_cx[Formation_FMS_DW.wp_index
+            Formation_FMS_B.Cmd_In.sp_waypoint[2] =
+              Formation_FMS_B.BusConversion_InsertedFor_FMS_k[Formation_FMS_B.wp_index
               - 1];
-            Formation_FMS_DW.Cmd_In.l1_enable = true;
-          } else {
-            Formation_FMS_DW.is_FormMission = Formation_FMS_IN_Forward;
-            Formation_FMS_DW.Cmd_In.l1_enable = false;
           }
           break;
 
          default:
           // case IN_Waypoint:
-          Formation_FMS_DW.P_mr[0] =
-            Formation_FMS_DW.BusConversion_InsertedFor_FMS_c.x_R -
-            Formation_FMS_DW.Cmd_In.sp_waypoint[0];
-          Formation_FMS_DW.P_mr[1] =
-            Formation_FMS_DW.BusConversion_InsertedFor_FMS_c.y_R -
-            Formation_FMS_DW.Cmd_In.sp_waypoint[1];
-          if (norm_7i8u8z8R(Formation_FMS_DW.P_mr) <= FMS_PARAM.ACCEPT_R) {
-            Formation_FMS_DW.BusConversion_InsertedFor_FMS_m =
-              Formation_FMS_DW.wp_index + 1U;
-            if (Formation_FMS_DW.wp_index + 1U > 65535U) {
-              Formation_FMS_DW.BusConversion_InsertedFor_FMS_m = 65535U;
+          Formation_FMS_B.P[0] =
+            Formation_FMS_B.BusConversion_InsertedFor_FMS_c.x_R -
+            Formation_FMS_B.Cmd_In.sp_waypoint[0];
+          Formation_FMS_B.P[1] =
+            Formation_FMS_B.BusConversion_InsertedFor_FMS_c.y_R -
+            Formation_FMS_B.Cmd_In.sp_waypoint[1];
+          if (norm_FqL2z8vo(Formation_FMS_B.P) <= FMS_PARAM.ACCEPT_R) {
+            Formation_FMS_B.BusConversion_InsertedFor_FM_pb =
+              Formation_FMS_B.wp_index + 1U;
+            if (Formation_FMS_B.wp_index + 1U > 65535U) {
+              Formation_FMS_B.BusConversion_InsertedFor_FM_pb = 65535U;
             }
 
-            Formation_FMS_DW.wp_index = static_cast<uint16_T>
-              (Formation_FMS_DW.BusConversion_InsertedFor_FMS_m);
-            Formation_FMS_DW.is_FormMission = Formation_FMS_IN_NextWP_d;
+            Formation_FMS_B.wp_index = static_cast<uint16_T>
+              (Formation_FMS_B.BusConversion_InsertedFor_FM_pb);
+            Formation_FMS_DW.is_FormMission = Formation_FMS_IN_NextWP;
           }
           break;
         }
@@ -2129,1981 +1976,3022 @@ void Formation_FMS::step(const uint32_T *rtu_Pilot_Cmd_timestamp, const uint32_T
       // case IN_InvalidMode:
       Formation_FMS_DW.is_Formation = Formation_FM_IN_NO_ACTIVE_CHILD;
       Formation_FMS_DW.is_Vehicle = Formation_FMS_IN_Standby;
-      Formation_FMS_DW.Cmd_In.cur_waypoint[0] =
-        Formation_FMS_DW.BusConversion_InsertedFor_FMS_c.x_R;
-      Formation_FMS_DW.Cmd_In.cur_waypoint[1] =
-        Formation_FMS_DW.BusConversion_InsertedFor_FMS_c.y_R;
-      Formation_FMS_DW.Cmd_In.cur_waypoint[2] =
-        Formation_FMS_DW.BusConversion_InsertedFor_FMS_c.h_R;
-      Formation_FMS_DW.state = VehicleState::Hold;
+      Formation_FMS_B.Cmd_In.cur_waypoint[0] =
+        Formation_FMS_B.BusConversion_InsertedFor_FMS_c.x_R;
+      Formation_FMS_B.Cmd_In.cur_waypoint[1] =
+        Formation_FMS_B.BusConversion_InsertedFor_FMS_c.y_R;
+      Formation_FMS_B.Cmd_In.cur_waypoint[2] =
+        Formation_FMS_B.BusConversion_InsertedFor_FMS_c.h_R;
+      Formation_FMS_B.state = VehicleState::Hold;
       break;
     }
   } else {
     // case IN_Standby:
+    Formation_FMS_B.state = VehicleState::Hold;
   }
 
   // End of Chart: '<Root>/FMS State Machine'
 
   // SignalConversion generated from: '<Root>/Other_Mission_Data'
   std::memcpy(&rty_Other_Mission_Data_x[0],
-              &Formation_FMS_DW.Other_Mission_Data.x[0], 24U * sizeof(real32_T));
+              &Formation_FMS_B.Other_Mission_Data.x[0], 24U * sizeof(real32_T));
 
   // SignalConversion generated from: '<Root>/Other_Mission_Data'
   std::memcpy(&rty_Other_Mission_Data_y[0],
-              &Formation_FMS_DW.Other_Mission_Data.y[0], 24U * sizeof(real32_T));
+              &Formation_FMS_B.Other_Mission_Data.y[0], 24U * sizeof(real32_T));
 
   // SignalConversion generated from: '<Root>/Other_Mission_Data'
   std::memcpy(&rty_Other_Mission_Data_z[0],
-              &Formation_FMS_DW.Other_Mission_Data.z[0], 24U * sizeof(real32_T));
+              &Formation_FMS_B.Other_Mission_Data.z[0], 24U * sizeof(real32_T));
 
   // SignalConversion generated from: '<Root>/Other_Mission_Data'
   std::memcpy(&rty_Other_Mission_Data_heading[0],
-              &Formation_FMS_DW.Other_Mission_Data.heading[0], 24U * sizeof
+              &Formation_FMS_B.Other_Mission_Data.heading[0], 24U * sizeof
               (real32_T));
 
   // SignalConversion generated from: '<Root>/Other_Mission_Data'
   std::memcpy(&rty_Other_Mission_Data_ext1[0],
-              &Formation_FMS_DW.Other_Mission_Data.ext1[0], 24U * sizeof
-              (real32_T));
+              &Formation_FMS_B.Other_Mission_Data.ext1[0], 24U * sizeof(real32_T));
 
   // SignalConversion generated from: '<Root>/Other_Mission_Data'
   std::memcpy(&rty_Other_Mission_Data_ext2[0],
-              &Formation_FMS_DW.Other_Mission_Data.ext2[0], 24U * sizeof
-              (real32_T));
+              &Formation_FMS_B.Other_Mission_Data.ext2[0], 24U * sizeof(real32_T));
 
   // SignalConversion generated from: '<S9>/Signal Copy2'
-  Formation_FMS_DW.pose[0] = rtu_Formation_Cross_vd[0];
+  Formation_FMS_B.vd[0] = rtu_Formation_Cross_vd[0];
 
   // SignalConversion generated from: '<S9>/Signal Copy2'
-  Formation_FMS_DW.ve[0] = rtu_Formation_Cross_ve[0];
+  Formation_FMS_B.ve[0] = rtu_Formation_Cross_ve[0];
 
   // SignalConversion generated from: '<S9>/Signal Copy2'
-  Formation_FMS_DW.t_f = rtu_Formation_Cross_vn[0];
+  Formation_FMS_B.rtb_vn_idx_0 = rtu_Formation_Cross_vn[0];
 
   // SignalConversion generated from: '<S9>/Signal Copy2'
-  Formation_FMS_DW.absxk = rtu_Formation_Cross_h_R[0];
+  Formation_FMS_B.absxk = rtu_Formation_Cross_h_R[0];
 
   // SignalConversion generated from: '<S9>/Signal Copy2'
-  Formation_FMS_DW.rtb_y_R_idx_0 = rtu_Formation_Cross_y_R[0];
+  Formation_FMS_B.scale = rtu_Formation_Cross_y_R[0];
 
   // SignalConversion generated from: '<S9>/Signal Copy2'
-  Formation_FMS_DW.rtb_x_R_idx_0 = rtu_Formation_Cross_x_R[0];
+  Formation_FMS_B.rtb_x_R_idx_0 = rtu_Formation_Cross_x_R[0];
 
   // SignalConversion generated from: '<S9>/Signal Copy2'
-  Formation_FMS_DW.pose[1] = rtu_Formation_Cross_vd[1];
+  Formation_FMS_B.vd[1] = rtu_Formation_Cross_vd[1];
 
   // SignalConversion generated from: '<S9>/Signal Copy2'
-  Formation_FMS_DW.ve[1] = rtu_Formation_Cross_ve[1];
+  Formation_FMS_B.ve[1] = rtu_Formation_Cross_ve[1];
 
   // SignalConversion generated from: '<S9>/Signal Copy2'
-  Formation_FMS_DW.rtb_vn_idx_1 = rtu_Formation_Cross_vn[1];
+  Formation_FMS_B.rtb_vn_idx_1 = rtu_Formation_Cross_vn[1];
 
   // SignalConversion generated from: '<S9>/Signal Copy2'
-  Formation_FMS_DW.path_ratio = rtu_Formation_Cross_h_R[1];
+  Formation_FMS_B.t = rtu_Formation_Cross_h_R[1];
 
   // SignalConversion generated from: '<S9>/Signal Copy2'
-  Formation_FMS_DW.rtb_y_R_idx_1 = rtu_Formation_Cross_y_R[1];
+  Formation_FMS_B.rtb_y_R_idx_1 = rtu_Formation_Cross_y_R[1];
 
   // SignalConversion generated from: '<S9>/Signal Copy2'
-  Formation_FMS_DW.rtb_x_R_idx_1 = rtu_Formation_Cross_x_R[1];
+  Formation_FMS_B.rtb_x_R_idx_1 = rtu_Formation_Cross_x_R[1];
 
   // SignalConversion generated from: '<S9>/Signal Copy2'
-  Formation_FMS_DW.pose[2] = rtu_Formation_Cross_vd[2];
+  Formation_FMS_B.vd[2] = rtu_Formation_Cross_vd[2];
 
   // SignalConversion generated from: '<S9>/Signal Copy2'
-  Formation_FMS_DW.ve[2] = rtu_Formation_Cross_ve[2];
+  Formation_FMS_B.ve[2] = rtu_Formation_Cross_ve[2];
 
   // SignalConversion generated from: '<S9>/Signal Copy2'
-  Formation_FMS_DW.Multiply1_f = rtu_Formation_Cross_vn[2];
+  Formation_FMS_B.rtb_vn_idx_2 = rtu_Formation_Cross_vn[2];
 
   // SignalConversion generated from: '<S9>/Signal Copy2'
-  Formation_FMS_DW.scale = rtu_Formation_Cross_h_R[2];
+  Formation_FMS_B.Multiply1_f = rtu_Formation_Cross_h_R[2];
 
   // SignalConversion generated from: '<S9>/Signal Copy2'
-  Formation_FMS_DW.rtb_y_R_idx_2 = rtu_Formation_Cross_y_R[2];
+  Formation_FMS_B.rtb_y_R_idx_2 = rtu_Formation_Cross_y_R[2];
 
   // SignalConversion generated from: '<S9>/Signal Copy2'
-  Formation_FMS_DW.rtb_x_R_idx_2 = rtu_Formation_Cross_x_R[2];
+  Formation_FMS_B.rtb_x_R_idx_2 = rtu_Formation_Cross_x_R[2];
 
   // SwitchCase: '<S10>/Switch Case' incorporates:
-  //   MATLAB Function: '<S45>/Calc_Position_Velocity_Setpoint'
   //   Merge: '<S10>/Merge'
-  //   Product: '<S149>/Divide'
-  //   Product: '<S150>/Divide'
+  //   Product: '<S196>/Divide'
+  //   Product: '<S197>/Divide'
 
   rtPrevAction = Formation_FMS_DW.SwitchCase_ActiveSubsystem;
-  switch (Formation_FMS_DW.state) {
-   case VehicleState::FormMission:
-    rtAction = 0;
-    break;
-
+  switch (Formation_FMS_B.state) {
    case VehicleState::FormAssemble:
-    rtAction = 1;
+   case VehicleState::FormHold:
+   case VehicleState::FormMission:
+   case VehicleState::FormDisband:
+    Formation_FMS_DW.SwitchCase_ActiveSubsystem = 0;
     break;
 
    case VehicleState::Hold:
-    rtAction = 2;
+    Formation_FMS_DW.SwitchCase_ActiveSubsystem = 1;
     break;
 
    default:
-    rtAction = 3;
+    Formation_FMS_DW.SwitchCase_ActiveSubsystem = 2;
     break;
   }
 
-  Formation_FMS_DW.SwitchCase_ActiveSubsystem = rtAction;
-  switch (rtAction) {
+  if ((rtPrevAction != Formation_FMS_DW.SwitchCase_ActiveSubsystem) &&
+      (rtPrevAction == 0)) {
+    // SwitchCase: '<S12>/Switch Case'
+    Formation_FMS_DW.SwitchCase_ActiveSubsystem_c = -1;
+  }
+
+  switch (Formation_FMS_DW.SwitchCase_ActiveSubsystem) {
    case 0:
-    // Outputs for IfAction SubSystem: '<S10>/FormMission' incorporates:
-    //   ActionPort: '<S13>/Action Port'
+    // Outputs for IfAction SubSystem: '<S10>/Form_Subsystem' incorporates:
+    //   ActionPort: '<S12>/Action Port'
 
-    // RelationalOperator: '<S40>/FixPt Relational Operator' incorporates:
-    //   UnitDelay: '<S40>/Delay Input1'
-    //
-    //  Block description for '<S40>/Delay Input1':
-    //
-    //   Store in Global RAM
+    // SwitchCase: '<S12>/Switch Case' incorporates:
+    //   MATLAB Function: '<S86>/Calc_Position_Velocity_Setpoint'
+    //   Merge: '<S10>/Merge'
+    //   Product: '<S102>/Divide'
+    //   Product: '<S43>/Divide'
+    //   Product: '<S60>/Divide'
+    //   Product: '<S61>/Divide'
+    //   Product: '<S78>/Divide'
+    //   Product: '<S79>/Divide'
+    //   Product: '<S96>/Divide'
+    //   Sum: '<S31>/Subtract'
 
-    rtb_FixPtRelationalOperator_c = (Formation_FMS_DW.wp_index !=
-      Formation_FMS_DW.DelayInput1_DSTATE_d);
+    rtPrevAction = Formation_FMS_DW.SwitchCase_ActiveSubsystem_c;
+    switch (Formation_FMS_B.state) {
+     case VehicleState::FormAssemble:
+      Formation_FMS_DW.SwitchCase_ActiveSubsystem_c = 0;
+      break;
 
-    // Outputs for Resettable SubSystem: '<S13>/FormMission_SubSystem' incorporates:
-    //   ResetPort: '<S41>/Reset'
+     case VehicleState::FormHold:
+      Formation_FMS_DW.SwitchCase_ActiveSubsystem_c = 1;
+      break;
 
-    if (rtb_FixPtRelationalOperator_c &&
-        (Formation_FMS_PrevZCX.FormMission_SubSystem_Reset_ZCE != POS_ZCSIG)) {
-      // InitializeConditions for Delay: '<S115>/Delay'
-      Formation_FMS_DW.icLoad_k = true;
+     case VehicleState::FormMission:
+      Formation_FMS_DW.SwitchCase_ActiveSubsystem_c = 2;
+      break;
 
-      // InitializeConditions for DiscreteIntegrator: '<S97>/Integrator'
-      Formation_FMS_DW.Integrator_DSTATE = 0.0F;
+     case VehicleState::FormDisband:
+      Formation_FMS_DW.SwitchCase_ActiveSubsystem_c = 3;
+      break;
+
+     default:
+      Formation_FMS_DW.SwitchCase_ActiveSubsystem_c = 4;
+      break;
     }
 
-    Formation_FMS_PrevZCX.FormMission_SubSystem_Reset_ZCE =
-      rtb_FixPtRelationalOperator_c;
-
-    // SignalConversion generated from: '<S43>/Vector Concatenate'
-    Formation_FMS_DW.xyz_O_nx3[0] = Formation_FMS_DW.rtb_x_R_idx_0;
-
-    // SignalConversion generated from: '<S43>/Vector Concatenate'
-    Formation_FMS_DW.xyz_O_nx3[3] = Formation_FMS_DW.rtb_y_R_idx_0;
-
-    // SignalConversion generated from: '<S43>/Vector Concatenate'
-    Formation_FMS_DW.xyz_O_nx3[6] = Formation_FMS_DW.absxk;
-
-    // SignalConversion generated from: '<S43>/Vector Concatenate1'
-    Formation_FMS_DW.vNED_O_nx3[0] = Formation_FMS_DW.t_f;
-
-    // SignalConversion generated from: '<S43>/Vector Concatenate1'
-    Formation_FMS_DW.vNED_O_nx3[3] = Formation_FMS_DW.ve[0];
-
-    // SignalConversion generated from: '<S43>/Vector Concatenate1'
-    Formation_FMS_DW.vNED_O_nx3[6] = Formation_FMS_DW.pose[0];
-    Formation_FMS_DW.ve[0] = 0.0F;
-    Formation_FMS_DW.pose[0] = 0.0F;
-
-    // SignalConversion generated from: '<S43>/Vector Concatenate' incorporates:
-    //   MATLAB Function: '<S45>/Calc_Position_Velocity_Setpoint'
-
-    Formation_FMS_DW.xyz_O_nx3[1] = Formation_FMS_DW.rtb_x_R_idx_1;
-
-    // SignalConversion generated from: '<S43>/Vector Concatenate'
-    Formation_FMS_DW.xyz_O_nx3[4] = Formation_FMS_DW.rtb_y_R_idx_1;
-
-    // SignalConversion generated from: '<S43>/Vector Concatenate'
-    Formation_FMS_DW.xyz_O_nx3[7] = Formation_FMS_DW.path_ratio;
-
-    // SignalConversion generated from: '<S43>/Vector Concatenate1'
-    Formation_FMS_DW.vNED_O_nx3[1] = Formation_FMS_DW.rtb_vn_idx_1;
-
-    // SignalConversion generated from: '<S43>/Vector Concatenate1'
-    Formation_FMS_DW.vNED_O_nx3[4] = Formation_FMS_DW.ve[1];
-
-    // SignalConversion generated from: '<S43>/Vector Concatenate1'
-    Formation_FMS_DW.vNED_O_nx3[7] = Formation_FMS_DW.pose[1];
-    Formation_FMS_DW.ve[1] = 0.0F;
-    Formation_FMS_DW.pose[1] = 0.0F;
-
-    // SignalConversion generated from: '<S43>/Vector Concatenate' incorporates:
-    //   MATLAB Function: '<S45>/Calc_Position_Velocity_Setpoint'
-
-    Formation_FMS_DW.xyz_O_nx3[2] = Formation_FMS_DW.rtb_x_R_idx_2;
-
-    // SignalConversion generated from: '<S43>/Vector Concatenate'
-    Formation_FMS_DW.xyz_O_nx3[5] = Formation_FMS_DW.rtb_y_R_idx_2;
-
-    // SignalConversion generated from: '<S43>/Vector Concatenate'
-    Formation_FMS_DW.xyz_O_nx3[8] = Formation_FMS_DW.scale;
-
-    // SignalConversion generated from: '<S43>/Vector Concatenate1'
-    Formation_FMS_DW.vNED_O_nx3[2] = Formation_FMS_DW.Multiply1_f;
-
-    // SignalConversion generated from: '<S43>/Vector Concatenate1'
-    Formation_FMS_DW.vNED_O_nx3[5] = Formation_FMS_DW.ve[2];
-
-    // SignalConversion generated from: '<S43>/Vector Concatenate1'
-    Formation_FMS_DW.vNED_O_nx3[8] = Formation_FMS_DW.pose[2];
-    Formation_FMS_DW.ve[2] = 0.0F;
-    Formation_FMS_DW.pose[2] = 0.0F;
-
-    // MATLAB Function: '<S45>/Calc_Position_Velocity_Setpoint' incorporates:
-    //   Concatenate: '<S43>/Vector Concatenate'
-    //   Concatenate: '<S43>/Vector Concatenate1'
-
-    Formation_FMS_DW.scale = 0.0F;
-    for (Formation_FMS_DW.i = 0; Formation_FMS_DW.i < 3; Formation_FMS_DW.i++) {
-      if ((1U << Formation_FMS_DW.i & Formation_FMS_DW.Cmd_In.form_valid) != 0U)
-      {
-        Formation_FMS_DW.mask = (3 * Formation_FMS_DW.i + static_cast<int32_T>
-          (FORMATION_PARAM.UAV_ID)) - 1;
-        Formation_FMS_DW.d = FORMATION_PARAM.ADJ_MARTIX[Formation_FMS_DW.mask];
-        if (!(Formation_FMS_DW.d == 0.0)) {
-          Formation_FMS_DW.t_f = rt_atan2f_snf
-            (Formation_FMS_DW.vNED_O_nx3[Formation_FMS_DW.i + 3],
-             Formation_FMS_DW.vNED_O_nx3[Formation_FMS_DW.i]);
-          Formation_FMS_DW.absxk = std::sin(Formation_FMS_DW.t_f);
-          Formation_FMS_DW.t_f = std::cos(Formation_FMS_DW.t_f);
-          Formation_FMS_DW.t[0] = Formation_FMS_DW.t_f;
-          Formation_FMS_DW.t[3] = -Formation_FMS_DW.absxk;
-          Formation_FMS_DW.t[6] = 0.0F;
-          Formation_FMS_DW.t[1] = Formation_FMS_DW.absxk;
-          Formation_FMS_DW.t[4] = Formation_FMS_DW.t_f;
-          Formation_FMS_DW.t[7] = 0.0F;
-          Formation_FMS_DW.t[2] = 0.0F;
-          Formation_FMS_DW.t[5] = 0.0F;
-          Formation_FMS_DW.t[8] = 1.0F;
-          Formation_FMS_DW.Multiply1_f = static_cast<real32_T>
-            (FORMATION_PARAM.REL_X_MATRIX[Formation_FMS_DW.mask]);
-          Formation_FMS_DW.rtb_y_R_idx_0 = static_cast<real32_T>
-            (FORMATION_PARAM.REL_Y_MATRIX[Formation_FMS_DW.mask]);
-          Formation_FMS_DW.rtb_x_R_idx_0 = static_cast<real32_T>
-            (FORMATION_PARAM.REL_Z_MATRIX[Formation_FMS_DW.mask]);
-          for (Formation_FMS_DW.mask = 0; Formation_FMS_DW.mask < 3;
-               Formation_FMS_DW.mask++) {
-            Formation_FMS_DW.pose_tmp = 3 * Formation_FMS_DW.mask +
-              Formation_FMS_DW.i;
-            Formation_FMS_DW.pose[Formation_FMS_DW.mask] +=
-              (((Formation_FMS_DW.t[Formation_FMS_DW.mask + 3] *
-                 Formation_FMS_DW.rtb_y_R_idx_0 +
-                 Formation_FMS_DW.t[Formation_FMS_DW.mask] *
-                 Formation_FMS_DW.Multiply1_f) +
-                Formation_FMS_DW.t[Formation_FMS_DW.mask + 6] *
-                Formation_FMS_DW.rtb_x_R_idx_0) +
-               Formation_FMS_DW.xyz_O_nx3[Formation_FMS_DW.pose_tmp]) *
-              static_cast<real32_T>(Formation_FMS_DW.d);
-            Formation_FMS_DW.ve[Formation_FMS_DW.mask] +=
-              Formation_FMS_DW.vNED_O_nx3[Formation_FMS_DW.pose_tmp] *
-              static_cast<real32_T>(Formation_FMS_DW.d);
-          }
-
-          Formation_FMS_DW.scale++;
-        }
-      }
-    }
-
-    if (Formation_FMS_DW.scale != 0.0F) {
-      Formation_FMS_DW.pose[0] = Formation_FMS_DW.pose[0] /
-        Formation_FMS_DW.scale - Formation_FMS_DW.xyz_O_nx3[static_cast<int32_T>
-        (FORMATION_PARAM.UAV_ID) - 1];
-      Formation_FMS_DW.ve[0] /= Formation_FMS_DW.scale;
-      Formation_FMS_DW.pose[1] = Formation_FMS_DW.pose[1] /
-        Formation_FMS_DW.scale - Formation_FMS_DW.xyz_O_nx3[static_cast<int32_T>
-        (FORMATION_PARAM.UAV_ID) + 2];
-      Formation_FMS_DW.ve[1] /= Formation_FMS_DW.scale;
-      Formation_FMS_DW.pose[2] = Formation_FMS_DW.pose[2] /
-        Formation_FMS_DW.scale - Formation_FMS_DW.xyz_O_nx3[static_cast<int32_T>
-        (FORMATION_PARAM.UAV_ID) + 5];
-    } else {
-      Formation_FMS_DW.ve[0] = Formation_FMS_DW.vNED_O_nx3[static_cast<int32_T>
-        (FORMATION_PARAM.UAV_ID) - 1];
-      Formation_FMS_DW.ve[1] = Formation_FMS_DW.vNED_O_nx3[static_cast<int32_T>
-        (FORMATION_PARAM.UAV_ID) + 2];
-    }
-
-    // Math: '<S58>/Math Function' incorporates:
-    //   Math: '<S51>/Square'
-    //   Math: '<S53>/Math Function'
-    //   Switch: '<S41>/Switch'
-
-    Formation_FMS_DW.rtb_y_R_idx_0 = Formation_FMS_DW.ve[0] *
-      Formation_FMS_DW.ve[0];
-    Formation_FMS_DW.rtb_x_R_idx_0 = Formation_FMS_DW.ve[1] *
-      Formation_FMS_DW.ve[1];
-
-    // Sum: '<S58>/Sum of Elements' incorporates:
-    //   Math: '<S58>/Math Function'
-
-    Formation_FMS_DW.Multiply1_f = Formation_FMS_DW.rtb_y_R_idx_0 +
-      Formation_FMS_DW.rtb_x_R_idx_0;
-
-    // Math: '<S58>/Math Function1'
-    //
-    //  About '<S58>/Math Function1':
-    //   Operator: sqrt
-
-    if (Formation_FMS_DW.Multiply1_f < 0.0F) {
-      Formation_FMS_DW.Multiply1_f = -std::sqrt(std::abs
-        (Formation_FMS_DW.Multiply1_f));
-    } else {
-      Formation_FMS_DW.Multiply1_f = std::sqrt(Formation_FMS_DW.Multiply1_f);
-    }
-
-    // End of Math: '<S58>/Math Function1'
-
-    // Switch: '<S58>/Switch' incorporates:
-    //   Constant: '<S58>/Constant'
-    //   Product: '<S58>/Product'
-    //   Switch: '<S41>/Switch'
-
-    if (Formation_FMS_DW.Multiply1_f > 0.0F) {
-      Formation_FMS_DW.t_f = Formation_FMS_DW.ve[0];
-      Formation_FMS_DW.rtb_vn_idx_1 = Formation_FMS_DW.ve[1];
-    } else {
-      Formation_FMS_DW.t_f = Formation_FMS_DW.ve[0] * 0.0F;
-      Formation_FMS_DW.rtb_vn_idx_1 = Formation_FMS_DW.ve[1] * 0.0F;
-      Formation_FMS_DW.Multiply1_f = 1.0F;
-    }
-
-    // End of Switch: '<S58>/Switch'
-
-    // SignalConversion generated from: '<S52>/Square'
-    Formation_FMS_DW.TmpSignalConversionAtSqua_n[0] = *rtu_INS_Out_vn;
-    Formation_FMS_DW.TmpSignalConversionAtSqua_n[1] = *rtu_INS_Out_ve;
-
-    // Reshape: '<S118>/Reshape2'
-    Formation_FMS_DW.Reshape2_bi[0] = *rtu_INS_Out_x_R;
-    Formation_FMS_DW.Reshape2_bi[1] = *rtu_INS_Out_y_R;
-
-    // MATLAB Function: '<S119>/NearbyRefWP' incorporates:
-    //   Constant: '<S117>/L1'
-
-    Formation_FMS_NearbyRefWP(&Formation_FMS_DW.Cmd_In.sp_waypoint[0],
-      Formation_FMS_DW.Reshape2_bi, FMS_PARAM.L1, Formation_FMS_DW.P_c,
-      &Formation_FMS_DW.scale);
-
-    // MATLAB Function: '<S119>/SearchL1RefWP' incorporates:
-    //   Constant: '<S117>/L1'
-
-    Formation_FMS_SearchL1RefWP(&Formation_FMS_DW.Cmd_In.cur_waypoint[0],
-      &Formation_FMS_DW.Cmd_In.sp_waypoint[0], Formation_FMS_DW.Reshape2_bi,
-      FMS_PARAM.L1, Formation_FMS_DW.P_mr, &Formation_FMS_DW.absxk);
-
-    // MATLAB Function: '<S119>/OutRegionRegWP'
-    Formation_FMS_OutRegionRegWP(&Formation_FMS_DW.Cmd_In.cur_waypoint[0],
-      &Formation_FMS_DW.Cmd_In.sp_waypoint[0], Formation_FMS_DW.Reshape2_bi,
-      Formation_FMS_DW.P_b);
-
-    // Delay: '<S115>/Delay' incorporates:
-    //   Constant: '<S115>/Constant'
-
-    if (Formation_FMS_DW.icLoad_k) {
-      Formation_FMS_DW.Delay_DSTATE_o = FMS_PARAM.FW_HEIGHT_TRIM;
-    }
-
-    // Product: '<S58>/Divide'
-    Formation_FMS_DW.rtb_x_R_idx_1 = Formation_FMS_DW.t_f /
-      Formation_FMS_DW.Multiply1_f;
-
-    // Math: '<S56>/Square' incorporates:
-    //   Math: '<S128>/Square'
-    //   Math: '<S129>/Math Function'
-    //   Math: '<S52>/Square'
-    //   Math: '<S63>/Square'
-    //   Switch: '<S116>/Switch'
-    //   Switch: '<S41>/Switch'
-    //   Switch: '<S57>/Switch'
-
-    Formation_FMS_DW.MathFunction_h4[0] =
-      Formation_FMS_DW.TmpSignalConversionAtSqua_n[0] *
-      Formation_FMS_DW.TmpSignalConversionAtSqua_n[0];
-
-    // Product: '<S58>/Divide'
-    Formation_FMS_DW.rtb_y_R_idx_2 = Formation_FMS_DW.rtb_vn_idx_1 /
-      Formation_FMS_DW.Multiply1_f;
-
-    // Math: '<S56>/Square' incorporates:
-    //   Math: '<S128>/Square'
-    //   Math: '<S129>/Math Function'
-    //   Math: '<S52>/Square'
-    //   Math: '<S63>/Square'
-    //   Switch: '<S116>/Switch'
-    //   Switch: '<S41>/Switch'
-    //   Switch: '<S57>/Switch'
-
-    Formation_FMS_DW.MathFunction_h4[1] =
-      Formation_FMS_DW.TmpSignalConversionAtSqua_n[1] *
-      Formation_FMS_DW.TmpSignalConversionAtSqua_n[1];
-
-    // Product: '<S54>/Multiply'
-    Formation_FMS_DW.Multiply1_f = Formation_FMS_DW.pose[0] *
-      Formation_FMS_DW.rtb_y_R_idx_2;
-
-    // Sum: '<S54>/Subtract' incorporates:
-    //   Product: '<S54>/Multiply1'
-
-    Formation_FMS_DW.t_f = Formation_FMS_DW.Multiply1_f -
-      Formation_FMS_DW.rtb_x_R_idx_1 * Formation_FMS_DW.pose[1];
-
-    // Sum: '<S56>/Sum of Elements' incorporates:
-    //   Math: '<S56>/Square'
-    //   Sum: '<S52>/Sum of Elements'
-    //   Switch: '<S41>/Switch'
-
-    Formation_FMS_DW.rtb_vn_idx_1 = Formation_FMS_DW.MathFunction_h4[0] +
-      Formation_FMS_DW.MathFunction_h4[1];
-
-    // Product: '<S56>/Divide' incorporates:
-    //   Abs: '<S56>/Abs'
-    //   Bias: '<S56>/Bias'
-    //   Constant: '<S56>/Ts//2'
-    //   Product: '<S56>/Product'
-    //   Sum: '<S56>/Sum of Elements'
-
-    Formation_FMS_DW.path_ratio = std::abs(Formation_FMS_DW.t_f) /
-      (FORMATION_PARAM.LATERAL_DAMP * FORMATION_PARAM.LATERAL_PERIOD * 0.5F *
-       (Formation_FMS_DW.rtb_vn_idx_1 + 1.0F));
-
-    // Saturate: '<S56>/normalized_track_error'
-    if (Formation_FMS_DW.path_ratio > 1.0F) {
-      Formation_FMS_DW.path_ratio = 1.0F;
-    } else if (Formation_FMS_DW.path_ratio < 0.0F) {
-      Formation_FMS_DW.path_ratio = 0.0F;
-    }
-
-    // End of Saturate: '<S56>/normalized_track_error'
-
-    // Gain: '<S60>/Gain1' incorporates:
-    //   Bias: '<S60>/Bias1'
-    //   Math: '<S60>/Square1'
-
-    Formation_FMS_DW.rtb_y_R_idx_1 = (Formation_FMS_DW.path_ratio - 1.0F) *
-      (Formation_FMS_DW.path_ratio - 1.0F) * 1.57079637F;
-
-    // Trigonometry: '<S55>/Sin'
-    Formation_FMS_DW.path_ratio = std::sin(Formation_FMS_DW.rtb_y_R_idx_1);
-
-    // Trigonometry: '<S55>/Cos'
-    Formation_FMS_DW.rtb_y_R_idx_1 = std::cos(Formation_FMS_DW.rtb_y_R_idx_1);
-
-    // MATLAB Function: '<S55>/signNoZero'
-    Formation_FMS_signNoZero(Formation_FMS_DW.t_f, &Formation_FMS_DW.Multiply1_f);
-
-    // Sum: '<S55>/Add' incorporates:
-    //   Gain: '<S55>/Gain'
-    //   Gain: '<S55>/Gain1'
-    //   Product: '<S55>/Product'
-    //   Product: '<S55>/Product1'
-    //   Product: '<S55>/unit_track_error'
-    //   Product: '<S58>/Divide'
-
-    Formation_FMS_DW.t_f = -Formation_FMS_DW.rtb_y_R_idx_2 *
-      -Formation_FMS_DW.Multiply1_f * Formation_FMS_DW.rtb_y_R_idx_1 +
-      Formation_FMS_DW.rtb_x_R_idx_1 * Formation_FMS_DW.path_ratio;
-    Formation_FMS_DW.rtb_x_R_idx_1 = Formation_FMS_DW.rtb_x_R_idx_1 *
-      -Formation_FMS_DW.Multiply1_f * Formation_FMS_DW.rtb_y_R_idx_1 +
-      Formation_FMS_DW.rtb_y_R_idx_2 * Formation_FMS_DW.path_ratio;
-
-    // Product: '<S61>/Multiply'
-    Formation_FMS_DW.rtb_y_R_idx_1 = *rtu_INS_Out_vn *
-      Formation_FMS_DW.rtb_x_R_idx_1;
-
-    // Product: '<S61>/Multiply1'
-    Formation_FMS_DW.Multiply1_f = *rtu_INS_Out_ve * Formation_FMS_DW.t_f;
-
-    // Sum: '<S61>/Subtract'
-    Formation_FMS_DW.Multiply1_f = Formation_FMS_DW.rtb_y_R_idx_1 -
-      Formation_FMS_DW.Multiply1_f;
-
-    // MATLAB Function: '<S57>/signNoZero'
-    Formation_FMS_signNoZero(Formation_FMS_DW.Multiply1_f,
-      &Formation_FMS_DW.rtb_y_R_idx_1);
-
-    // Switch: '<S41>/Switch' incorporates:
-    //   Constant: '<S41>/Constant2'
-    //   Constant: '<S42>/Constant'
-    //   DiscreteIntegrator: '<S97>/Integrator'
-    //   Gain: '<S102>/Proportional Gain'
-    //   Gain: '<S114>/Gain'
-    //   Gain: '<S57>/Gain'
-    //   RelationalOperator: '<S42>/Compare'
-    //   Saturate: '<S49>/Saturation'
-    //   Saturate: '<S49>/Saturation1'
-    //   Sum: '<S106>/Sum'
-    //   Sum: '<S49>/Add'
-    //   Sum: '<S50>/Add'
-
-    if (FORMATION_PARAM.UAV_ID == 1U) {
-      // Sum: '<S114>/Sum' incorporates:
-      //   Constant: '<S114>/Constant'
-
-      Formation_FMS_DW.rtb_y_R_idx_1 = FMS_PARAM.FW_AIRSPD_TRIM -
-        *rtu_INS_Out_airspeed;
-
-      // Switch: '<S116>/Switch' incorporates:
-      //   Constant: '<S116>/Constant'
-      //   Product: '<S132>/Divide'
-
-      if (Formation_FMS_DW.Cmd_In.l1_enable) {
-        // Switch: '<S119>/Switch1' incorporates:
-        //   Constant: '<S122>/Constant'
-        //   RelationalOperator: '<S122>/Compare'
-
-        if (!(Formation_FMS_DW.scale > 0.0F)) {
-          // Switch: '<S119>/Switch' incorporates:
-          //   Constant: '<S121>/Constant'
-          //   RelationalOperator: '<S121>/Compare'
-          //   Switch: '<S119>/Switch1'
-
-          if (Formation_FMS_DW.absxk >= 0.0F) {
-            Formation_FMS_DW.P_c[0] = Formation_FMS_DW.P_mr[0];
-            Formation_FMS_DW.P_c[1] = Formation_FMS_DW.P_mr[1];
-          } else {
-            Formation_FMS_DW.P_c[0] = Formation_FMS_DW.P_b[0];
-            Formation_FMS_DW.P_c[1] = Formation_FMS_DW.P_b[1];
-          }
-
-          // End of Switch: '<S119>/Switch'
-        }
-
-        // End of Switch: '<S119>/Switch1'
-
-        // Sum: '<S120>/Subtract' incorporates:
-        //   Reshape: '<S118>/Reshape2'
-        //   Switch: '<S119>/Switch1'
-
-        Formation_FMS_DW.absxk = Formation_FMS_DW.P_c[0] -
-          Formation_FMS_DW.Reshape2_bi[0];
-        Formation_FMS_DW.Multiply1_f = Formation_FMS_DW.P_c[1] -
-          Formation_FMS_DW.Reshape2_bi[1];
-
-        // Math: '<S129>/Math Function1' incorporates:
-        //   Sum: '<S56>/Sum of Elements'
-        //
-        //  About '<S129>/Math Function1':
-        //   Operator: sqrt
-
-        if (Formation_FMS_DW.rtb_vn_idx_1 < 0.0F) {
-          Formation_FMS_DW.scale = -std::sqrt(std::abs
-            (Formation_FMS_DW.rtb_vn_idx_1));
-        } else {
-          Formation_FMS_DW.scale = std::sqrt(Formation_FMS_DW.rtb_vn_idx_1);
-        }
-
-        // End of Math: '<S129>/Math Function1'
-
-        // Switch: '<S129>/Switch' incorporates:
-        //   Constant: '<S129>/Constant'
-        //   Product: '<S129>/Product'
-
-        if (Formation_FMS_DW.scale > 0.0F) {
-          Formation_FMS_DW.ve[0] = *rtu_INS_Out_vn;
-          Formation_FMS_DW.ve[1] = *rtu_INS_Out_ve;
-          Formation_FMS_DW.ve[2] = Formation_FMS_DW.scale;
-        } else {
-          Formation_FMS_DW.ve[0] = Formation_FMS_DW.TmpSignalConversionAtSqua_n
-            [0] * 0.0F;
-          Formation_FMS_DW.ve[1] = Formation_FMS_DW.TmpSignalConversionAtSqua_n
-            [1] * 0.0F;
-          Formation_FMS_DW.ve[2] = 1.0F;
-        }
-
-        // End of Switch: '<S129>/Switch'
-
-        // Product: '<S129>/Divide'
-        Formation_FMS_DW.rtb_y_R_idx_0 = Formation_FMS_DW.ve[0] /
-          Formation_FMS_DW.ve[2];
-        Formation_FMS_DW.rtb_x_R_idx_0 = Formation_FMS_DW.ve[1] /
-          Formation_FMS_DW.ve[2];
-
-        // Sum: '<S130>/Sum of Elements' incorporates:
-        //   Math: '<S130>/Math Function'
-
-        Formation_FMS_DW.scale = Formation_FMS_DW.absxk * Formation_FMS_DW.absxk
-          + Formation_FMS_DW.Multiply1_f * Formation_FMS_DW.Multiply1_f;
-
-        // Math: '<S130>/Math Function1'
-        //
-        //  About '<S130>/Math Function1':
-        //   Operator: sqrt
-
-        if (Formation_FMS_DW.scale < 0.0F) {
-          Formation_FMS_DW.scale = -std::sqrt(std::abs(Formation_FMS_DW.scale));
-        } else {
-          Formation_FMS_DW.scale = std::sqrt(Formation_FMS_DW.scale);
-        }
-
-        // End of Math: '<S130>/Math Function1'
-
-        // Switch: '<S130>/Switch' incorporates:
-        //   Constant: '<S130>/Constant'
-        //   Product: '<S130>/Product'
-        //   Sum: '<S120>/Subtract'
-        //   Switch: '<S132>/Switch'
-
-        if (Formation_FMS_DW.scale > 0.0F) {
-          Formation_FMS_DW.ve[0] = Formation_FMS_DW.absxk;
-          Formation_FMS_DW.ve[1] = Formation_FMS_DW.Multiply1_f;
-          Formation_FMS_DW.ve[2] = Formation_FMS_DW.scale;
-        } else {
-          Formation_FMS_DW.ve[0] = Formation_FMS_DW.absxk * 0.0F;
-          Formation_FMS_DW.ve[1] = Formation_FMS_DW.Multiply1_f * 0.0F;
-          Formation_FMS_DW.ve[2] = 1.0F;
-        }
-
-        // End of Switch: '<S130>/Switch'
-
-        // Product: '<S130>/Divide' incorporates:
-        //   Product: '<S133>/Divide'
-
-        Formation_FMS_DW.P_c[0] = Formation_FMS_DW.ve[0] / Formation_FMS_DW.ve[2];
-        Formation_FMS_DW.P_c[1] = Formation_FMS_DW.ve[1] / Formation_FMS_DW.ve[2];
-
-        // Sqrt: '<S128>/Sqrt' incorporates:
-        //   Math: '<S128>/Square'
-        //   Sum: '<S128>/Sum of Elements'
-
-        Formation_FMS_DW.scale = std::sqrt(Formation_FMS_DW.MathFunction_h4[0] +
-          Formation_FMS_DW.MathFunction_h4[1]);
-
-        // Gain: '<S126>/Gain' incorporates:
-        //   Math: '<S126>/Square'
-
-        Formation_FMS_DW.Multiply1_f = Formation_FMS_DW.scale *
-          Formation_FMS_DW.scale * 2.0F;
-
-        // Sum: '<S133>/Sum of Elements' incorporates:
-        //   Math: '<S133>/Math Function'
-        //   SignalConversion generated from: '<S133>/Math Function'
-
-        Formation_FMS_DW.scale = Formation_FMS_DW.P_c[1] * Formation_FMS_DW.P_c
-          [1] + Formation_FMS_DW.P_c[0] * Formation_FMS_DW.P_c[0];
-
-        // Math: '<S133>/Math Function1'
-        //
-        //  About '<S133>/Math Function1':
-        //   Operator: sqrt
-
-        if (Formation_FMS_DW.scale < 0.0F) {
-          Formation_FMS_DW.scale = -std::sqrt(std::abs(Formation_FMS_DW.scale));
-        } else {
-          Formation_FMS_DW.scale = std::sqrt(Formation_FMS_DW.scale);
-        }
-
-        // End of Math: '<S133>/Math Function1'
-
-        // Switch: '<S133>/Switch' incorporates:
-        //   Constant: '<S133>/Constant'
-        //   Product: '<S133>/Product'
-        //   SignalConversion generated from: '<S133>/Math Function'
-
-        if (Formation_FMS_DW.scale > 0.0F) {
-          Formation_FMS_DW.ve[0] = Formation_FMS_DW.P_c[1];
-          Formation_FMS_DW.ve[1] = Formation_FMS_DW.P_c[0];
-          Formation_FMS_DW.ve[2] = Formation_FMS_DW.scale;
-        } else {
-          Formation_FMS_DW.ve[0] = Formation_FMS_DW.P_c[1] * 0.0F;
-          Formation_FMS_DW.ve[1] = Formation_FMS_DW.P_c[0] * 0.0F;
-          Formation_FMS_DW.ve[2] = 1.0F;
-        }
-
-        // End of Switch: '<S133>/Switch'
-
-        // Product: '<S133>/Divide'
-        Formation_FMS_DW.P_c[0] = Formation_FMS_DW.ve[0] / Formation_FMS_DW.ve[2];
-        Formation_FMS_DW.P_c[1] = Formation_FMS_DW.ve[1] / Formation_FMS_DW.ve[2];
-
-        // Sum: '<S132>/Sum of Elements' incorporates:
-        //   Math: '<S132>/Math Function'
-        //   SignalConversion generated from: '<S132>/Math Function'
-
-        Formation_FMS_DW.scale = Formation_FMS_DW.rtb_x_R_idx_0 *
-          Formation_FMS_DW.rtb_x_R_idx_0 + Formation_FMS_DW.rtb_y_R_idx_0 *
-          Formation_FMS_DW.rtb_y_R_idx_0;
-
-        // Math: '<S132>/Math Function1'
-        //
-        //  About '<S132>/Math Function1':
-        //   Operator: sqrt
-
-        if (Formation_FMS_DW.scale < 0.0F) {
-          Formation_FMS_DW.scale = -std::sqrt(std::abs(Formation_FMS_DW.scale));
-        } else {
-          Formation_FMS_DW.scale = std::sqrt(Formation_FMS_DW.scale);
-        }
-
-        // End of Math: '<S132>/Math Function1'
-
-        // Switch: '<S132>/Switch' incorporates:
-        //   Constant: '<S132>/Constant'
-        //   Product: '<S132>/Product'
-        //   SignalConversion generated from: '<S132>/Math Function'
-
-        if (Formation_FMS_DW.scale > 0.0F) {
-          Formation_FMS_DW.ve[0] = Formation_FMS_DW.rtb_x_R_idx_0;
-          Formation_FMS_DW.ve[1] = Formation_FMS_DW.rtb_y_R_idx_0;
-          Formation_FMS_DW.ve[2] = Formation_FMS_DW.scale;
-        } else {
-          Formation_FMS_DW.ve[0] = Formation_FMS_DW.rtb_x_R_idx_0 * 0.0F;
-          Formation_FMS_DW.ve[1] = Formation_FMS_DW.rtb_y_R_idx_0 * 0.0F;
-          Formation_FMS_DW.ve[2] = 1.0F;
-        }
-
-        // End of Switch: '<S132>/Switch'
-
-        // Product: '<S132>/Divide'
-        Formation_FMS_DW.absxk = Formation_FMS_DW.ve[0] / Formation_FMS_DW.ve[2];
-
-        // DotProduct: '<S127>/Dot Product'
-        Formation_FMS_DW.rtb_x_R_idx_0 = Formation_FMS_DW.absxk *
-          Formation_FMS_DW.P_c[0];
-        Formation_FMS_DW.rtb_y_R_idx_0 = Formation_FMS_DW.absxk;
-
-        // Product: '<S132>/Divide'
-        Formation_FMS_DW.absxk = Formation_FMS_DW.ve[1] / Formation_FMS_DW.ve[2];
-
-        // DotProduct: '<S127>/Dot Product'
-        Formation_FMS_DW.rtb_x_R_idx_0 += Formation_FMS_DW.absxk *
-          Formation_FMS_DW.P_c[1];
-
-        // Sum: '<S131>/Subtract' incorporates:
-        //   Product: '<S131>/Multiply'
-        //   Product: '<S131>/Multiply1'
-
-        Formation_FMS_DW.rtb_y_R_idx_0 = Formation_FMS_DW.P_c[0] *
-          Formation_FMS_DW.absxk - Formation_FMS_DW.rtb_y_R_idx_0 *
-          Formation_FMS_DW.P_c[1];
-
-        // Signum: '<S127>/Sign1'
-        if (std::isnan(Formation_FMS_DW.rtb_y_R_idx_0)) {
-          Formation_FMS_DW.scale = (rtNaNF);
-        } else if (Formation_FMS_DW.rtb_y_R_idx_0 < 0.0F) {
-          Formation_FMS_DW.scale = -1.0F;
-        } else {
-          Formation_FMS_DW.scale = (Formation_FMS_DW.rtb_y_R_idx_0 > 0.0F);
-        }
-
-        // End of Signum: '<S127>/Sign1'
-
-        // Trigonometry: '<S127>/Acos' incorporates:
-        //   DotProduct: '<S127>/Dot Product'
-
-        if (Formation_FMS_DW.rtb_x_R_idx_0 > 1.0F) {
-          Formation_FMS_DW.rtb_x_R_idx_0 = 1.0F;
-        } else if (Formation_FMS_DW.rtb_x_R_idx_0 < -1.0F) {
-          Formation_FMS_DW.rtb_x_R_idx_0 = -1.0F;
-        }
-
-        // Switch: '<S127>/Switch2' incorporates:
-        //   Constant: '<S127>/Constant4'
-
-        if (!(Formation_FMS_DW.scale != 0.0F)) {
-          Formation_FMS_DW.scale = 1.0F;
-        }
-
-        // Product: '<S127>/Multiply' incorporates:
-        //   Switch: '<S127>/Switch2'
-        //   Trigonometry: '<S127>/Acos'
-
-        Formation_FMS_DW.path_ratio = std::acos(Formation_FMS_DW.rtb_x_R_idx_0) *
-          Formation_FMS_DW.scale;
-
-        // Saturate: '<S126>/Saturation'
-        if (Formation_FMS_DW.path_ratio > 1.57079637F) {
-          Formation_FMS_DW.path_ratio = 1.57079637F;
-        } else if (Formation_FMS_DW.path_ratio < -1.57079637F) {
-          Formation_FMS_DW.path_ratio = -1.57079637F;
-        }
-
-        // Product: '<S126>/Divide' incorporates:
-        //   Constant: '<S117>/L1'
-        //   Product: '<S126>/Multiply1'
-        //   Saturate: '<S126>/Saturation'
-        //   Trigonometry: '<S126>/Sin'
-
-        Formation_FMS_DW.rtb_vn_idx_1 = std::sin(Formation_FMS_DW.path_ratio) *
-          Formation_FMS_DW.Multiply1_f / FMS_PARAM.L1;
-
-        // Saturate: '<S117>/Saturation1'
-        if (Formation_FMS_DW.rtb_vn_idx_1 > FMS_PARAM.ACC_Y_LIM) {
-          Formation_FMS_DW.rtb_vn_idx_1 = FMS_PARAM.ACC_Y_LIM;
-        } else if (Formation_FMS_DW.rtb_vn_idx_1 < -FMS_PARAM.ACC_Y_LIM) {
-          Formation_FMS_DW.rtb_vn_idx_1 = -FMS_PARAM.ACC_Y_LIM;
-        }
-
-        // End of Saturate: '<S117>/Saturation1'
-      } else {
-        Formation_FMS_DW.rtb_vn_idx_1 = 0.0F;
-      }
-
-      // Sum: '<S115>/Sum' incorporates:
-      //   Delay: '<S115>/Delay'
-
-      Formation_FMS_DW.Multiply1_f = Formation_FMS_DW.Delay_DSTATE_o -
-        *rtu_INS_Out_h_R;
-      Formation_FMS_DW.t_f = FMS_PARAM.AIRSPD_P * Formation_FMS_DW.rtb_y_R_idx_1;
-
-      // Gain: '<S115>/Gain2' incorporates:
-      //   Gain: '<S114>/Gain'
-
-      Formation_FMS_DW.Multiply1_f *= FMS_PARAM.Z_P;
-
-      // Saturate: '<S115>/Saturation'
-      if (Formation_FMS_DW.Multiply1_f > CONTROL_PARAM.FW_T_CLMB_MAX) {
-        Formation_FMS_DW.Multiply1_f = CONTROL_PARAM.FW_T_CLMB_MAX;
-      } else if (Formation_FMS_DW.Multiply1_f < -CONTROL_PARAM.FW_T_SINK_MAX) {
-        Formation_FMS_DW.Multiply1_f = -CONTROL_PARAM.FW_T_SINK_MAX;
-      }
-
-      // End of Saturate: '<S115>/Saturation'
-    } else {
-      // Sum: '<S53>/Sum of Elements' incorporates:
-      //   Math: '<S53>/Math Function'
-
-      Formation_FMS_DW.scale = Formation_FMS_DW.rtb_y_R_idx_0 +
-        Formation_FMS_DW.rtb_x_R_idx_0;
-
-      // Math: '<S53>/Math Function1'
+    switch (Formation_FMS_DW.SwitchCase_ActiveSubsystem_c) {
+     case 0:
+      // Outputs for IfAction SubSystem: '<S12>/FormAssemble' incorporates:
+      //   ActionPort: '<S17>/Action Port'
+
+      // RelationalOperator: '<S23>/FixPt Relational Operator' incorporates:
+      //   UnitDelay: '<S23>/Delay Input1'
       //
-      //  About '<S53>/Math Function1':
+      //  Block description for '<S23>/Delay Input1':
+      //
+      //   Store in Global RAM
+
+      rtb_FixPtRelationalOperator_c = (Formation_FMS_B.wp_index !=
+        Formation_FMS_DW.DelayInput1_DSTATE_h);
+
+      // Outputs for Resettable SubSystem: '<S17>/Mission_SubSystem' incorporates:
+      //   ResetPort: '<S24>/Reset'
+
+      // InitializeConditions for Delay: '<S26>/Delay'
+      Formation_FMS_DW.icLoad_h = ((rtb_FixPtRelationalOperator_c &&
+        (Formation_FMS_PrevZCX.Mission_SubSystem_Reset_ZCE != POS_ZCSIG)) ||
+        Formation_FMS_DW.icLoad_h);
+      Formation_FMS_PrevZCX.Mission_SubSystem_Reset_ZCE =
+        rtb_FixPtRelationalOperator_c;
+
+      // SignalConversion generated from: '<S39>/Square'
+      Formation_FMS_B.TmpSignalConversionAtSqua_c[0] = *rtu_INS_Out_vn;
+      Formation_FMS_B.TmpSignalConversionAtSqua_c[1] = *rtu_INS_Out_ve;
+
+      // Sum: '<S40>/Sum of Elements' incorporates:
+      //   Math: '<S40>/Math Function'
+      //   Sum: '<S39>/Sum of Elements'
+
+      Formation_FMS_B.scale = Formation_FMS_B.TmpSignalConversionAtSqua_c[0] *
+        Formation_FMS_B.TmpSignalConversionAtSqua_c[0] +
+        Formation_FMS_B.TmpSignalConversionAtSqua_c[1] *
+        Formation_FMS_B.TmpSignalConversionAtSqua_c[1];
+
+      // Math: '<S40>/Math Function1' incorporates:
+      //   Sum: '<S40>/Sum of Elements'
+      //
+      //  About '<S40>/Math Function1':
       //   Operator: sqrt
 
-      if (Formation_FMS_DW.scale < 0.0F) {
-        Formation_FMS_DW.scale = -std::sqrt(std::abs(Formation_FMS_DW.scale));
+      if (Formation_FMS_B.scale < 0.0F) {
+        Formation_FMS_B.absxk = -std::sqrt(std::abs(Formation_FMS_B.scale));
       } else {
-        Formation_FMS_DW.scale = std::sqrt(Formation_FMS_DW.scale);
+        Formation_FMS_B.absxk = std::sqrt(Formation_FMS_B.scale);
       }
 
-      // End of Math: '<S53>/Math Function1'
+      // End of Math: '<S40>/Math Function1'
 
-      // Switch: '<S53>/Switch' incorporates:
-      //   Constant: '<S53>/Constant'
-      //   Product: '<S53>/Product'
+      // Switch: '<S40>/Switch' incorporates:
+      //   Constant: '<S40>/Constant'
+      //   Product: '<S40>/Product'
 
-      if (Formation_FMS_DW.scale > 0.0F) {
-        Formation_FMS_DW.absxk = Formation_FMS_DW.ve[0];
-        Formation_FMS_DW.path_ratio = Formation_FMS_DW.ve[1];
+      if (Formation_FMS_B.absxk > 0.0F) {
+        Formation_FMS_B.vd[0] = *rtu_INS_Out_vn;
+        Formation_FMS_B.vd[1] = *rtu_INS_Out_ve;
+        Formation_FMS_B.vd[2] = Formation_FMS_B.absxk;
       } else {
-        Formation_FMS_DW.absxk = Formation_FMS_DW.ve[0] * 0.0F;
-        Formation_FMS_DW.path_ratio = Formation_FMS_DW.ve[1] * 0.0F;
-        Formation_FMS_DW.scale = 1.0F;
+        Formation_FMS_B.vd[0] = Formation_FMS_B.TmpSignalConversionAtSqua_c[0] *
+          0.0F;
+        Formation_FMS_B.vd[1] = Formation_FMS_B.TmpSignalConversionAtSqua_c[1] *
+          0.0F;
+        Formation_FMS_B.vd[2] = 1.0F;
       }
 
-      // End of Switch: '<S53>/Switch'
+      // End of Switch: '<S40>/Switch'
+
+      // Reshape: '<S29>/Reshape2'
+      Formation_FMS_B.Reshape2_bq[0] = *rtu_INS_Out_x_R;
+      Formation_FMS_B.Reshape2_bq[1] = *rtu_INS_Out_y_R;
+
+      // MATLAB Function: '<S30>/NearbyRefWP' incorporates:
+      //   Constant: '<S28>/L1'
+
+      Formation_FMS_NearbyRefWP(&Formation_FMS_B.Cmd_In.sp_waypoint[0],
+        Formation_FMS_B.Reshape2_bq, FMS_PARAM.L1,
+        Formation_FMS_B.TmpSignalConversionAtSqua_c, &Formation_FMS_B.absxk);
+
+      // MATLAB Function: '<S30>/SearchL1RefWP' incorporates:
+      //   Constant: '<S28>/L1'
+
+      Formation_FMS_SearchL1RefWP(&Formation_FMS_B.Cmd_In.cur_waypoint[0],
+        &Formation_FMS_B.Cmd_In.sp_waypoint[0], Formation_FMS_B.Reshape2_bq,
+        FMS_PARAM.L1, Formation_FMS_B.P_d, &Formation_FMS_B.t);
+
+      // MATLAB Function: '<S30>/OutRegionRegWP'
+      Formation_FMS_OutRegionRegWP(&Formation_FMS_B.Cmd_In.cur_waypoint[0],
+        &Formation_FMS_B.Cmd_In.sp_waypoint[0], Formation_FMS_B.Reshape2_bq,
+        Formation_FMS_B.P_i);
+
+      // Switch: '<S30>/Switch1' incorporates:
+      //   Constant: '<S32>/Constant'
+      //   Constant: '<S33>/Constant'
+      //   Product: '<S43>/Divide'
+      //   RelationalOperator: '<S32>/Compare'
+      //   RelationalOperator: '<S33>/Compare'
+      //   Switch: '<S30>/Switch'
+
+      if (Formation_FMS_B.absxk > 0.0F) {
+        Formation_FMS_B.P_d[0] = Formation_FMS_B.TmpSignalConversionAtSqua_c[0];
+        Formation_FMS_B.P_d[1] = Formation_FMS_B.TmpSignalConversionAtSqua_c[1];
+      } else if (!(Formation_FMS_B.t >= 0.0F)) {
+        // Product: '<S43>/Divide' incorporates:
+        //   Switch: '<S30>/Switch'
+
+        Formation_FMS_B.P_d[0] = Formation_FMS_B.P_i[0];
+        Formation_FMS_B.P_d[1] = Formation_FMS_B.P_i[1];
+      }
+
+      // End of Switch: '<S30>/Switch1'
+
+      // Sum: '<S31>/Subtract' incorporates:
+      //   Product: '<S43>/Divide'
+      //   Reshape: '<S29>/Reshape2'
+
+      Formation_FMS_B.Multiply1_f = Formation_FMS_B.P_d[0] -
+        Formation_FMS_B.Reshape2_bq[0];
+
+      // Math: '<S41>/Math Function'
+      Formation_FMS_B.TmpSignalConversionAtSqua_c[0] =
+        Formation_FMS_B.Multiply1_f * Formation_FMS_B.Multiply1_f;
+      Formation_FMS_B.P_d[0] = Formation_FMS_B.Multiply1_f;
+
+      // Sum: '<S31>/Subtract' incorporates:
+      //   Product: '<S43>/Divide'
+      //   Reshape: '<S29>/Reshape2'
+
+      Formation_FMS_B.Multiply1_f = Formation_FMS_B.P_d[1] -
+        Formation_FMS_B.Reshape2_bq[1];
+
+      // Sum: '<S41>/Sum of Elements' incorporates:
+      //   Math: '<S41>/Math Function'
+
+      Formation_FMS_B.absxk = Formation_FMS_B.Multiply1_f *
+        Formation_FMS_B.Multiply1_f +
+        Formation_FMS_B.TmpSignalConversionAtSqua_c[0];
+
+      // Math: '<S41>/Math Function1' incorporates:
+      //   Sum: '<S41>/Sum of Elements'
+      //
+      //  About '<S41>/Math Function1':
+      //   Operator: sqrt
+
+      if (Formation_FMS_B.absxk < 0.0F) {
+        Formation_FMS_B.absxk = -std::sqrt(std::abs(Formation_FMS_B.absxk));
+      } else {
+        Formation_FMS_B.absxk = std::sqrt(Formation_FMS_B.absxk);
+      }
+
+      // End of Math: '<S41>/Math Function1'
+
+      // Switch: '<S41>/Switch' incorporates:
+      //   Constant: '<S41>/Constant'
+      //   Product: '<S41>/Product'
+      //   Sum: '<S31>/Subtract'
+      //   Switch: '<S44>/Switch'
+
+      if (Formation_FMS_B.absxk > 0.0F) {
+        Formation_FMS_B.ve[0] = Formation_FMS_B.P_d[0];
+        Formation_FMS_B.ve[1] = Formation_FMS_B.Multiply1_f;
+        Formation_FMS_B.ve[2] = Formation_FMS_B.absxk;
+      } else {
+        Formation_FMS_B.ve[0] = Formation_FMS_B.P_d[0] * 0.0F;
+        Formation_FMS_B.ve[1] = Formation_FMS_B.Multiply1_f * 0.0F;
+        Formation_FMS_B.ve[2] = 1.0F;
+      }
+
+      // End of Switch: '<S41>/Switch'
+
+      // Product: '<S40>/Divide'
+      Formation_FMS_B.TmpSignalConversionAtSqua_c[0] = Formation_FMS_B.vd[0] /
+        Formation_FMS_B.vd[2];
+      Formation_FMS_B.TmpSignalConversionAtSqua_c[1] = Formation_FMS_B.vd[1] /
+        Formation_FMS_B.vd[2];
+
+      // Sum: '<S43>/Sum of Elements' incorporates:
+      //   Math: '<S43>/Math Function'
+      //   SignalConversion generated from: '<S43>/Math Function'
+
+      Formation_FMS_B.absxk = Formation_FMS_B.TmpSignalConversionAtSqua_c[1] *
+        Formation_FMS_B.TmpSignalConversionAtSqua_c[1] +
+        Formation_FMS_B.TmpSignalConversionAtSqua_c[0] *
+        Formation_FMS_B.TmpSignalConversionAtSqua_c[0];
+
+      // Math: '<S43>/Math Function1' incorporates:
+      //   Sum: '<S43>/Sum of Elements'
+      //
+      //  About '<S43>/Math Function1':
+      //   Operator: sqrt
+
+      if (Formation_FMS_B.absxk < 0.0F) {
+        Formation_FMS_B.absxk = -std::sqrt(std::abs(Formation_FMS_B.absxk));
+      } else {
+        Formation_FMS_B.absxk = std::sqrt(Formation_FMS_B.absxk);
+      }
+
+      // End of Math: '<S43>/Math Function1'
+
+      // Switch: '<S43>/Switch' incorporates:
+      //   Constant: '<S43>/Constant'
+      //   Product: '<S43>/Product'
+      //   SignalConversion generated from: '<S43>/Math Function'
+
+      if (Formation_FMS_B.absxk > 0.0F) {
+        Formation_FMS_B.vd[0] = Formation_FMS_B.TmpSignalConversionAtSqua_c[1];
+        Formation_FMS_B.vd[1] = Formation_FMS_B.TmpSignalConversionAtSqua_c[0];
+        Formation_FMS_B.vd[2] = Formation_FMS_B.absxk;
+      } else {
+        Formation_FMS_B.vd[0] = Formation_FMS_B.TmpSignalConversionAtSqua_c[1] *
+          0.0F;
+        Formation_FMS_B.vd[1] = Formation_FMS_B.TmpSignalConversionAtSqua_c[0] *
+          0.0F;
+        Formation_FMS_B.vd[2] = 1.0F;
+      }
+
+      // End of Switch: '<S43>/Switch'
+
+      // Product: '<S41>/Divide' incorporates:
+      //   Product: '<S44>/Divide'
+
+      Formation_FMS_B.TmpSignalConversionAtSqua_c[0] = Formation_FMS_B.ve[0] /
+        Formation_FMS_B.ve[2];
+      Formation_FMS_B.TmpSignalConversionAtSqua_c[1] = Formation_FMS_B.ve[1] /
+        Formation_FMS_B.ve[2];
+
+      // Sum: '<S44>/Sum of Elements' incorporates:
+      //   Math: '<S44>/Math Function'
+      //   SignalConversion generated from: '<S44>/Math Function'
+
+      Formation_FMS_B.absxk = Formation_FMS_B.TmpSignalConversionAtSqua_c[1] *
+        Formation_FMS_B.TmpSignalConversionAtSqua_c[1] +
+        Formation_FMS_B.TmpSignalConversionAtSqua_c[0] *
+        Formation_FMS_B.TmpSignalConversionAtSqua_c[0];
+
+      // Math: '<S44>/Math Function1' incorporates:
+      //   Sum: '<S44>/Sum of Elements'
+      //
+      //  About '<S44>/Math Function1':
+      //   Operator: sqrt
+
+      if (Formation_FMS_B.absxk < 0.0F) {
+        Formation_FMS_B.absxk = -std::sqrt(std::abs(Formation_FMS_B.absxk));
+      } else {
+        Formation_FMS_B.absxk = std::sqrt(Formation_FMS_B.absxk);
+      }
+
+      // End of Math: '<S44>/Math Function1'
+
+      // Switch: '<S44>/Switch' incorporates:
+      //   Constant: '<S44>/Constant'
+      //   Product: '<S44>/Product'
+      //   SignalConversion generated from: '<S44>/Math Function'
+
+      if (Formation_FMS_B.absxk > 0.0F) {
+        Formation_FMS_B.ve[0] = Formation_FMS_B.TmpSignalConversionAtSqua_c[1];
+        Formation_FMS_B.ve[1] = Formation_FMS_B.TmpSignalConversionAtSqua_c[0];
+        Formation_FMS_B.ve[2] = Formation_FMS_B.absxk;
+      } else {
+        Formation_FMS_B.ve[0] = Formation_FMS_B.TmpSignalConversionAtSqua_c[1] *
+          0.0F;
+        Formation_FMS_B.ve[1] = Formation_FMS_B.TmpSignalConversionAtSqua_c[0] *
+          0.0F;
+        Formation_FMS_B.ve[2] = 1.0F;
+      }
+
+      // End of Switch: '<S44>/Switch'
+
+      // Product: '<S44>/Divide'
+      Formation_FMS_B.TmpSignalConversionAtSqua_c[0] = Formation_FMS_B.ve[0] /
+        Formation_FMS_B.ve[2];
+
+      // Product: '<S43>/Divide'
+      Formation_FMS_B.P_d[0] = Formation_FMS_B.vd[0] / Formation_FMS_B.vd[2];
+
+      // Product: '<S44>/Divide'
+      Formation_FMS_B.TmpSignalConversionAtSqua_c[1] = Formation_FMS_B.ve[1] /
+        Formation_FMS_B.ve[2];
+
+      // Product: '<S43>/Divide'
+      Formation_FMS_B.P_d[1] = Formation_FMS_B.vd[1] / Formation_FMS_B.vd[2];
+
+      // Sqrt: '<S39>/Sqrt'
+      Formation_FMS_B.absxk = std::sqrt(Formation_FMS_B.scale);
+
+      // Math: '<S37>/Square'
+      Formation_FMS_B.scale = Formation_FMS_B.absxk * Formation_FMS_B.absxk;
+
+      // Sum: '<S42>/Subtract' incorporates:
+      //   Product: '<S42>/Multiply'
+      //   Product: '<S42>/Multiply1'
+
+      Formation_FMS_B.t = Formation_FMS_B.TmpSignalConversionAtSqua_c[0] *
+        Formation_FMS_B.P_d[1] - Formation_FMS_B.P_d[0] *
+        Formation_FMS_B.TmpSignalConversionAtSqua_c[1];
+
+      // Signum: '<S38>/Sign1'
+      if (std::isnan(Formation_FMS_B.t)) {
+        Formation_FMS_B.absxk = (rtNaNF);
+      } else if (Formation_FMS_B.t < 0.0F) {
+        Formation_FMS_B.absxk = -1.0F;
+      } else {
+        Formation_FMS_B.absxk = (Formation_FMS_B.t > 0.0F);
+      }
+
+      // End of Signum: '<S38>/Sign1'
+
+      // Switch: '<S38>/Switch2' incorporates:
+      //   Constant: '<S38>/Constant4'
+
+      if (Formation_FMS_B.absxk != 0.0F) {
+        Formation_FMS_B.rtb_vn_idx_1 = Formation_FMS_B.absxk;
+      } else {
+        Formation_FMS_B.rtb_vn_idx_1 = 1.0F;
+      }
+
+      // End of Switch: '<S38>/Switch2'
+
+      // Sum: '<S25>/Sum' incorporates:
+      //   Constant: '<S25>/Constant'
+
+      Formation_FMS_B.absxk = FMS_PARAM.FW_AIRSPD_TRIM - *rtu_INS_Out_airspeed;
+
+      // Delay: '<S26>/Delay' incorporates:
+      //   Constant: '<S26>/Constant'
+
+      if (Formation_FMS_DW.icLoad_h) {
+        Formation_FMS_DW.Delay_DSTATE_l = FMS_PARAM.FW_HEIGHT_TRIM;
+      }
+
+      // Sum: '<S26>/Sum' incorporates:
+      //   Delay: '<S26>/Delay'
+
+      Formation_FMS_B.t = Formation_FMS_DW.Delay_DSTATE_l - *rtu_INS_Out_h_R;
+
+      // End of Outputs for SubSystem: '<S17>/Mission_SubSystem'
+      // End of Outputs for SubSystem: '<S12>/FormAssemble'
+      std::memset(&Formation_FMS_B.Merge, 0, sizeof(FMS_Out_Bus));
+
+      // Outputs for IfAction SubSystem: '<S12>/FormAssemble' incorporates:
+      //   ActionPort: '<S17>/Action Port'
+
+      // Outputs for Resettable SubSystem: '<S17>/Mission_SubSystem' incorporates:
+      //   ResetPort: '<S24>/Reset'
+
+      // BusAssignment: '<S24>/Bus Assignment' incorporates:
+      //   Constant: '<S24>/Constant1'
+      //   Merge: '<S10>/Merge'
+
+      Formation_FMS_B.Merge.state = VehicleState::FormAssemble;
+      Formation_FMS_B.Merge.ax_cmd = Formation_FMS_B.absxk;
+
+      // DotProduct: '<S38>/Dot Product'
+      Formation_FMS_B.Multiply1_f = Formation_FMS_B.P_d[0] *
+        Formation_FMS_B.TmpSignalConversionAtSqua_c[0] + Formation_FMS_B.P_d[1] *
+        Formation_FMS_B.TmpSignalConversionAtSqua_c[1];
+
+      // Trigonometry: '<S38>/Acos' incorporates:
+      //   DotProduct: '<S38>/Dot Product'
+
+      if (Formation_FMS_B.Multiply1_f > 1.0F) {
+        Formation_FMS_B.Multiply1_f = 1.0F;
+      } else if (Formation_FMS_B.Multiply1_f < -1.0F) {
+        Formation_FMS_B.Multiply1_f = -1.0F;
+      }
+
+      // Product: '<S38>/Multiply' incorporates:
+      //   Trigonometry: '<S38>/Acos'
+
+      Formation_FMS_B.Multiply1_f = std::acos(Formation_FMS_B.Multiply1_f) *
+        Formation_FMS_B.rtb_vn_idx_1;
+
+      // Saturate: '<S37>/Saturation'
+      if (Formation_FMS_B.Multiply1_f > 1.57079637F) {
+        Formation_FMS_B.Multiply1_f = 1.57079637F;
+      } else if (Formation_FMS_B.Multiply1_f < -1.57079637F) {
+        Formation_FMS_B.Multiply1_f = -1.57079637F;
+      }
+
+      // Product: '<S37>/Divide' incorporates:
+      //   Constant: '<S28>/L1'
+      //   Gain: '<S37>/Gain'
+      //   Product: '<S37>/Multiply1'
+      //   Saturate: '<S37>/Saturation'
+      //   Trigonometry: '<S37>/Sin'
+
+      Formation_FMS_B.Multiply1_f = 2.0F * Formation_FMS_B.scale * std::sin
+        (Formation_FMS_B.Multiply1_f) / FMS_PARAM.L1;
+
+      // Saturate: '<S28>/Saturation1'
+      if (Formation_FMS_B.Multiply1_f > FMS_PARAM.ACC_Y_LIM) {
+        // BusAssignment: '<S24>/Bus Assignment'
+        Formation_FMS_B.Merge.ay_cmd = FMS_PARAM.ACC_Y_LIM;
+      } else if (Formation_FMS_B.Multiply1_f < -FMS_PARAM.ACC_Y_LIM) {
+        // BusAssignment: '<S24>/Bus Assignment'
+        Formation_FMS_B.Merge.ay_cmd = -FMS_PARAM.ACC_Y_LIM;
+      } else {
+        // BusAssignment: '<S24>/Bus Assignment'
+        Formation_FMS_B.Merge.ay_cmd = Formation_FMS_B.Multiply1_f;
+      }
+
+      // End of Saturate: '<S28>/Saturation1'
+
+      // Gain: '<S26>/Gain2'
+      Formation_FMS_B.Multiply1_f = FMS_PARAM.Z_P * Formation_FMS_B.t;
+
+      // Saturate: '<S26>/Saturation'
+      if (Formation_FMS_B.Multiply1_f > CONTROL_PARAM.FW_T_CLMB_MAX) {
+        // BusAssignment: '<S24>/Bus Assignment'
+        Formation_FMS_B.Merge.vh_cmd = CONTROL_PARAM.FW_T_CLMB_MAX;
+      } else if (Formation_FMS_B.Multiply1_f < -CONTROL_PARAM.FW_T_SINK_MAX) {
+        // BusAssignment: '<S24>/Bus Assignment'
+        Formation_FMS_B.Merge.vh_cmd = -CONTROL_PARAM.FW_T_SINK_MAX;
+      } else {
+        // BusAssignment: '<S24>/Bus Assignment'
+        Formation_FMS_B.Merge.vh_cmd = Formation_FMS_B.Multiply1_f;
+      }
+
+      // End of Saturate: '<S26>/Saturation'
+
+      // Update for Delay: '<S26>/Delay'
+      Formation_FMS_DW.icLoad_h = false;
+
+      // End of Outputs for SubSystem: '<S17>/Mission_SubSystem'
+
+      // Update for UnitDelay: '<S23>/Delay Input1'
+      //
+      //  Block description for '<S23>/Delay Input1':
+      //
+      //   Store in Global RAM
+
+      Formation_FMS_DW.DelayInput1_DSTATE_h = Formation_FMS_B.wp_index;
+
+      // End of Outputs for SubSystem: '<S12>/FormAssemble'
+      break;
+
+     case 1:
+      if (Formation_FMS_DW.SwitchCase_ActiveSubsystem_c != rtPrevAction) {
+        // InitializeConditions for IfAction SubSystem: '<S12>/FormHold' incorporates:
+        //   ActionPort: '<S19>/Action Port'
+
+        // InitializeConditions for SwitchCase: '<S12>/Switch Case' incorporates:
+        //   Delay: '<S64>/Delay'
+        //   Delay: '<S68>/start_vel'
+
+        Formation_FMS_DW.icLoad_l3 = true;
+        Formation_FMS_DW.icLoad_p = true;
+
+        // End of InitializeConditions for SubSystem: '<S12>/FormHold'
+      }
+
+      // Outputs for IfAction SubSystem: '<S12>/FormHold' incorporates:
+      //   ActionPort: '<S19>/Action Port'
+
+      // SignalConversion generated from: '<S74>/Square'
+      Formation_FMS_B.TmpSignalConversionAtSqua_c[0] = *rtu_INS_Out_vn;
+      Formation_FMS_B.TmpSignalConversionAtSqua_c[1] = *rtu_INS_Out_ve;
+
+      // Math: '<S75>/Math Function' incorporates:
+      //   Math: '<S74>/Square'
+
+      Formation_FMS_B.absxk = Formation_FMS_B.TmpSignalConversionAtSqua_c[0] *
+        Formation_FMS_B.TmpSignalConversionAtSqua_c[0];
+      Formation_FMS_B.t = Formation_FMS_B.TmpSignalConversionAtSqua_c[1] *
+        Formation_FMS_B.TmpSignalConversionAtSqua_c[1];
+
+      // Sum: '<S75>/Sum of Elements' incorporates:
+      //   Math: '<S75>/Math Function'
+
+      Formation_FMS_B.scale = Formation_FMS_B.absxk + Formation_FMS_B.t;
+
+      // Math: '<S75>/Math Function1' incorporates:
+      //   Sum: '<S75>/Sum of Elements'
+      //
+      //  About '<S75>/Math Function1':
+      //   Operator: sqrt
+
+      if (Formation_FMS_B.scale < 0.0F) {
+        Formation_FMS_B.rtb_vn_idx_1 = -std::sqrt(std::abs(Formation_FMS_B.scale));
+      } else {
+        Formation_FMS_B.rtb_vn_idx_1 = std::sqrt(Formation_FMS_B.scale);
+      }
+
+      // End of Math: '<S75>/Math Function1'
+
+      // Switch: '<S75>/Switch' incorporates:
+      //   Constant: '<S75>/Constant'
+      //   Product: '<S75>/Product'
+
+      if (Formation_FMS_B.rtb_vn_idx_1 > 0.0F) {
+        Formation_FMS_B.vd[0] = *rtu_INS_Out_vn;
+        Formation_FMS_B.vd[1] = *rtu_INS_Out_ve;
+        Formation_FMS_B.vd[2] = Formation_FMS_B.rtb_vn_idx_1;
+      } else {
+        Formation_FMS_B.vd[0] = Formation_FMS_B.TmpSignalConversionAtSqua_c[0] *
+          0.0F;
+        Formation_FMS_B.vd[1] = Formation_FMS_B.TmpSignalConversionAtSqua_c[1] *
+          0.0F;
+        Formation_FMS_B.vd[2] = 1.0F;
+      }
+
+      // End of Switch: '<S75>/Switch'
+
+      // Delay: '<S68>/start_vel'
+      if (Formation_FMS_DW.icLoad_l3) {
+        Formation_FMS_DW.start_vel_DSTATE_n[0] =
+          Formation_FMS_B.TmpSignalConversionAtSqua_c[0];
+        Formation_FMS_DW.start_vel_DSTATE_n[1] =
+          Formation_FMS_B.TmpSignalConversionAtSqua_c[1];
+      }
+
+      // Math: '<S80>/Math Function' incorporates:
+      //   Delay: '<S68>/start_vel'
+
+      Formation_FMS_B.TmpSignalConversionAtSqua_c[0] =
+        Formation_FMS_DW.start_vel_DSTATE_n[0] *
+        Formation_FMS_DW.start_vel_DSTATE_n[0];
+      Formation_FMS_B.TmpSignalConversionAtSqua_c[1] =
+        Formation_FMS_DW.start_vel_DSTATE_n[1] *
+        Formation_FMS_DW.start_vel_DSTATE_n[1];
+
+      // Sum: '<S80>/Sum of Elements'
+      Formation_FMS_B.scale = Formation_FMS_B.TmpSignalConversionAtSqua_c[0] +
+        Formation_FMS_B.TmpSignalConversionAtSqua_c[1];
+
+      // Math: '<S80>/Math Function1' incorporates:
+      //   Sum: '<S80>/Sum of Elements'
+      //
+      //  About '<S80>/Math Function1':
+      //   Operator: sqrt
+
+      if (Formation_FMS_B.scale < 0.0F) {
+        Formation_FMS_B.rtb_vn_idx_1 = -std::sqrt(std::abs(Formation_FMS_B.scale));
+      } else {
+        Formation_FMS_B.rtb_vn_idx_1 = std::sqrt(Formation_FMS_B.scale);
+      }
+
+      // End of Math: '<S80>/Math Function1'
+
+      // Switch: '<S80>/Switch' incorporates:
+      //   Constant: '<S80>/Constant'
+      //   Delay: '<S68>/start_vel'
+      //   Product: '<S80>/Product'
+
+      if (Formation_FMS_B.rtb_vn_idx_1 > 0.0F) {
+        Formation_FMS_B.ve[0] = Formation_FMS_DW.start_vel_DSTATE_n[0];
+        Formation_FMS_B.ve[1] = Formation_FMS_DW.start_vel_DSTATE_n[1];
+        Formation_FMS_B.ve[2] = Formation_FMS_B.rtb_vn_idx_1;
+      } else {
+        Formation_FMS_B.ve[0] = Formation_FMS_DW.start_vel_DSTATE_n[0] * 0.0F;
+        Formation_FMS_B.ve[1] = Formation_FMS_DW.start_vel_DSTATE_n[1] * 0.0F;
+        Formation_FMS_B.ve[2] = 1.0F;
+      }
+
+      // End of Switch: '<S80>/Switch'
+
+      // Product: '<S75>/Divide'
+      Formation_FMS_B.TmpSignalConversionAtSqua_c[0] = Formation_FMS_B.vd[0] /
+        Formation_FMS_B.vd[2];
+      Formation_FMS_B.TmpSignalConversionAtSqua_c[1] = Formation_FMS_B.vd[1] /
+        Formation_FMS_B.vd[2];
+
+      // SignalConversion generated from: '<S78>/Math Function'
+      Formation_FMS_B.P_d[0] = Formation_FMS_B.TmpSignalConversionAtSqua_c[1];
+      Formation_FMS_B.P_d[1] = Formation_FMS_B.TmpSignalConversionAtSqua_c[0];
+
+      // Sum: '<S78>/Sum of Elements' incorporates:
+      //   Math: '<S78>/Math Function'
+      //   SignalConversion generated from: '<S78>/Math Function'
+
+      Formation_FMS_B.scale = Formation_FMS_B.TmpSignalConversionAtSqua_c[1] *
+        Formation_FMS_B.TmpSignalConversionAtSqua_c[1] +
+        Formation_FMS_B.TmpSignalConversionAtSqua_c[0] *
+        Formation_FMS_B.TmpSignalConversionAtSqua_c[0];
+
+      // Math: '<S78>/Math Function1' incorporates:
+      //   Sum: '<S78>/Sum of Elements'
+      //
+      //  About '<S78>/Math Function1':
+      //   Operator: sqrt
+
+      if (Formation_FMS_B.scale < 0.0F) {
+        Formation_FMS_B.rtb_vn_idx_1 = -std::sqrt(std::abs(Formation_FMS_B.scale));
+      } else {
+        Formation_FMS_B.rtb_vn_idx_1 = std::sqrt(Formation_FMS_B.scale);
+      }
+
+      // End of Math: '<S78>/Math Function1'
+
+      // Switch: '<S78>/Switch' incorporates:
+      //   Constant: '<S78>/Constant'
+      //   Product: '<S78>/Product'
+      //   SignalConversion generated from: '<S78>/Math Function'
+
+      if (Formation_FMS_B.rtb_vn_idx_1 > 0.0F) {
+        Formation_FMS_B.vd[0] = Formation_FMS_B.TmpSignalConversionAtSqua_c[1];
+        Formation_FMS_B.vd[1] = Formation_FMS_B.TmpSignalConversionAtSqua_c[0];
+        Formation_FMS_B.vd[2] = Formation_FMS_B.rtb_vn_idx_1;
+      } else {
+        Formation_FMS_B.vd[0] = Formation_FMS_B.TmpSignalConversionAtSqua_c[1] *
+          0.0F;
+        Formation_FMS_B.vd[1] = Formation_FMS_B.TmpSignalConversionAtSqua_c[0] *
+          0.0F;
+        Formation_FMS_B.vd[2] = 1.0F;
+      }
+
+      // End of Switch: '<S78>/Switch'
+
+      // MinMax: '<S66>/Max' incorporates:
+      //   Constant: '<S65>/L1'
+      //   Constant: '<S65>/R'
+      //   Gain: '<S66>/Gain'
+
+      Formation_FMS_B.scale = std::fmax(FMS_PARAM.LOITER_R, 0.5F * FMS_PARAM.L1);
+
+      // Reshape: '<S66>/Reshape2'
+      Formation_FMS_B.Reshape2_bq[0] = *rtu_INS_Out_x_R;
+      Formation_FMS_B.Reshape2_bq[1] = *rtu_INS_Out_y_R;
+
+      // MATLAB Function: '<S66>/SearchL1RefWP' incorporates:
+      //   Constant: '<S65>/L1'
+
+      Formation_FMS_SearchL1RefWP_i(&Formation_FMS_B.Cmd_In.cur_waypoint[0],
+        Formation_FMS_B.Reshape2_bq, Formation_FMS_B.scale, FMS_PARAM.L1,
+        Formation_FMS_B.TmpSignalConversionAtSqua_c, &Formation_FMS_B.n_j);
+
+      // RelationalOperator: '<S69>/Compare' incorporates:
+      //   Constant: '<S69>/Constant'
+
+      rtb_FixPtRelationalOperator_c = (Formation_FMS_B.n_j > 0.0);
+
+      // Product: '<S80>/Divide'
+      Formation_FMS_B.P_i[0] = Formation_FMS_B.ve[0] / Formation_FMS_B.ve[2];
+      Formation_FMS_B.P_i[1] = Formation_FMS_B.ve[1] / Formation_FMS_B.ve[2];
+
+      // MATLAB Function: '<S66>/OutRegionRegWP' incorporates:
+      //   Constant: '<S65>/L1'
+
+      Formation_FMS_OutRegionRegWP_o(&Formation_FMS_B.Cmd_In.cur_waypoint[0],
+        Formation_FMS_B.Reshape2_bq, Formation_FMS_B.scale, FMS_PARAM.L1,
+        Formation_FMS_B.P_i, Formation_FMS_B.P_d);
+
+      // Switch: '<S66>/Switch'
+      if (rtb_FixPtRelationalOperator_c) {
+        Formation_FMS_B.scale = Formation_FMS_B.TmpSignalConversionAtSqua_c[0];
+      } else {
+        Formation_FMS_B.scale = Formation_FMS_B.P_d[0];
+      }
+
+      // Sum: '<S67>/Subtract' incorporates:
+      //   Switch: '<S66>/Switch'
+
+      Formation_FMS_B.Reshape2_bq[0] = Formation_FMS_B.scale - *rtu_INS_Out_x_R;
+
+      // Switch: '<S66>/Switch'
+      if (rtb_FixPtRelationalOperator_c) {
+        Formation_FMS_B.scale = Formation_FMS_B.TmpSignalConversionAtSqua_c[1];
+      } else {
+        Formation_FMS_B.scale = Formation_FMS_B.P_d[1];
+      }
+
+      // Sum: '<S67>/Subtract' incorporates:
+      //   Switch: '<S66>/Switch'
+
+      Formation_FMS_B.Reshape2_bq[1] = Formation_FMS_B.scale - *rtu_INS_Out_y_R;
+
+      // Sum: '<S76>/Sum of Elements' incorporates:
+      //   Math: '<S76>/Math Function'
+      //   Sum: '<S67>/Subtract'
+
+      Formation_FMS_B.scale = Formation_FMS_B.Reshape2_bq[0] *
+        Formation_FMS_B.Reshape2_bq[0] + Formation_FMS_B.Reshape2_bq[1] *
+        Formation_FMS_B.Reshape2_bq[1];
+
+      // Math: '<S76>/Math Function1' incorporates:
+      //   Sum: '<S76>/Sum of Elements'
+      //
+      //  About '<S76>/Math Function1':
+      //   Operator: sqrt
+
+      if (Formation_FMS_B.scale < 0.0F) {
+        Formation_FMS_B.rtb_vn_idx_1 = -std::sqrt(std::abs(Formation_FMS_B.scale));
+      } else {
+        Formation_FMS_B.rtb_vn_idx_1 = std::sqrt(Formation_FMS_B.scale);
+      }
+
+      // End of Math: '<S76>/Math Function1'
+
+      // Switch: '<S76>/Switch' incorporates:
+      //   Constant: '<S76>/Constant'
+      //   Product: '<S76>/Product'
+      //   Sum: '<S67>/Subtract'
+      //   Switch: '<S79>/Switch'
+
+      if (Formation_FMS_B.rtb_vn_idx_1 > 0.0F) {
+        Formation_FMS_B.ve[0] = Formation_FMS_B.Reshape2_bq[0];
+        Formation_FMS_B.ve[1] = Formation_FMS_B.Reshape2_bq[1];
+        Formation_FMS_B.ve[2] = Formation_FMS_B.rtb_vn_idx_1;
+      } else {
+        Formation_FMS_B.ve[0] = Formation_FMS_B.Reshape2_bq[0] * 0.0F;
+        Formation_FMS_B.ve[1] = Formation_FMS_B.Reshape2_bq[1] * 0.0F;
+        Formation_FMS_B.ve[2] = 1.0F;
+      }
+
+      // End of Switch: '<S76>/Switch'
+
+      // Product: '<S76>/Divide' incorporates:
+      //   Product: '<S79>/Divide'
+
+      Formation_FMS_B.TmpSignalConversionAtSqua_c[0] = Formation_FMS_B.ve[0] /
+        Formation_FMS_B.ve[2];
+      Formation_FMS_B.TmpSignalConversionAtSqua_c[1] = Formation_FMS_B.ve[1] /
+        Formation_FMS_B.ve[2];
+
+      // Sum: '<S79>/Sum of Elements' incorporates:
+      //   Math: '<S79>/Math Function'
+      //   SignalConversion generated from: '<S79>/Math Function'
+
+      Formation_FMS_B.scale = Formation_FMS_B.TmpSignalConversionAtSqua_c[1] *
+        Formation_FMS_B.TmpSignalConversionAtSqua_c[1] +
+        Formation_FMS_B.TmpSignalConversionAtSqua_c[0] *
+        Formation_FMS_B.TmpSignalConversionAtSqua_c[0];
+
+      // Math: '<S79>/Math Function1' incorporates:
+      //   Sum: '<S79>/Sum of Elements'
+      //
+      //  About '<S79>/Math Function1':
+      //   Operator: sqrt
+
+      if (Formation_FMS_B.scale < 0.0F) {
+        Formation_FMS_B.rtb_vn_idx_1 = -std::sqrt(std::abs(Formation_FMS_B.scale));
+      } else {
+        Formation_FMS_B.rtb_vn_idx_1 = std::sqrt(Formation_FMS_B.scale);
+      }
+
+      // End of Math: '<S79>/Math Function1'
+
+      // Switch: '<S79>/Switch' incorporates:
+      //   Constant: '<S79>/Constant'
+      //   Product: '<S79>/Product'
+      //   SignalConversion generated from: '<S79>/Math Function'
+
+      if (Formation_FMS_B.rtb_vn_idx_1 > 0.0F) {
+        Formation_FMS_B.ve[0] = Formation_FMS_B.TmpSignalConversionAtSqua_c[1];
+        Formation_FMS_B.ve[1] = Formation_FMS_B.TmpSignalConversionAtSqua_c[0];
+        Formation_FMS_B.ve[2] = Formation_FMS_B.rtb_vn_idx_1;
+      } else {
+        Formation_FMS_B.ve[0] = Formation_FMS_B.TmpSignalConversionAtSqua_c[1] *
+          0.0F;
+        Formation_FMS_B.ve[1] = Formation_FMS_B.TmpSignalConversionAtSqua_c[0] *
+          0.0F;
+        Formation_FMS_B.ve[2] = 1.0F;
+      }
+
+      // End of Switch: '<S79>/Switch'
+
+      // Product: '<S79>/Divide'
+      Formation_FMS_B.rtb_x_R_idx_0 = Formation_FMS_B.ve[0] /
+        Formation_FMS_B.ve[2];
+
+      // Product: '<S78>/Divide'
+      Formation_FMS_B.Multiply1_f = Formation_FMS_B.vd[0] / Formation_FMS_B.vd[2];
+
+      // DotProduct: '<S73>/Dot Product'
+      Formation_FMS_B.scale = Formation_FMS_B.Multiply1_f *
+        Formation_FMS_B.rtb_x_R_idx_0;
+      Formation_FMS_B.TmpSignalConversionAtSqua_c[0] =
+        Formation_FMS_B.rtb_x_R_idx_0;
+      Formation_FMS_B.P_d[0] = Formation_FMS_B.Multiply1_f;
+
+      // Product: '<S79>/Divide' incorporates:
+      //   Product: '<S78>/Divide'
+
+      Formation_FMS_B.rtb_x_R_idx_0 = Formation_FMS_B.ve[1] /
+        Formation_FMS_B.ve[2];
+
+      // Product: '<S78>/Divide'
+      Formation_FMS_B.Multiply1_f = Formation_FMS_B.vd[1] / Formation_FMS_B.vd[2];
+
+      // DotProduct: '<S73>/Dot Product'
+      Formation_FMS_B.scale += Formation_FMS_B.Multiply1_f *
+        Formation_FMS_B.rtb_x_R_idx_0;
+
+      // Sqrt: '<S74>/Sqrt' incorporates:
+      //   Math: '<S74>/Square'
+      //   Sum: '<S74>/Sum of Elements'
+
+      Formation_FMS_B.rtb_vn_idx_1 = std::sqrt(Formation_FMS_B.absxk +
+        Formation_FMS_B.t);
+
+      // Math: '<S72>/Square'
+      Formation_FMS_B.absxk = Formation_FMS_B.rtb_vn_idx_1 *
+        Formation_FMS_B.rtb_vn_idx_1;
+
+      // Sum: '<S77>/Subtract' incorporates:
+      //   Product: '<S77>/Multiply'
+      //   Product: '<S77>/Multiply1'
+
+      Formation_FMS_B.t = Formation_FMS_B.TmpSignalConversionAtSqua_c[0] *
+        Formation_FMS_B.Multiply1_f - Formation_FMS_B.P_d[0] *
+        Formation_FMS_B.rtb_x_R_idx_0;
+
+      // Signum: '<S73>/Sign1'
+      if (std::isnan(Formation_FMS_B.t)) {
+        Formation_FMS_B.rtb_vn_idx_1 = (rtNaNF);
+      } else if (Formation_FMS_B.t < 0.0F) {
+        Formation_FMS_B.rtb_vn_idx_1 = -1.0F;
+      } else {
+        Formation_FMS_B.rtb_vn_idx_1 = (Formation_FMS_B.t > 0.0F);
+      }
+
+      // End of Signum: '<S73>/Sign1'
+
+      // Trigonometry: '<S73>/Acos' incorporates:
+      //   DotProduct: '<S73>/Dot Product'
+
+      if (Formation_FMS_B.scale > 1.0F) {
+        Formation_FMS_B.scale = 1.0F;
+      } else if (Formation_FMS_B.scale < -1.0F) {
+        Formation_FMS_B.scale = -1.0F;
+      }
+
+      // Switch: '<S73>/Switch2' incorporates:
+      //   Constant: '<S73>/Constant4'
+
+      if (!(Formation_FMS_B.rtb_vn_idx_1 != 0.0F)) {
+        Formation_FMS_B.rtb_vn_idx_1 = 1.0F;
+      }
+
+      // Product: '<S73>/Multiply' incorporates:
+      //   Switch: '<S73>/Switch2'
+      //   Trigonometry: '<S73>/Acos'
+
+      Formation_FMS_B.Multiply1_f = std::acos(Formation_FMS_B.scale) *
+        Formation_FMS_B.rtb_vn_idx_1;
+
+      // Sum: '<S63>/Sum' incorporates:
+      //   Constant: '<S63>/Constant'
+
+      Formation_FMS_B.rtb_vn_idx_1 = FMS_PARAM.FW_AIRSPD_TRIM -
+        *rtu_INS_Out_airspeed;
+
+      // Delay: '<S64>/Delay' incorporates:
+      //   Constant: '<S64>/Constant'
+
+      if (Formation_FMS_DW.icLoad_p) {
+        Formation_FMS_DW.Delay_DSTATE_a = FMS_PARAM.FW_HEIGHT_TRIM;
+      }
+
+      // Sum: '<S64>/Sum' incorporates:
+      //   Delay: '<S64>/Delay'
+
+      Formation_FMS_B.scale = Formation_FMS_DW.Delay_DSTATE_a - *rtu_INS_Out_h_R;
+
+      // End of Outputs for SubSystem: '<S12>/FormHold'
+      std::memset(&Formation_FMS_B.Merge, 0, sizeof(FMS_Out_Bus));
+
+      // Outputs for IfAction SubSystem: '<S12>/FormHold' incorporates:
+      //   ActionPort: '<S19>/Action Port'
+
+      // BusAssignment: '<S19>/Bus Assignment' incorporates:
+      //   Constant: '<S19>/Constant1'
+      //   Merge: '<S10>/Merge'
+
+      Formation_FMS_B.Merge.state = VehicleState::FormHold;
+      Formation_FMS_B.Merge.ax_cmd = Formation_FMS_B.rtb_vn_idx_1;
+
+      // Saturate: '<S72>/Saturation'
+      if (Formation_FMS_B.Multiply1_f > 1.57079637F) {
+        Formation_FMS_B.Multiply1_f = 1.57079637F;
+      } else if (Formation_FMS_B.Multiply1_f < -1.57079637F) {
+        Formation_FMS_B.Multiply1_f = -1.57079637F;
+      }
+
+      // BusAssignment: '<S19>/Bus Assignment' incorporates:
+      //   Constant: '<S65>/L1'
+      //   Gain: '<S72>/Gain'
+      //   Product: '<S72>/Divide'
+      //   Product: '<S72>/Multiply1'
+      //   Saturate: '<S72>/Saturation'
+      //   Trigonometry: '<S72>/Sin'
+
+      Formation_FMS_B.Merge.ay_cmd = 2.0F * Formation_FMS_B.absxk * std::sin
+        (Formation_FMS_B.Multiply1_f) / FMS_PARAM.L1;
+
+      // Gain: '<S64>/Gain2'
+      Formation_FMS_B.Multiply1_f = FMS_PARAM.Z_P * Formation_FMS_B.scale;
+
+      // Saturate: '<S64>/Saturation'
+      if (Formation_FMS_B.Multiply1_f > CONTROL_PARAM.FW_T_CLMB_MAX) {
+        // BusAssignment: '<S19>/Bus Assignment'
+        Formation_FMS_B.Merge.vh_cmd = CONTROL_PARAM.FW_T_CLMB_MAX;
+      } else if (Formation_FMS_B.Multiply1_f < -CONTROL_PARAM.FW_T_SINK_MAX) {
+        // BusAssignment: '<S19>/Bus Assignment'
+        Formation_FMS_B.Merge.vh_cmd = -CONTROL_PARAM.FW_T_SINK_MAX;
+      } else {
+        // BusAssignment: '<S19>/Bus Assignment'
+        Formation_FMS_B.Merge.vh_cmd = Formation_FMS_B.Multiply1_f;
+      }
+
+      // End of Saturate: '<S64>/Saturation'
+
+      // Update for Delay: '<S68>/start_vel'
+      Formation_FMS_DW.icLoad_l3 = false;
+
+      // Update for Delay: '<S64>/Delay'
+      Formation_FMS_DW.icLoad_p = false;
+
+      // End of Outputs for SubSystem: '<S12>/FormHold'
+      break;
+
+     case 2:
+      // Outputs for IfAction SubSystem: '<S12>/FormMission' incorporates:
+      //   ActionPort: '<S20>/Action Port'
+
+      // RelationalOperator: '<S81>/FixPt Relational Operator' incorporates:
+      //   UnitDelay: '<S81>/Delay Input1'
+      //
+      //  Block description for '<S81>/Delay Input1':
+      //
+      //   Store in Global RAM
+
+      rtb_FixPtRelationalOperator_c = (Formation_FMS_B.wp_index !=
+        Formation_FMS_DW.DelayInput1_DSTATE_d);
+
+      // Outputs for Resettable SubSystem: '<S20>/FormMission_SubSystem' incorporates:
+      //   ResetPort: '<S82>/Reset'
+
+      if (rtb_FixPtRelationalOperator_c &&
+          (Formation_FMS_PrevZCX.FormMission_SubSystem_Reset_ZCE != POS_ZCSIG))
+      {
+        // InitializeConditions for Delay: '<S159>/Delay'
+        Formation_FMS_DW.icLoad_k = true;
+
+        // InitializeConditions for DiscreteIntegrator: '<S97>/Discrete-Time Integrator1' 
+        Formation_FMS_DW.DiscreteTimeIntegrator1_PrevRes = 0;
+        Formation_FMS_DW.DiscreteTimeIntegrator1_IC_LOAD = 1U;
+
+        // InitializeConditions for DiscreteIntegrator: '<S141>/Integrator'
+        Formation_FMS_DW.Integrator_DSTATE = 0.0F;
+      }
+
+      Formation_FMS_PrevZCX.FormMission_SubSystem_Reset_ZCE =
+        rtb_FixPtRelationalOperator_c;
+
+      // SignalConversion generated from: '<S84>/Vector Concatenate'
+      Formation_FMS_B.xyz_O_nx3[0] = Formation_FMS_B.rtb_x_R_idx_0;
+
+      // SignalConversion generated from: '<S84>/Vector Concatenate'
+      Formation_FMS_B.xyz_O_nx3[3] = Formation_FMS_B.scale;
+
+      // SignalConversion generated from: '<S84>/Vector Concatenate'
+      Formation_FMS_B.xyz_O_nx3[6] = Formation_FMS_B.absxk;
+
+      // SignalConversion generated from: '<S84>/Vector Concatenate1'
+      Formation_FMS_B.vNED_O_nx3[0] = Formation_FMS_B.rtb_vn_idx_0;
+
+      // SignalConversion generated from: '<S84>/Vector Concatenate1'
+      Formation_FMS_B.vNED_O_nx3[3] = Formation_FMS_B.ve[0];
+
+      // SignalConversion generated from: '<S84>/Vector Concatenate1'
+      Formation_FMS_B.vNED_O_nx3[6] = Formation_FMS_B.vd[0];
+      Formation_FMS_B.ve[0] = 0.0F;
+      Formation_FMS_B.vd[0] = 0.0F;
+
+      // SignalConversion generated from: '<S84>/Vector Concatenate' incorporates:
+      //   MATLAB Function: '<S86>/Calc_Position_Velocity_Setpoint'
+
+      Formation_FMS_B.xyz_O_nx3[1] = Formation_FMS_B.rtb_x_R_idx_1;
+
+      // SignalConversion generated from: '<S84>/Vector Concatenate'
+      Formation_FMS_B.xyz_O_nx3[4] = Formation_FMS_B.rtb_y_R_idx_1;
+
+      // SignalConversion generated from: '<S84>/Vector Concatenate'
+      Formation_FMS_B.xyz_O_nx3[7] = Formation_FMS_B.t;
+
+      // SignalConversion generated from: '<S84>/Vector Concatenate1'
+      Formation_FMS_B.vNED_O_nx3[1] = Formation_FMS_B.rtb_vn_idx_1;
+
+      // SignalConversion generated from: '<S84>/Vector Concatenate1'
+      Formation_FMS_B.vNED_O_nx3[4] = Formation_FMS_B.ve[1];
+
+      // SignalConversion generated from: '<S84>/Vector Concatenate1'
+      Formation_FMS_B.vNED_O_nx3[7] = Formation_FMS_B.vd[1];
+      Formation_FMS_B.ve[1] = 0.0F;
+      Formation_FMS_B.vd[1] = 0.0F;
+
+      // SignalConversion generated from: '<S84>/Vector Concatenate' incorporates:
+      //   MATLAB Function: '<S86>/Calc_Position_Velocity_Setpoint'
+
+      Formation_FMS_B.xyz_O_nx3[2] = Formation_FMS_B.rtb_x_R_idx_2;
+
+      // SignalConversion generated from: '<S84>/Vector Concatenate'
+      Formation_FMS_B.xyz_O_nx3[5] = Formation_FMS_B.rtb_y_R_idx_2;
+
+      // SignalConversion generated from: '<S84>/Vector Concatenate'
+      Formation_FMS_B.xyz_O_nx3[8] = Formation_FMS_B.Multiply1_f;
+
+      // SignalConversion generated from: '<S84>/Vector Concatenate1'
+      Formation_FMS_B.vNED_O_nx3[2] = Formation_FMS_B.rtb_vn_idx_2;
+
+      // SignalConversion generated from: '<S84>/Vector Concatenate1'
+      Formation_FMS_B.vNED_O_nx3[5] = Formation_FMS_B.ve[2];
+
+      // SignalConversion generated from: '<S84>/Vector Concatenate1'
+      Formation_FMS_B.vNED_O_nx3[8] = Formation_FMS_B.vd[2];
+      Formation_FMS_B.ve[2] = 0.0F;
+      Formation_FMS_B.vd[2] = 0.0F;
+
+      // MATLAB Function: '<S86>/Calc_Position_Velocity_Setpoint' incorporates:
+      //   Concatenate: '<S84>/Vector Concatenate'
+      //   Concatenate: '<S84>/Vector Concatenate1'
+
+      Formation_FMS_B.scale = 0.0F;
+      for (Formation_FMS_B.i = 0; Formation_FMS_B.i < 3; Formation_FMS_B.i++) {
+        if (static_cast<uint32_T>(Formation_FMS_B.i + 1) !=
+            FORMATION_PARAM.UAV_ID) {
+          Formation_FMS_B.idx = (3 * Formation_FMS_B.i + static_cast<int32_T>
+            (FORMATION_PARAM.UAV_ID)) - 1;
+          Formation_FMS_B.n_j = FORMATION_PARAM.ADJ_MARTIX[Formation_FMS_B.idx];
+          if (!(Formation_FMS_B.n_j == 0.0)) {
+            Formation_FMS_B.t = rt_atan2f_snf
+              (Formation_FMS_B.vNED_O_nx3[Formation_FMS_B.i + 3],
+               Formation_FMS_B.vNED_O_nx3[Formation_FMS_B.i]);
+            Formation_FMS_B.absxk = std::sin(Formation_FMS_B.t);
+            Formation_FMS_B.t = std::cos(Formation_FMS_B.t);
+            Formation_FMS_B.rtb_pos_err_tmp[0] = Formation_FMS_B.t;
+            Formation_FMS_B.rtb_pos_err_tmp[3] = -Formation_FMS_B.absxk;
+            Formation_FMS_B.rtb_pos_err_tmp[6] = 0.0F;
+            Formation_FMS_B.rtb_pos_err_tmp[1] = Formation_FMS_B.absxk;
+            Formation_FMS_B.rtb_pos_err_tmp[4] = Formation_FMS_B.t;
+            Formation_FMS_B.rtb_pos_err_tmp[7] = 0.0F;
+            Formation_FMS_B.rtb_pos_err_tmp[2] = 0.0F;
+            Formation_FMS_B.rtb_pos_err_tmp[5] = 0.0F;
+            Formation_FMS_B.rtb_pos_err_tmp[8] = 1.0F;
+            Formation_FMS_B.absxk = static_cast<real32_T>
+              (FORMATION_PARAM.REL_X_MATRIX[Formation_FMS_B.idx]);
+            Formation_FMS_B.t = static_cast<real32_T>
+              (FORMATION_PARAM.REL_Y_MATRIX[Formation_FMS_B.idx]);
+            Formation_FMS_B.rtb_vn_idx_1 = static_cast<real32_T>
+              (FORMATION_PARAM.REL_Z_MATRIX[Formation_FMS_B.idx]);
+            for (Formation_FMS_B.idx = 0; Formation_FMS_B.idx < 3;
+                 Formation_FMS_B.idx++) {
+              Formation_FMS_B.rtb_vd_tmp = 3 * Formation_FMS_B.idx +
+                Formation_FMS_B.i;
+              Formation_FMS_B.vd[Formation_FMS_B.idx] +=
+                (((Formation_FMS_B.rtb_pos_err_tmp[Formation_FMS_B.idx + 3] *
+                   Formation_FMS_B.t +
+                   Formation_FMS_B.rtb_pos_err_tmp[Formation_FMS_B.idx] *
+                   Formation_FMS_B.absxk) +
+                  Formation_FMS_B.rtb_pos_err_tmp[Formation_FMS_B.idx + 6] *
+                  Formation_FMS_B.rtb_vn_idx_1) +
+                 Formation_FMS_B.xyz_O_nx3[Formation_FMS_B.rtb_vd_tmp]) *
+                static_cast<real32_T>(Formation_FMS_B.n_j);
+              Formation_FMS_B.ve[Formation_FMS_B.idx] +=
+                Formation_FMS_B.vNED_O_nx3[Formation_FMS_B.rtb_vd_tmp] *
+                static_cast<real32_T>(Formation_FMS_B.n_j);
+            }
+
+            Formation_FMS_B.scale++;
+          }
+        }
+      }
+
+      if (Formation_FMS_B.scale != 0.0F) {
+        Formation_FMS_B.vd[0] = Formation_FMS_B.vd[0] / Formation_FMS_B.scale -
+          Formation_FMS_B.xyz_O_nx3[static_cast<int32_T>(FORMATION_PARAM.UAV_ID)
+          - 1];
+        Formation_FMS_B.ve[0] /= Formation_FMS_B.scale;
+        Formation_FMS_B.vd[1] = Formation_FMS_B.vd[1] / Formation_FMS_B.scale -
+          Formation_FMS_B.xyz_O_nx3[static_cast<int32_T>(FORMATION_PARAM.UAV_ID)
+          + 2];
+        Formation_FMS_B.ve[1] /= Formation_FMS_B.scale;
+        Formation_FMS_B.vd[2] = Formation_FMS_B.vd[2] / Formation_FMS_B.scale -
+          Formation_FMS_B.xyz_O_nx3[static_cast<int32_T>(FORMATION_PARAM.UAV_ID)
+          + 5];
+      } else {
+        Formation_FMS_B.ve[0] = Formation_FMS_B.vNED_O_nx3[static_cast<int32_T>
+          (FORMATION_PARAM.UAV_ID) - 1];
+        Formation_FMS_B.ve[1] = Formation_FMS_B.vNED_O_nx3[static_cast<int32_T>
+          (FORMATION_PARAM.UAV_ID) + 2];
+      }
+
+      // Sum: '<S96>/Sum of Elements' incorporates:
+      //   Math: '<S96>/Math Function'
+      //   Sum: '<S102>/Sum of Elements'
+      //   Sum: '<S94>/Sum of Elements'
+      //   Switch: '<S82>/Switch'
+
+      Formation_FMS_B.scale = Formation_FMS_B.ve[0] * Formation_FMS_B.ve[0] +
+        Formation_FMS_B.ve[1] * Formation_FMS_B.ve[1];
+
+      // Math: '<S96>/Math Function1' incorporates:
+      //   Sum: '<S96>/Sum of Elements'
+      //
+      //  About '<S96>/Math Function1':
+      //   Operator: sqrt
+
+      if (Formation_FMS_B.scale < 0.0F) {
+        Formation_FMS_B.Multiply1_f = -std::sqrt(std::abs(Formation_FMS_B.scale));
+      } else {
+        Formation_FMS_B.Multiply1_f = std::sqrt(Formation_FMS_B.scale);
+      }
+
+      // End of Math: '<S96>/Math Function1'
+
+      // Switch: '<S96>/Switch' incorporates:
+      //   Constant: '<S96>/Constant'
+      //   Product: '<S96>/Product'
+
+      if (Formation_FMS_B.Multiply1_f > 0.0F) {
+        Formation_FMS_B.rtb_vn_idx_0 = Formation_FMS_B.ve[0];
+        Formation_FMS_B.rtb_vn_idx_1 = Formation_FMS_B.ve[1];
+        Formation_FMS_B.rtb_vn_idx_2 = Formation_FMS_B.Multiply1_f;
+      } else {
+        Formation_FMS_B.rtb_vn_idx_0 = Formation_FMS_B.ve[0] * 0.0F;
+        Formation_FMS_B.rtb_vn_idx_1 = Formation_FMS_B.ve[1] * 0.0F;
+        Formation_FMS_B.rtb_vn_idx_2 = 1.0F;
+      }
+
+      // End of Switch: '<S96>/Switch'
+
+      // Math: '<S102>/Math Function1'
+      //
+      //  About '<S102>/Math Function1':
+      //   Operator: sqrt
+
+      if (Formation_FMS_B.scale < 0.0F) {
+        Formation_FMS_B.Multiply1_f = -std::sqrt(std::abs(Formation_FMS_B.scale));
+      } else {
+        Formation_FMS_B.Multiply1_f = std::sqrt(Formation_FMS_B.scale);
+      }
+
+      // End of Math: '<S102>/Math Function1'
+
+      // Switch: '<S102>/Switch' incorporates:
+      //   Constant: '<S102>/Constant'
+      //   Product: '<S102>/Product'
+      //   Switch: '<S82>/Switch'
+
+      if (Formation_FMS_B.Multiply1_f > 0.0F) {
+        Formation_FMS_B.absxk = Formation_FMS_B.ve[0];
+        Formation_FMS_B.t = Formation_FMS_B.ve[1];
+      } else {
+        Formation_FMS_B.absxk = Formation_FMS_B.ve[0] * 0.0F;
+        Formation_FMS_B.t = Formation_FMS_B.ve[1] * 0.0F;
+        Formation_FMS_B.Multiply1_f = 1.0F;
+      }
+
+      // End of Switch: '<S102>/Switch'
+
+      // SignalConversion generated from: '<S95>/Square'
+      Formation_FMS_B.Reshape2_bq[0] = *rtu_INS_Out_vn;
+      Formation_FMS_B.Reshape2_bq[1] = *rtu_INS_Out_ve;
+
+      // Reshape: '<S165>/Reshape2'
+      Formation_FMS_B.P_i[0] = *rtu_INS_Out_x_R;
+      Formation_FMS_B.P_i[1] = *rtu_INS_Out_y_R;
+
+      // MATLAB Function: '<S166>/NearbyRefWP' incorporates:
+      //   Constant: '<S164>/L1'
+
+      Formation_FMS_NearbyRefWP(&Formation_FMS_B.Cmd_In.sp_waypoint[0],
+        Formation_FMS_B.P_i, FMS_PARAM.L1,
+        Formation_FMS_B.TmpSignalConversionAtSqua_c,
+        &Formation_FMS_B.rtb_x_R_idx_0);
+
+      // MATLAB Function: '<S166>/SearchL1RefWP' incorporates:
+      //   Constant: '<S164>/L1'
+
+      Formation_FMS_SearchL1RefWP(&Formation_FMS_B.Cmd_In.cur_waypoint[0],
+        &Formation_FMS_B.Cmd_In.sp_waypoint[0], Formation_FMS_B.P_i,
+        FMS_PARAM.L1, Formation_FMS_B.P, &Formation_FMS_B.rtb_y_R_idx_1);
+
+      // MATLAB Function: '<S166>/OutRegionRegWP'
+      Formation_FMS_OutRegionRegWP(&Formation_FMS_B.Cmd_In.cur_waypoint[0],
+        &Formation_FMS_B.Cmd_In.sp_waypoint[0], Formation_FMS_B.P_i,
+        Formation_FMS_B.P_b);
+
+      // MATLAB Function: '<S160>/min_radius'
+      if (!std::isnan(FORMATION_PARAM.REL_Y_MATRIX[0])) {
+        Formation_FMS_B.idx = 1;
+      } else {
+        Formation_FMS_B.idx = 0;
+        Formation_FMS_B.i = 2;
+        exitg1 = false;
+        while ((!exitg1) && (Formation_FMS_B.i < 4)) {
+          if (!std::isnan(FORMATION_PARAM.REL_Y_MATRIX[(Formation_FMS_B.i - 1) *
+                          3])) {
+            Formation_FMS_B.idx = Formation_FMS_B.i;
+            exitg1 = true;
+          } else {
+            Formation_FMS_B.i++;
+          }
+        }
+      }
+
+      if (Formation_FMS_B.idx == 0) {
+        Formation_FMS_B.ex = FORMATION_PARAM.REL_Y_MATRIX[0];
+      } else {
+        Formation_FMS_B.ex = FORMATION_PARAM.REL_Y_MATRIX[(Formation_FMS_B.idx -
+          1) * 3];
+        for (Formation_FMS_B.i = Formation_FMS_B.idx + 1; Formation_FMS_B.i < 4;
+             Formation_FMS_B.i++) {
+          Formation_FMS_B.n_j = FORMATION_PARAM.REL_Y_MATRIX[(Formation_FMS_B.i
+            - 1) * 3];
+          if (Formation_FMS_B.ex < Formation_FMS_B.n_j) {
+            Formation_FMS_B.ex = Formation_FMS_B.n_j;
+          }
+        }
+      }
+
+      // Delay: '<S159>/Delay' incorporates:
+      //   Constant: '<S159>/Constant'
+
+      if (Formation_FMS_DW.icLoad_k) {
+        Formation_FMS_DW.Delay_DSTATE_o = FMS_PARAM.FW_HEIGHT_TRIM;
+      }
+
+      // Product: '<S96>/Divide'
+      Formation_FMS_B.rtb_x_R_idx_1 = Formation_FMS_B.rtb_vn_idx_0 /
+        Formation_FMS_B.rtb_vn_idx_2;
+
+      // DotProduct: '<S90>/Dot Product'
+      Formation_FMS_B.rtb_y_R_idx_2 = Formation_FMS_B.vd[0] *
+        Formation_FMS_B.rtb_x_R_idx_1;
+      Formation_FMS_B.rtb_vn_idx_0 = Formation_FMS_B.rtb_x_R_idx_1;
+
+      // Product: '<S96>/Divide' incorporates:
+      //   Product: '<S102>/Divide'
+
+      Formation_FMS_B.rtb_x_R_idx_1 = Formation_FMS_B.rtb_vn_idx_1 /
+        Formation_FMS_B.rtb_vn_idx_2;
+
+      // Sum: '<S90>/Add' incorporates:
+      //   Abs: '<S90>/Abs'
+      //   DotProduct: '<S90>/Dot Product'
+      //   Product: '<S92>/Multiply'
+      //   Product: '<S92>/Multiply1'
+      //   Sum: '<S92>/Subtract'
+
+      Formation_FMS_B.rtb_vn_idx_2 = std::abs(Formation_FMS_B.vd[0] *
+        Formation_FMS_B.rtb_x_R_idx_1 - Formation_FMS_B.rtb_vn_idx_0 *
+        Formation_FMS_B.vd[1]) + (Formation_FMS_B.vd[1] *
+        Formation_FMS_B.rtb_x_R_idx_1 + Formation_FMS_B.rtb_y_R_idx_2);
+
+      // Gain: '<S93>/Pos_D'
+      Formation_FMS_B.rtb_vn_idx_1 = FORMATION_PARAM.FORM_POS_KD *
+        Formation_FMS_B.rtb_vn_idx_2;
+
+      // DiscreteIntegrator: '<S97>/Discrete-Time Integrator1'
+      if (Formation_FMS_DW.DiscreteTimeIntegrator1_IC_LOAD != 0) {
+        Formation_FMS_DW.DiscreteTimeIntegrator1_DSTATE =
+          Formation_FMS_B.rtb_vn_idx_1;
+      }
+
+      if (Formation_FMS_DW.DiscreteTimeIntegrator1_PrevRes != 0) {
+        Formation_FMS_DW.DiscreteTimeIntegrator1_DSTATE =
+          Formation_FMS_B.rtb_vn_idx_1;
+      }
+
+      // Gain: '<S97>/Gain' incorporates:
+      //   DiscreteIntegrator: '<S97>/Discrete-Time Integrator1'
+      //   Sum: '<S97>/Sum5'
+
+      Formation_FMS_B.rtb_vn_idx_1 = (Formation_FMS_B.rtb_vn_idx_1 -
+        Formation_FMS_DW.DiscreteTimeIntegrator1_DSTATE) * 62.831852F;
+
+      // Product: '<S102>/Divide'
+      Formation_FMS_B.rtb_vn_idx_0 = Formation_FMS_B.absxk /
+        Formation_FMS_B.Multiply1_f;
+
+      // Math: '<S100>/Square' incorporates:
+      //   Math: '<S107>/Square'
+      //   Math: '<S175>/Square'
+      //   Math: '<S176>/Math Function'
+      //   Math: '<S95>/Square'
+      //   Switch: '<S101>/Switch'
+      //   Switch: '<S82>/Switch'
+
+      Formation_FMS_B.absxk = Formation_FMS_B.Reshape2_bq[0] *
+        Formation_FMS_B.Reshape2_bq[0];
+
+      // Product: '<S102>/Divide'
+      Formation_FMS_B.rtb_y_R_idx_2 = Formation_FMS_B.t /
+        Formation_FMS_B.Multiply1_f;
+
+      // Math: '<S100>/Square' incorporates:
+      //   Math: '<S107>/Square'
+      //   Math: '<S175>/Square'
+      //   Math: '<S176>/Math Function'
+      //   Math: '<S95>/Square'
+      //   Switch: '<S101>/Switch'
+      //   Switch: '<S82>/Switch'
+
+      Formation_FMS_B.t = Formation_FMS_B.Reshape2_bq[1] *
+        Formation_FMS_B.Reshape2_bq[1];
+
+      // Sum: '<S98>/Subtract' incorporates:
+      //   Product: '<S98>/Multiply'
+      //   Product: '<S98>/Multiply1'
+
+      Formation_FMS_B.Subtract_b = Formation_FMS_B.vd[0] *
+        Formation_FMS_B.rtb_y_R_idx_2 - Formation_FMS_B.rtb_vn_idx_0 *
+        Formation_FMS_B.vd[1];
+
+      // Sum: '<S100>/Sum of Elements' incorporates:
+      //   Math: '<S100>/Square'
+      //   Sum: '<S107>/Sum of Elements'
+      //   Sum: '<S176>/Sum of Elements'
+      //   Switch: '<S101>/Switch'
+      //   Switch: '<S82>/Switch'
+
+      Formation_FMS_B.rtb_x_R_idx_1 = Formation_FMS_B.absxk + Formation_FMS_B.t;
+
+      // Product: '<S100>/Divide' incorporates:
+      //   Abs: '<S100>/Abs'
+      //   Bias: '<S100>/Bias'
+      //   Constant: '<S100>/Ts//2'
+      //   Product: '<S100>/Product'
+      //   Sum: '<S100>/Sum of Elements'
+
+      Formation_FMS_B.Multiply1_f = std::abs(Formation_FMS_B.Subtract_b) /
+        (FORMATION_PARAM.LATERAL_DAMP * FORMATION_PARAM.LATERAL_PERIOD * 0.5F *
+         (Formation_FMS_B.rtb_x_R_idx_1 + 1.0F));
+
+      // Saturate: '<S100>/normalized_track_error'
+      if (Formation_FMS_B.Multiply1_f > 1.0F) {
+        Formation_FMS_B.Multiply1_f = 1.0F;
+      } else if (Formation_FMS_B.Multiply1_f < 0.0F) {
+        Formation_FMS_B.Multiply1_f = 0.0F;
+      }
+
+      // End of Saturate: '<S100>/normalized_track_error'
+
+      // Gain: '<S104>/Gain1' incorporates:
+      //   Bias: '<S104>/Bias1'
+      //   Math: '<S104>/Square1'
+
+      Formation_FMS_B.rtb_x_R_idx_2 = (Formation_FMS_B.Multiply1_f - 1.0F) *
+        (Formation_FMS_B.Multiply1_f - 1.0F) * 1.57079637F;
+
+      // Trigonometry: '<S99>/Sin'
+      Formation_FMS_B.Sin = std::sin(Formation_FMS_B.rtb_x_R_idx_2);
+
+      // Trigonometry: '<S99>/Cos'
+      Formation_FMS_B.rtb_x_R_idx_2 = std::cos(Formation_FMS_B.rtb_x_R_idx_2);
+
+      // MATLAB Function: '<S99>/signNoZero'
+      Formation_FMS_signNoZero(Formation_FMS_B.Subtract_b,
+        &Formation_FMS_B.Multiply1_f);
+
+      // Sum: '<S99>/Add' incorporates:
+      //   Gain: '<S99>/Gain'
+      //   Gain: '<S99>/Gain1'
+      //   Product: '<S102>/Divide'
+      //   Product: '<S99>/Product'
+      //   Product: '<S99>/Product1'
+      //   Product: '<S99>/unit_track_error'
+
+      Formation_FMS_B.Subtract_b = -Formation_FMS_B.rtb_y_R_idx_2 *
+        -Formation_FMS_B.Multiply1_f * Formation_FMS_B.rtb_x_R_idx_2 +
+        Formation_FMS_B.rtb_vn_idx_0 * Formation_FMS_B.Sin;
+      Formation_FMS_B.rtb_vn_idx_0 = Formation_FMS_B.rtb_vn_idx_0 *
+        -Formation_FMS_B.Multiply1_f * Formation_FMS_B.rtb_x_R_idx_2 +
+        Formation_FMS_B.rtb_y_R_idx_2 * Formation_FMS_B.Sin;
+
+      // Product: '<S105>/Multiply'
+      Formation_FMS_B.rtb_x_R_idx_2 = *rtu_INS_Out_vn *
+        Formation_FMS_B.rtb_vn_idx_0;
+
+      // Product: '<S105>/Multiply1'
+      Formation_FMS_B.Multiply1_f = *rtu_INS_Out_ve * Formation_FMS_B.Subtract_b;
+
+      // Sum: '<S105>/Subtract'
+      Formation_FMS_B.Multiply1_f = Formation_FMS_B.rtb_x_R_idx_2 -
+        Formation_FMS_B.Multiply1_f;
+
+      // MATLAB Function: '<S101>/signNoZero'
+      Formation_FMS_signNoZero(Formation_FMS_B.Multiply1_f,
+        &Formation_FMS_B.rtb_x_R_idx_2);
+
+      // Switch: '<S82>/Switch' incorporates:
+      //   Constant: '<S82>/Constant2'
+      //   Constant: '<S83>/Constant'
+      //   DiscreteIntegrator: '<S141>/Integrator'
+      //   DotProduct: '<S101>/Dot Product'
+      //   Gain: '<S101>/Gain'
+      //   Gain: '<S146>/Proportional Gain'
+      //   Gain: '<S158>/Gain'
+      //   Product: '<S179>/Divide'
+      //   RelationalOperator: '<S83>/Compare'
+      //   Sum: '<S150>/Sum'
+      //   Sum: '<S99>/Add'
+      //   Switch: '<S101>/Switch'
+
+      if (FORMATION_PARAM.UAV_ID == 1U) {
+        // Switch: '<S166>/Switch1' incorporates:
+        //   Constant: '<S169>/Constant'
+        //   RelationalOperator: '<S169>/Compare'
+
+        if (!(Formation_FMS_B.rtb_x_R_idx_0 > 0.0F)) {
+          // Switch: '<S166>/Switch' incorporates:
+          //   Constant: '<S168>/Constant'
+          //   RelationalOperator: '<S168>/Compare'
+          //   Switch: '<S166>/Switch1'
+
+          if (Formation_FMS_B.rtb_y_R_idx_1 >= 0.0F) {
+            Formation_FMS_B.TmpSignalConversionAtSqua_c[0] = Formation_FMS_B.P[0];
+            Formation_FMS_B.TmpSignalConversionAtSqua_c[1] = Formation_FMS_B.P[1];
+          } else {
+            Formation_FMS_B.TmpSignalConversionAtSqua_c[0] =
+              Formation_FMS_B.P_b[0];
+            Formation_FMS_B.TmpSignalConversionAtSqua_c[1] =
+              Formation_FMS_B.P_b[1];
+          }
+
+          // End of Switch: '<S166>/Switch'
+        }
+
+        // End of Switch: '<S166>/Switch1'
+
+        // Sum: '<S167>/Subtract' incorporates:
+        //   Reshape: '<S165>/Reshape2'
+        //   Switch: '<S166>/Switch1'
+
+        Formation_FMS_B.Multiply1_f =
+          Formation_FMS_B.TmpSignalConversionAtSqua_c[0] - Formation_FMS_B.P_i[0];
+        Formation_FMS_B.rtb_x_R_idx_0 =
+          Formation_FMS_B.TmpSignalConversionAtSqua_c[1] - Formation_FMS_B.P_i[1];
+
+        // Math: '<S176>/Math Function1'
+        //
+        //  About '<S176>/Math Function1':
+        //   Operator: sqrt
+
+        if (Formation_FMS_B.rtb_x_R_idx_1 < 0.0F) {
+          Formation_FMS_B.scale = -std::sqrt(std::abs
+            (Formation_FMS_B.rtb_x_R_idx_1));
+        } else {
+          Formation_FMS_B.scale = std::sqrt(Formation_FMS_B.rtb_x_R_idx_1);
+        }
+
+        // End of Math: '<S176>/Math Function1'
+
+        // Switch: '<S176>/Switch' incorporates:
+        //   Constant: '<S176>/Constant'
+        //   Product: '<S176>/Product'
+
+        if (Formation_FMS_B.scale > 0.0F) {
+          Formation_FMS_B.ve[0] = *rtu_INS_Out_vn;
+          Formation_FMS_B.ve[1] = *rtu_INS_Out_ve;
+          Formation_FMS_B.ve[2] = Formation_FMS_B.scale;
+        } else {
+          Formation_FMS_B.ve[0] = Formation_FMS_B.Reshape2_bq[0] * 0.0F;
+          Formation_FMS_B.ve[1] = Formation_FMS_B.Reshape2_bq[1] * 0.0F;
+          Formation_FMS_B.ve[2] = 1.0F;
+        }
+
+        // End of Switch: '<S176>/Switch'
+
+        // Product: '<S176>/Divide'
+        Formation_FMS_B.P_d[0] = Formation_FMS_B.ve[0] / Formation_FMS_B.ve[2];
+        Formation_FMS_B.P_d[1] = Formation_FMS_B.ve[1] / Formation_FMS_B.ve[2];
+
+        // Sum: '<S177>/Sum of Elements' incorporates:
+        //   Math: '<S177>/Math Function'
+
+        Formation_FMS_B.scale = Formation_FMS_B.Multiply1_f *
+          Formation_FMS_B.Multiply1_f + Formation_FMS_B.rtb_x_R_idx_0 *
+          Formation_FMS_B.rtb_x_R_idx_0;
+
+        // Math: '<S177>/Math Function1' incorporates:
+        //   Sum: '<S177>/Sum of Elements'
+        //
+        //  About '<S177>/Math Function1':
+        //   Operator: sqrt
+
+        if (Formation_FMS_B.scale < 0.0F) {
+          Formation_FMS_B.scale = -std::sqrt(std::abs(Formation_FMS_B.scale));
+        } else {
+          Formation_FMS_B.scale = std::sqrt(Formation_FMS_B.scale);
+        }
+
+        // End of Math: '<S177>/Math Function1'
+
+        // Switch: '<S177>/Switch' incorporates:
+        //   Constant: '<S177>/Constant'
+        //   Product: '<S177>/Product'
+        //   Sum: '<S167>/Subtract'
+        //   Switch: '<S179>/Switch'
+
+        if (Formation_FMS_B.scale > 0.0F) {
+          Formation_FMS_B.ve[0] = Formation_FMS_B.Multiply1_f;
+          Formation_FMS_B.ve[1] = Formation_FMS_B.rtb_x_R_idx_0;
+          Formation_FMS_B.ve[2] = Formation_FMS_B.scale;
+        } else {
+          Formation_FMS_B.ve[0] = Formation_FMS_B.Multiply1_f * 0.0F;
+          Formation_FMS_B.ve[1] = Formation_FMS_B.rtb_x_R_idx_0 * 0.0F;
+          Formation_FMS_B.ve[2] = 1.0F;
+        }
+
+        // End of Switch: '<S177>/Switch'
+
+        // Sum: '<S158>/Sum' incorporates:
+        //   Constant: '<S158>/Constant'
+
+        Formation_FMS_B.rtb_x_R_idx_0 = FMS_PARAM.FW_AIRSPD_TRIM -
+          *rtu_INS_Out_airspeed;
+
+        // Product: '<S160>/Divide' incorporates:
+        //   Constant: '<S160>/v^2'
+        //   Gain: '<S160>/Satefy'
+        //   MATLAB Function: '<S160>/min_radius'
+
+        Formation_FMS_B.rtb_y_R_idx_1 = CONTROL_PARAM.FW_AIRSPD_TRIM *
+          CONTROL_PARAM.FW_AIRSPD_TRIM / (static_cast<real32_T>
+          (Formation_FMS_B.ex) * CONTROL_PARAM.FW_AIRSPD_TRIM / std::fmin
+          (CONTROL_PARAM.FW_AIRSPD_MAX - CONTROL_PARAM.FW_AIRSPD_TRIM,
+           CONTROL_PARAM.FW_AIRSPD_TRIM - CONTROL_PARAM.FW_AIRSPD_MIN) *
+          FMS_PARAM.FW_RADIUS_RATIO);
+
+        // Product: '<S177>/Divide' incorporates:
+        //   Product: '<S180>/Divide'
+
+        Formation_FMS_B.TmpSignalConversionAtSqua_c[0] = Formation_FMS_B.ve[0] /
+          Formation_FMS_B.ve[2];
+        Formation_FMS_B.TmpSignalConversionAtSqua_c[1] = Formation_FMS_B.ve[1] /
+          Formation_FMS_B.ve[2];
+
+        // Sqrt: '<S175>/Sqrt' incorporates:
+        //   Math: '<S175>/Square'
+        //   Sum: '<S175>/Sum of Elements'
+
+        Formation_FMS_B.scale = std::sqrt(Formation_FMS_B.absxk +
+          Formation_FMS_B.t);
+
+        // Math: '<S173>/Square'
+        Formation_FMS_B.absxk = Formation_FMS_B.scale * Formation_FMS_B.scale;
+
+        // Sum: '<S180>/Sum of Elements' incorporates:
+        //   Math: '<S180>/Math Function'
+        //   SignalConversion generated from: '<S180>/Math Function'
+
+        Formation_FMS_B.scale = Formation_FMS_B.TmpSignalConversionAtSqua_c[1] *
+          Formation_FMS_B.TmpSignalConversionAtSqua_c[1] +
+          Formation_FMS_B.TmpSignalConversionAtSqua_c[0] *
+          Formation_FMS_B.TmpSignalConversionAtSqua_c[0];
+
+        // Math: '<S180>/Math Function1' incorporates:
+        //   Sum: '<S180>/Sum of Elements'
+        //
+        //  About '<S180>/Math Function1':
+        //   Operator: sqrt
+
+        if (Formation_FMS_B.scale < 0.0F) {
+          Formation_FMS_B.scale = -std::sqrt(std::abs(Formation_FMS_B.scale));
+        } else {
+          Formation_FMS_B.scale = std::sqrt(Formation_FMS_B.scale);
+        }
+
+        // End of Math: '<S180>/Math Function1'
+
+        // Switch: '<S180>/Switch' incorporates:
+        //   Constant: '<S180>/Constant'
+        //   Product: '<S180>/Product'
+        //   SignalConversion generated from: '<S180>/Math Function'
+
+        if (Formation_FMS_B.scale > 0.0F) {
+          Formation_FMS_B.ve[0] = Formation_FMS_B.TmpSignalConversionAtSqua_c[1];
+          Formation_FMS_B.ve[1] = Formation_FMS_B.TmpSignalConversionAtSqua_c[0];
+          Formation_FMS_B.ve[2] = Formation_FMS_B.scale;
+        } else {
+          Formation_FMS_B.ve[0] = Formation_FMS_B.TmpSignalConversionAtSqua_c[1]
+            * 0.0F;
+          Formation_FMS_B.ve[1] = Formation_FMS_B.TmpSignalConversionAtSqua_c[0]
+            * 0.0F;
+          Formation_FMS_B.ve[2] = 1.0F;
+        }
+
+        // End of Switch: '<S180>/Switch'
+
+        // Product: '<S180>/Divide'
+        Formation_FMS_B.TmpSignalConversionAtSqua_c[0] = Formation_FMS_B.ve[0] /
+          Formation_FMS_B.ve[2];
+        Formation_FMS_B.TmpSignalConversionAtSqua_c[1] = Formation_FMS_B.ve[1] /
+          Formation_FMS_B.ve[2];
+
+        // Sum: '<S179>/Sum of Elements' incorporates:
+        //   Math: '<S179>/Math Function'
+        //   SignalConversion generated from: '<S179>/Math Function'
+
+        Formation_FMS_B.scale = Formation_FMS_B.P_d[1] * Formation_FMS_B.P_d[1]
+          + Formation_FMS_B.P_d[0] * Formation_FMS_B.P_d[0];
+
+        // Math: '<S179>/Math Function1' incorporates:
+        //   Sum: '<S179>/Sum of Elements'
+        //
+        //  About '<S179>/Math Function1':
+        //   Operator: sqrt
+
+        if (Formation_FMS_B.scale < 0.0F) {
+          Formation_FMS_B.scale = -std::sqrt(std::abs(Formation_FMS_B.scale));
+        } else {
+          Formation_FMS_B.scale = std::sqrt(Formation_FMS_B.scale);
+        }
+
+        // End of Math: '<S179>/Math Function1'
+
+        // Switch: '<S179>/Switch' incorporates:
+        //   Constant: '<S179>/Constant'
+        //   Product: '<S179>/Product'
+        //   SignalConversion generated from: '<S179>/Math Function'
+
+        if (Formation_FMS_B.scale > 0.0F) {
+          Formation_FMS_B.ve[0] = Formation_FMS_B.P_d[1];
+          Formation_FMS_B.ve[1] = Formation_FMS_B.P_d[0];
+          Formation_FMS_B.ve[2] = Formation_FMS_B.scale;
+        } else {
+          Formation_FMS_B.ve[0] = Formation_FMS_B.P_d[1] * 0.0F;
+          Formation_FMS_B.ve[1] = Formation_FMS_B.P_d[0] * 0.0F;
+          Formation_FMS_B.ve[2] = 1.0F;
+        }
+
+        // End of Switch: '<S179>/Switch'
+
+        // Product: '<S179>/Divide'
+        Formation_FMS_B.Multiply1_f = Formation_FMS_B.ve[0] /
+          Formation_FMS_B.ve[2];
+
+        // DotProduct: '<S174>/Dot Product'
+        Formation_FMS_B.scale = Formation_FMS_B.Multiply1_f *
+          Formation_FMS_B.TmpSignalConversionAtSqua_c[0];
+        Formation_FMS_B.P_d[0] = Formation_FMS_B.Multiply1_f;
+
+        // Product: '<S179>/Divide'
+        Formation_FMS_B.Multiply1_f = Formation_FMS_B.ve[1] /
+          Formation_FMS_B.ve[2];
+
+        // DotProduct: '<S174>/Dot Product'
+        Formation_FMS_B.scale += Formation_FMS_B.Multiply1_f *
+          Formation_FMS_B.TmpSignalConversionAtSqua_c[1];
+
+        // Sum: '<S178>/Subtract' incorporates:
+        //   Product: '<S178>/Multiply'
+        //   Product: '<S178>/Multiply1'
+
+        Formation_FMS_B.t = Formation_FMS_B.TmpSignalConversionAtSqua_c[0] *
+          Formation_FMS_B.Multiply1_f - Formation_FMS_B.P_d[0] *
+          Formation_FMS_B.TmpSignalConversionAtSqua_c[1];
+
+        // Signum: '<S174>/Sign1'
+        if (std::isnan(Formation_FMS_B.t)) {
+          Formation_FMS_B.t = (rtNaNF);
+        } else if (Formation_FMS_B.t < 0.0F) {
+          Formation_FMS_B.t = -1.0F;
+        } else {
+          Formation_FMS_B.t = (Formation_FMS_B.t > 0.0F);
+        }
+
+        // End of Signum: '<S174>/Sign1'
+
+        // Trigonometry: '<S174>/Acos' incorporates:
+        //   DotProduct: '<S174>/Dot Product'
+
+        if (Formation_FMS_B.scale > 1.0F) {
+          Formation_FMS_B.scale = 1.0F;
+        } else if (Formation_FMS_B.scale < -1.0F) {
+          Formation_FMS_B.scale = -1.0F;
+        }
+
+        // Switch: '<S174>/Switch2' incorporates:
+        //   Constant: '<S174>/Constant4'
+
+        if (!(Formation_FMS_B.t != 0.0F)) {
+          Formation_FMS_B.t = 1.0F;
+        }
+
+        // Product: '<S174>/Multiply' incorporates:
+        //   Switch: '<S174>/Switch2'
+        //   Trigonometry: '<S174>/Acos'
+
+        Formation_FMS_B.Multiply1_f = std::acos(Formation_FMS_B.scale) *
+          Formation_FMS_B.t;
+
+        // Saturate: '<S173>/Saturation'
+        if (Formation_FMS_B.Multiply1_f > 1.57079637F) {
+          Formation_FMS_B.Multiply1_f = 1.57079637F;
+        } else if (Formation_FMS_B.Multiply1_f < -1.57079637F) {
+          Formation_FMS_B.Multiply1_f = -1.57079637F;
+        }
+
+        // Product: '<S173>/Divide' incorporates:
+        //   Constant: '<S164>/L1'
+        //   Gain: '<S173>/Gain'
+        //   Product: '<S173>/Multiply1'
+        //   Saturate: '<S173>/Saturation'
+        //   Trigonometry: '<S173>/Sin'
+
+        Formation_FMS_B.t = 2.0F * Formation_FMS_B.absxk * std::sin
+          (Formation_FMS_B.Multiply1_f) / FMS_PARAM.L1;
+
+        // Saturate: '<S164>/Saturation1'
+        if (Formation_FMS_B.t > FMS_PARAM.ACC_Y_LIM) {
+          Formation_FMS_B.t = FMS_PARAM.ACC_Y_LIM;
+        } else if (Formation_FMS_B.t < -FMS_PARAM.ACC_Y_LIM) {
+          Formation_FMS_B.t = -FMS_PARAM.ACC_Y_LIM;
+        }
+
+        // End of Saturate: '<S164>/Saturation1'
+
+        // Switch: '<S162>/Switch2' incorporates:
+        //   Gain: '<S160>/Gain'
+        //   RelationalOperator: '<S162>/LowerRelop1'
+        //   RelationalOperator: '<S162>/UpperRelop'
+        //   Switch: '<S162>/Switch'
+
+        if (Formation_FMS_B.t > Formation_FMS_B.rtb_y_R_idx_1) {
+          Formation_FMS_B.t = Formation_FMS_B.rtb_y_R_idx_1;
+        } else if (Formation_FMS_B.t < -Formation_FMS_B.rtb_y_R_idx_1) {
+          // Switch: '<S162>/Switch' incorporates:
+          //   Gain: '<S160>/Gain'
+
+          Formation_FMS_B.t = -Formation_FMS_B.rtb_y_R_idx_1;
+        }
+
+        // End of Switch: '<S162>/Switch2'
+
+        // Sum: '<S159>/Sum' incorporates:
+        //   Delay: '<S159>/Delay'
+
+        Formation_FMS_B.scale = Formation_FMS_DW.Delay_DSTATE_o -
+          *rtu_INS_Out_h_R;
+        Formation_FMS_B.absxk = FMS_PARAM.AIRSPD_P *
+          Formation_FMS_B.rtb_x_R_idx_0;
+
+        // Gain: '<S159>/Gain2' incorporates:
+        //   Gain: '<S158>/Gain'
+
+        Formation_FMS_B.Multiply1_f = FMS_PARAM.Z_P * Formation_FMS_B.scale;
+
+        // Saturate: '<S159>/Saturation'
+        if (Formation_FMS_B.Multiply1_f > CONTROL_PARAM.FW_T_CLMB_MAX) {
+          Formation_FMS_B.Multiply1_f = CONTROL_PARAM.FW_T_CLMB_MAX;
+        } else if (Formation_FMS_B.Multiply1_f < -CONTROL_PARAM.FW_T_SINK_MAX) {
+          Formation_FMS_B.Multiply1_f = -CONTROL_PARAM.FW_T_SINK_MAX;
+        }
+
+        // End of Saturate: '<S159>/Saturation'
+      } else {
+        if (Formation_FMS_B.Reshape2_bq[0] * Formation_FMS_B.Subtract_b +
+            Formation_FMS_B.Reshape2_bq[1] * Formation_FMS_B.rtb_vn_idx_0 >=
+            0.0F) {
+          // Switch: '<S101>/Switch' incorporates:
+          //   Math: '<S106>/Square'
+          //   Product: '<S101>/Divide'
+          //   Sqrt: '<S106>/Sqrt'
+          //   Sum: '<S106>/Sum of Elements'
+          //   Sum: '<S99>/Add'
+
+          Formation_FMS_B.rtb_x_R_idx_0 = Formation_FMS_B.Multiply1_f / std::
+            sqrt(Formation_FMS_B.Subtract_b * Formation_FMS_B.Subtract_b +
+                 Formation_FMS_B.rtb_vn_idx_0 * Formation_FMS_B.rtb_vn_idx_0);
+        } else {
+          // Switch: '<S101>/Switch' incorporates:
+          //   Product: '<S101>/Product'
+          //   Sqrt: '<S107>/Sqrt'
+
+          Formation_FMS_B.rtb_x_R_idx_0 = std::sqrt
+            (Formation_FMS_B.rtb_x_R_idx_1) * Formation_FMS_B.rtb_x_R_idx_2;
+        }
+
+        // Sum: '<S93>/Add' incorporates:
+        //   Gain: '<S93>/Pos_P'
+        //   Switch: '<S97>/Switch'
+
+        Formation_FMS_B.Multiply1_f = FORMATION_PARAM.FORM_POS_KP *
+          Formation_FMS_B.rtb_vn_idx_2 + Formation_FMS_B.rtb_vn_idx_1;
+
+        // Saturate: '<S93>/Saturation'
+        Formation_FMS_B.rtb_y_R_idx_1 = CONTROL_PARAM.FW_AIRSPD_MIN -
+          CONTROL_PARAM.FW_AIRSPD_TRIM;
+        Formation_FMS_B.rtb_vn_idx_0 = CONTROL_PARAM.FW_AIRSPD_MAX -
+          CONTROL_PARAM.FW_AIRSPD_TRIM;
+        if (Formation_FMS_B.Multiply1_f > Formation_FMS_B.rtb_vn_idx_0) {
+          Formation_FMS_B.Multiply1_f = Formation_FMS_B.rtb_vn_idx_0;
+        } else if (Formation_FMS_B.Multiply1_f < Formation_FMS_B.rtb_y_R_idx_1)
+        {
+          Formation_FMS_B.Multiply1_f = Formation_FMS_B.rtb_y_R_idx_1;
+        }
+
+        // Gain: '<S90>/Vel_Kp' incorporates:
+        //   Math: '<S95>/Square'
+        //   Saturate: '<S93>/Saturation'
+        //   Sqrt: '<S94>/Sqrt'
+        //   Sqrt: '<S95>/Sqrt'
+        //   Sum: '<S90>/Sum'
+        //   Sum: '<S90>/Sum1'
+        //   Sum: '<S95>/Sum of Elements'
+
+        Formation_FMS_B.absxk = ((std::sqrt(Formation_FMS_B.scale) +
+          Formation_FMS_B.Multiply1_f) - std::sqrt(Formation_FMS_B.absxk +
+          Formation_FMS_B.t)) * FORMATION_PARAM.FORM_VEL_KP;
+
+        // Saturate: '<S90>/Saturation1'
+        if (Formation_FMS_B.absxk > 10.0F) {
+          Formation_FMS_B.absxk = 10.0F;
+        } else if (Formation_FMS_B.absxk < -10.0F) {
+          Formation_FMS_B.absxk = -10.0F;
+        }
+
+        // End of Saturate: '<S90>/Saturation1'
+        Formation_FMS_B.t = 12.566371F * FORMATION_PARAM.LATERAL_DAMP /
+          FORMATION_PARAM.LATERAL_PERIOD * Formation_FMS_B.rtb_x_R_idx_0;
+        Formation_FMS_B.Multiply1_f = 0.1F * Formation_FMS_B.vd[2] +
+          Formation_FMS_DW.Integrator_DSTATE;
+      }
+
+      // End of Outputs for SubSystem: '<S20>/FormMission_SubSystem'
+      // End of Outputs for SubSystem: '<S12>/FormMission'
+      std::memset(&Formation_FMS_B.Merge, 0, sizeof(FMS_Out_Bus));
+
+      // Outputs for IfAction SubSystem: '<S12>/FormMission' incorporates:
+      //   ActionPort: '<S20>/Action Port'
+
+      // Outputs for Resettable SubSystem: '<S20>/FormMission_SubSystem' incorporates:
+      //   ResetPort: '<S82>/Reset'
+
+      // BusAssignment: '<S82>/Bus Assignment' incorporates:
+      //   Constant: '<S82>/Constant1'
+      //   Merge: '<S10>/Merge'
+
+      Formation_FMS_B.Merge.state = VehicleState::FormMission;
+      Formation_FMS_B.Merge.ax_cmd = Formation_FMS_B.absxk;
+      Formation_FMS_B.Merge.ay_cmd = Formation_FMS_B.t;
+      Formation_FMS_B.Merge.vh_cmd = Formation_FMS_B.Multiply1_f;
+
+      // Update for Delay: '<S159>/Delay'
+      Formation_FMS_DW.icLoad_k = false;
+
+      // Update for DiscreteIntegrator: '<S97>/Discrete-Time Integrator1'
+      Formation_FMS_DW.DiscreteTimeIntegrator1_IC_LOAD = 0U;
+      Formation_FMS_DW.DiscreteTimeIntegrator1_DSTATE += 0.02F *
+        Formation_FMS_B.rtb_vn_idx_1;
+      Formation_FMS_DW.DiscreteTimeIntegrator1_PrevRes = 0;
+
+      // Update for DiscreteIntegrator: '<S141>/Integrator' incorporates:
+      //   Gain: '<S138>/Integral Gain'
+
+      Formation_FMS_DW.Integrator_DSTATE += 0.0F * Formation_FMS_B.vd[2] * 0.02F;
+
+      // End of Outputs for SubSystem: '<S20>/FormMission_SubSystem'
+
+      // Update for UnitDelay: '<S81>/Delay Input1'
+      //
+      //  Block description for '<S81>/Delay Input1':
+      //
+      //   Store in Global RAM
+
+      Formation_FMS_DW.DelayInput1_DSTATE_d = Formation_FMS_B.wp_index;
+
+      // End of Outputs for SubSystem: '<S12>/FormMission'
+      break;
+
+     case 3:
+      if (Formation_FMS_DW.SwitchCase_ActiveSubsystem_c != rtPrevAction) {
+        // InitializeConditions for IfAction SubSystem: '<S12>/FormDisband' incorporates:
+        //   ActionPort: '<S18>/Action Port'
+
+        // InitializeConditions for SwitchCase: '<S12>/Switch Case' incorporates:
+        //   Delay: '<S46>/Delay'
+        //   Delay: '<S50>/start_vel'
+
+        Formation_FMS_DW.icLoad_a = true;
+        Formation_FMS_DW.icLoad_l = true;
+
+        // End of InitializeConditions for SubSystem: '<S12>/FormDisband'
+      }
+
+      // Outputs for IfAction SubSystem: '<S12>/FormDisband' incorporates:
+      //   ActionPort: '<S18>/Action Port'
+
+      // SignalConversion generated from: '<S56>/Square'
+      Formation_FMS_B.TmpSignalConversionAtSqua_c[0] = *rtu_INS_Out_vn;
+      Formation_FMS_B.TmpSignalConversionAtSqua_c[1] = *rtu_INS_Out_ve;
+
+      // Math: '<S57>/Math Function' incorporates:
+      //   Math: '<S56>/Square'
+
+      Formation_FMS_B.absxk = Formation_FMS_B.TmpSignalConversionAtSqua_c[0] *
+        Formation_FMS_B.TmpSignalConversionAtSqua_c[0];
+      Formation_FMS_B.t = Formation_FMS_B.TmpSignalConversionAtSqua_c[1] *
+        Formation_FMS_B.TmpSignalConversionAtSqua_c[1];
+
+      // Sum: '<S57>/Sum of Elements' incorporates:
+      //   Math: '<S57>/Math Function'
+
+      Formation_FMS_B.scale = Formation_FMS_B.absxk + Formation_FMS_B.t;
+
+      // Math: '<S57>/Math Function1' incorporates:
+      //   Sum: '<S57>/Sum of Elements'
+      //
+      //  About '<S57>/Math Function1':
+      //   Operator: sqrt
+
+      if (Formation_FMS_B.scale < 0.0F) {
+        Formation_FMS_B.rtb_vn_idx_1 = -std::sqrt(std::abs(Formation_FMS_B.scale));
+      } else {
+        Formation_FMS_B.rtb_vn_idx_1 = std::sqrt(Formation_FMS_B.scale);
+      }
+
+      // End of Math: '<S57>/Math Function1'
 
       // Switch: '<S57>/Switch' incorporates:
-      //   DotProduct: '<S57>/Dot Product'
-      //   Math: '<S62>/Square'
-      //   Product: '<S57>/Divide'
+      //   Constant: '<S57>/Constant'
       //   Product: '<S57>/Product'
-      //   Sqrt: '<S62>/Sqrt'
-      //   Sqrt: '<S63>/Sqrt'
-      //   Sum: '<S55>/Add'
-      //   Sum: '<S56>/Sum of Elements'
-      //   Sum: '<S62>/Sum of Elements'
 
-      if (Formation_FMS_DW.TmpSignalConversionAtSqua_n[0] * Formation_FMS_DW.t_f
-          + Formation_FMS_DW.TmpSignalConversionAtSqua_n[1] *
-          Formation_FMS_DW.rtb_x_R_idx_1 >= 0.0F) {
-        Formation_FMS_DW.rtb_y_R_idx_1 = Formation_FMS_DW.Multiply1_f / std::
-          sqrt(Formation_FMS_DW.t_f * Formation_FMS_DW.t_f +
-               Formation_FMS_DW.rtb_x_R_idx_1 * Formation_FMS_DW.rtb_x_R_idx_1);
+      if (Formation_FMS_B.rtb_vn_idx_1 > 0.0F) {
+        Formation_FMS_B.vd[0] = *rtu_INS_Out_vn;
+        Formation_FMS_B.vd[1] = *rtu_INS_Out_ve;
+        Formation_FMS_B.vd[2] = Formation_FMS_B.rtb_vn_idx_1;
       } else {
-        Formation_FMS_DW.rtb_y_R_idx_1 *= std::sqrt
-          (Formation_FMS_DW.rtb_vn_idx_1);
+        Formation_FMS_B.vd[0] = Formation_FMS_B.TmpSignalConversionAtSqua_c[0] *
+          0.0F;
+        Formation_FMS_B.vd[1] = Formation_FMS_B.TmpSignalConversionAtSqua_c[1] *
+          0.0F;
+        Formation_FMS_B.vd[2] = 1.0F;
       }
 
-      // Gain: '<S49>/Pos_Kp' incorporates:
-      //   DotProduct: '<S49>/Dot Product'
-      //   Product: '<S53>/Divide'
+      // End of Switch: '<S57>/Switch'
 
-      Formation_FMS_DW.path_ratio = (Formation_FMS_DW.absxk /
-        Formation_FMS_DW.scale * Formation_FMS_DW.pose[0] +
-        Formation_FMS_DW.path_ratio / Formation_FMS_DW.scale *
-        Formation_FMS_DW.pose[1]) * 0.3F;
-
-      // Gain: '<S49>/Vel_Kp' incorporates:
-      //   Math: '<S51>/Square'
-      //   Sqrt: '<S51>/Sqrt'
-      //   Sqrt: '<S52>/Sqrt'
-      //   Sum: '<S49>/Sum1'
-      //   Sum: '<S51>/Sum of Elements'
-
-      Formation_FMS_DW.Multiply1_f = (std::sqrt(Formation_FMS_DW.rtb_y_R_idx_0 +
-        Formation_FMS_DW.rtb_x_R_idx_0) - std::sqrt
-        (Formation_FMS_DW.rtb_vn_idx_1)) * 0.5F;
-
-      // Saturate: '<S49>/Saturation'
-      if (Formation_FMS_DW.path_ratio > 2.0F) {
-        Formation_FMS_DW.path_ratio = 2.0F;
-      } else if (Formation_FMS_DW.path_ratio < -2.0F) {
-        Formation_FMS_DW.path_ratio = -2.0F;
+      // Delay: '<S50>/start_vel'
+      if (Formation_FMS_DW.icLoad_a) {
+        Formation_FMS_DW.start_vel_DSTATE_m[0] =
+          Formation_FMS_B.TmpSignalConversionAtSqua_c[0];
+        Formation_FMS_DW.start_vel_DSTATE_m[1] =
+          Formation_FMS_B.TmpSignalConversionAtSqua_c[1];
       }
 
-      // Saturate: '<S49>/Saturation1'
-      if (Formation_FMS_DW.Multiply1_f > 10.0F) {
-        Formation_FMS_DW.Multiply1_f = 10.0F;
-      } else if (Formation_FMS_DW.Multiply1_f < -10.0F) {
-        Formation_FMS_DW.Multiply1_f = -10.0F;
+      // Math: '<S62>/Math Function' incorporates:
+      //   Delay: '<S50>/start_vel'
+
+      Formation_FMS_B.TmpSignalConversionAtSqua_c[0] =
+        Formation_FMS_DW.start_vel_DSTATE_m[0] *
+        Formation_FMS_DW.start_vel_DSTATE_m[0];
+      Formation_FMS_B.TmpSignalConversionAtSqua_c[1] =
+        Formation_FMS_DW.start_vel_DSTATE_m[1] *
+        Formation_FMS_DW.start_vel_DSTATE_m[1];
+
+      // Sum: '<S62>/Sum of Elements'
+      Formation_FMS_B.scale = Formation_FMS_B.TmpSignalConversionAtSqua_c[0] +
+        Formation_FMS_B.TmpSignalConversionAtSqua_c[1];
+
+      // Math: '<S62>/Math Function1' incorporates:
+      //   Sum: '<S62>/Sum of Elements'
+      //
+      //  About '<S62>/Math Function1':
+      //   Operator: sqrt
+
+      if (Formation_FMS_B.scale < 0.0F) {
+        Formation_FMS_B.rtb_vn_idx_1 = -std::sqrt(std::abs(Formation_FMS_B.scale));
+      } else {
+        Formation_FMS_B.rtb_vn_idx_1 = std::sqrt(Formation_FMS_B.scale);
       }
 
-      Formation_FMS_DW.t_f = Formation_FMS_DW.path_ratio +
-        Formation_FMS_DW.Multiply1_f;
-      Formation_FMS_DW.rtb_vn_idx_1 = 12.566371F * FORMATION_PARAM.LATERAL_DAMP /
-        FORMATION_PARAM.LATERAL_PERIOD * Formation_FMS_DW.rtb_y_R_idx_1;
-      Formation_FMS_DW.Multiply1_f = 0.1F * Formation_FMS_DW.pose[2] +
-        Formation_FMS_DW.Integrator_DSTATE;
+      // End of Math: '<S62>/Math Function1'
+
+      // Switch: '<S62>/Switch' incorporates:
+      //   Constant: '<S62>/Constant'
+      //   Delay: '<S50>/start_vel'
+      //   Product: '<S62>/Product'
+
+      if (Formation_FMS_B.rtb_vn_idx_1 > 0.0F) {
+        Formation_FMS_B.ve[0] = Formation_FMS_DW.start_vel_DSTATE_m[0];
+        Formation_FMS_B.ve[1] = Formation_FMS_DW.start_vel_DSTATE_m[1];
+        Formation_FMS_B.ve[2] = Formation_FMS_B.rtb_vn_idx_1;
+      } else {
+        Formation_FMS_B.ve[0] = Formation_FMS_DW.start_vel_DSTATE_m[0] * 0.0F;
+        Formation_FMS_B.ve[1] = Formation_FMS_DW.start_vel_DSTATE_m[1] * 0.0F;
+        Formation_FMS_B.ve[2] = 1.0F;
+      }
+
+      // End of Switch: '<S62>/Switch'
+
+      // Product: '<S57>/Divide'
+      Formation_FMS_B.TmpSignalConversionAtSqua_c[0] = Formation_FMS_B.vd[0] /
+        Formation_FMS_B.vd[2];
+      Formation_FMS_B.TmpSignalConversionAtSqua_c[1] = Formation_FMS_B.vd[1] /
+        Formation_FMS_B.vd[2];
+
+      // SignalConversion generated from: '<S60>/Math Function'
+      Formation_FMS_B.P_d[0] = Formation_FMS_B.TmpSignalConversionAtSqua_c[1];
+      Formation_FMS_B.P_d[1] = Formation_FMS_B.TmpSignalConversionAtSqua_c[0];
+
+      // Sum: '<S60>/Sum of Elements' incorporates:
+      //   Math: '<S60>/Math Function'
+      //   SignalConversion generated from: '<S60>/Math Function'
+
+      Formation_FMS_B.scale = Formation_FMS_B.TmpSignalConversionAtSqua_c[1] *
+        Formation_FMS_B.TmpSignalConversionAtSqua_c[1] +
+        Formation_FMS_B.TmpSignalConversionAtSqua_c[0] *
+        Formation_FMS_B.TmpSignalConversionAtSqua_c[0];
+
+      // Math: '<S60>/Math Function1' incorporates:
+      //   Sum: '<S60>/Sum of Elements'
+      //
+      //  About '<S60>/Math Function1':
+      //   Operator: sqrt
+
+      if (Formation_FMS_B.scale < 0.0F) {
+        Formation_FMS_B.rtb_vn_idx_1 = -std::sqrt(std::abs(Formation_FMS_B.scale));
+      } else {
+        Formation_FMS_B.rtb_vn_idx_1 = std::sqrt(Formation_FMS_B.scale);
+      }
+
+      // End of Math: '<S60>/Math Function1'
+
+      // Switch: '<S60>/Switch' incorporates:
+      //   Constant: '<S60>/Constant'
+      //   Product: '<S60>/Product'
+      //   SignalConversion generated from: '<S60>/Math Function'
+
+      if (Formation_FMS_B.rtb_vn_idx_1 > 0.0F) {
+        Formation_FMS_B.vd[0] = Formation_FMS_B.TmpSignalConversionAtSqua_c[1];
+        Formation_FMS_B.vd[1] = Formation_FMS_B.TmpSignalConversionAtSqua_c[0];
+        Formation_FMS_B.vd[2] = Formation_FMS_B.rtb_vn_idx_1;
+      } else {
+        Formation_FMS_B.vd[0] = Formation_FMS_B.TmpSignalConversionAtSqua_c[1] *
+          0.0F;
+        Formation_FMS_B.vd[1] = Formation_FMS_B.TmpSignalConversionAtSqua_c[0] *
+          0.0F;
+        Formation_FMS_B.vd[2] = 1.0F;
+      }
+
+      // End of Switch: '<S60>/Switch'
+
+      // MinMax: '<S48>/Max' incorporates:
+      //   Constant: '<S47>/L1'
+      //   Constant: '<S47>/R'
+      //   Gain: '<S48>/Gain'
+
+      Formation_FMS_B.scale = std::fmax(FMS_PARAM.LOITER_R, 0.5F * FMS_PARAM.L1);
+
+      // Reshape: '<S48>/Reshape2'
+      Formation_FMS_B.Reshape2_bq[0] = *rtu_INS_Out_x_R;
+      Formation_FMS_B.Reshape2_bq[1] = *rtu_INS_Out_y_R;
+
+      // MATLAB Function: '<S48>/SearchL1RefWP' incorporates:
+      //   Constant: '<S47>/L1'
+
+      Formation_FMS_SearchL1RefWP_i(&Formation_FMS_B.Cmd_In.cur_waypoint[0],
+        Formation_FMS_B.Reshape2_bq, Formation_FMS_B.scale, FMS_PARAM.L1,
+        Formation_FMS_B.TmpSignalConversionAtSqua_c, &Formation_FMS_B.n_j);
+
+      // RelationalOperator: '<S51>/Compare' incorporates:
+      //   Constant: '<S51>/Constant'
+
+      rtb_FixPtRelationalOperator_c = (Formation_FMS_B.n_j > 0.0);
+
+      // Product: '<S62>/Divide'
+      Formation_FMS_B.P_i[0] = Formation_FMS_B.ve[0] / Formation_FMS_B.ve[2];
+      Formation_FMS_B.P_i[1] = Formation_FMS_B.ve[1] / Formation_FMS_B.ve[2];
+
+      // MATLAB Function: '<S48>/OutRegionRegWP' incorporates:
+      //   Constant: '<S47>/L1'
+
+      Formation_FMS_OutRegionRegWP_o(&Formation_FMS_B.Cmd_In.cur_waypoint[0],
+        Formation_FMS_B.Reshape2_bq, Formation_FMS_B.scale, FMS_PARAM.L1,
+        Formation_FMS_B.P_i, Formation_FMS_B.P_d);
+
+      // Switch: '<S48>/Switch'
+      if (rtb_FixPtRelationalOperator_c) {
+        Formation_FMS_B.scale = Formation_FMS_B.TmpSignalConversionAtSqua_c[0];
+      } else {
+        Formation_FMS_B.scale = Formation_FMS_B.P_d[0];
+      }
+
+      // Sum: '<S49>/Subtract' incorporates:
+      //   Switch: '<S48>/Switch'
+
+      Formation_FMS_B.Reshape2_bq[0] = Formation_FMS_B.scale - *rtu_INS_Out_x_R;
+
+      // Switch: '<S48>/Switch'
+      if (rtb_FixPtRelationalOperator_c) {
+        Formation_FMS_B.scale = Formation_FMS_B.TmpSignalConversionAtSqua_c[1];
+      } else {
+        Formation_FMS_B.scale = Formation_FMS_B.P_d[1];
+      }
+
+      // Sum: '<S49>/Subtract' incorporates:
+      //   Switch: '<S48>/Switch'
+
+      Formation_FMS_B.Reshape2_bq[1] = Formation_FMS_B.scale - *rtu_INS_Out_y_R;
+
+      // Sum: '<S58>/Sum of Elements' incorporates:
+      //   Math: '<S58>/Math Function'
+      //   Sum: '<S49>/Subtract'
+
+      Formation_FMS_B.scale = Formation_FMS_B.Reshape2_bq[0] *
+        Formation_FMS_B.Reshape2_bq[0] + Formation_FMS_B.Reshape2_bq[1] *
+        Formation_FMS_B.Reshape2_bq[1];
+
+      // Math: '<S58>/Math Function1' incorporates:
+      //   Sum: '<S58>/Sum of Elements'
+      //
+      //  About '<S58>/Math Function1':
+      //   Operator: sqrt
+
+      if (Formation_FMS_B.scale < 0.0F) {
+        Formation_FMS_B.rtb_vn_idx_1 = -std::sqrt(std::abs(Formation_FMS_B.scale));
+      } else {
+        Formation_FMS_B.rtb_vn_idx_1 = std::sqrt(Formation_FMS_B.scale);
+      }
+
+      // End of Math: '<S58>/Math Function1'
+
+      // Switch: '<S58>/Switch' incorporates:
+      //   Constant: '<S58>/Constant'
+      //   Product: '<S58>/Product'
+      //   Sum: '<S49>/Subtract'
+      //   Switch: '<S61>/Switch'
+
+      if (Formation_FMS_B.rtb_vn_idx_1 > 0.0F) {
+        Formation_FMS_B.ve[0] = Formation_FMS_B.Reshape2_bq[0];
+        Formation_FMS_B.ve[1] = Formation_FMS_B.Reshape2_bq[1];
+        Formation_FMS_B.ve[2] = Formation_FMS_B.rtb_vn_idx_1;
+      } else {
+        Formation_FMS_B.ve[0] = Formation_FMS_B.Reshape2_bq[0] * 0.0F;
+        Formation_FMS_B.ve[1] = Formation_FMS_B.Reshape2_bq[1] * 0.0F;
+        Formation_FMS_B.ve[2] = 1.0F;
+      }
+
+      // End of Switch: '<S58>/Switch'
+
+      // Product: '<S58>/Divide' incorporates:
+      //   Product: '<S61>/Divide'
+
+      Formation_FMS_B.TmpSignalConversionAtSqua_c[0] = Formation_FMS_B.ve[0] /
+        Formation_FMS_B.ve[2];
+      Formation_FMS_B.TmpSignalConversionAtSqua_c[1] = Formation_FMS_B.ve[1] /
+        Formation_FMS_B.ve[2];
+
+      // Sum: '<S61>/Sum of Elements' incorporates:
+      //   Math: '<S61>/Math Function'
+      //   SignalConversion generated from: '<S61>/Math Function'
+
+      Formation_FMS_B.scale = Formation_FMS_B.TmpSignalConversionAtSqua_c[1] *
+        Formation_FMS_B.TmpSignalConversionAtSqua_c[1] +
+        Formation_FMS_B.TmpSignalConversionAtSqua_c[0] *
+        Formation_FMS_B.TmpSignalConversionAtSqua_c[0];
+
+      // Math: '<S61>/Math Function1' incorporates:
+      //   Sum: '<S61>/Sum of Elements'
+      //
+      //  About '<S61>/Math Function1':
+      //   Operator: sqrt
+
+      if (Formation_FMS_B.scale < 0.0F) {
+        Formation_FMS_B.rtb_vn_idx_1 = -std::sqrt(std::abs(Formation_FMS_B.scale));
+      } else {
+        Formation_FMS_B.rtb_vn_idx_1 = std::sqrt(Formation_FMS_B.scale);
+      }
+
+      // End of Math: '<S61>/Math Function1'
+
+      // Switch: '<S61>/Switch' incorporates:
+      //   Constant: '<S61>/Constant'
+      //   Product: '<S61>/Product'
+      //   SignalConversion generated from: '<S61>/Math Function'
+
+      if (Formation_FMS_B.rtb_vn_idx_1 > 0.0F) {
+        Formation_FMS_B.ve[0] = Formation_FMS_B.TmpSignalConversionAtSqua_c[1];
+        Formation_FMS_B.ve[1] = Formation_FMS_B.TmpSignalConversionAtSqua_c[0];
+        Formation_FMS_B.ve[2] = Formation_FMS_B.rtb_vn_idx_1;
+      } else {
+        Formation_FMS_B.ve[0] = Formation_FMS_B.TmpSignalConversionAtSqua_c[1] *
+          0.0F;
+        Formation_FMS_B.ve[1] = Formation_FMS_B.TmpSignalConversionAtSqua_c[0] *
+          0.0F;
+        Formation_FMS_B.ve[2] = 1.0F;
+      }
+
+      // End of Switch: '<S61>/Switch'
+
+      // Product: '<S61>/Divide'
+      Formation_FMS_B.rtb_x_R_idx_0 = Formation_FMS_B.ve[0] /
+        Formation_FMS_B.ve[2];
+
+      // Product: '<S60>/Divide'
+      Formation_FMS_B.Multiply1_f = Formation_FMS_B.vd[0] / Formation_FMS_B.vd[2];
+
+      // DotProduct: '<S55>/Dot Product'
+      Formation_FMS_B.scale = Formation_FMS_B.Multiply1_f *
+        Formation_FMS_B.rtb_x_R_idx_0;
+      Formation_FMS_B.TmpSignalConversionAtSqua_c[0] =
+        Formation_FMS_B.rtb_x_R_idx_0;
+      Formation_FMS_B.P_d[0] = Formation_FMS_B.Multiply1_f;
+
+      // Product: '<S61>/Divide' incorporates:
+      //   Product: '<S60>/Divide'
+
+      Formation_FMS_B.rtb_x_R_idx_0 = Formation_FMS_B.ve[1] /
+        Formation_FMS_B.ve[2];
+
+      // Product: '<S60>/Divide'
+      Formation_FMS_B.Multiply1_f = Formation_FMS_B.vd[1] / Formation_FMS_B.vd[2];
+
+      // DotProduct: '<S55>/Dot Product'
+      Formation_FMS_B.scale += Formation_FMS_B.Multiply1_f *
+        Formation_FMS_B.rtb_x_R_idx_0;
+
+      // Sqrt: '<S56>/Sqrt' incorporates:
+      //   Math: '<S56>/Square'
+      //   Sum: '<S56>/Sum of Elements'
+
+      Formation_FMS_B.rtb_vn_idx_1 = std::sqrt(Formation_FMS_B.absxk +
+        Formation_FMS_B.t);
+
+      // Math: '<S54>/Square'
+      Formation_FMS_B.absxk = Formation_FMS_B.rtb_vn_idx_1 *
+        Formation_FMS_B.rtb_vn_idx_1;
+
+      // Sum: '<S59>/Subtract' incorporates:
+      //   Product: '<S59>/Multiply'
+      //   Product: '<S59>/Multiply1'
+
+      Formation_FMS_B.t = Formation_FMS_B.TmpSignalConversionAtSqua_c[0] *
+        Formation_FMS_B.Multiply1_f - Formation_FMS_B.P_d[0] *
+        Formation_FMS_B.rtb_x_R_idx_0;
+
+      // Signum: '<S55>/Sign1'
+      if (std::isnan(Formation_FMS_B.t)) {
+        Formation_FMS_B.rtb_vn_idx_1 = (rtNaNF);
+      } else if (Formation_FMS_B.t < 0.0F) {
+        Formation_FMS_B.rtb_vn_idx_1 = -1.0F;
+      } else {
+        Formation_FMS_B.rtb_vn_idx_1 = (Formation_FMS_B.t > 0.0F);
+      }
+
+      // End of Signum: '<S55>/Sign1'
+
+      // Trigonometry: '<S55>/Acos' incorporates:
+      //   DotProduct: '<S55>/Dot Product'
+
+      if (Formation_FMS_B.scale > 1.0F) {
+        Formation_FMS_B.scale = 1.0F;
+      } else if (Formation_FMS_B.scale < -1.0F) {
+        Formation_FMS_B.scale = -1.0F;
+      }
+
+      // Switch: '<S55>/Switch2' incorporates:
+      //   Constant: '<S55>/Constant4'
+
+      if (!(Formation_FMS_B.rtb_vn_idx_1 != 0.0F)) {
+        Formation_FMS_B.rtb_vn_idx_1 = 1.0F;
+      }
+
+      // Product: '<S55>/Multiply' incorporates:
+      //   Switch: '<S55>/Switch2'
+      //   Trigonometry: '<S55>/Acos'
+
+      Formation_FMS_B.Multiply1_f = std::acos(Formation_FMS_B.scale) *
+        Formation_FMS_B.rtb_vn_idx_1;
+
+      // Sum: '<S45>/Sum' incorporates:
+      //   Constant: '<S45>/Constant'
+
+      Formation_FMS_B.rtb_vn_idx_1 = FMS_PARAM.FW_AIRSPD_TRIM -
+        *rtu_INS_Out_airspeed;
+
+      // Delay: '<S46>/Delay' incorporates:
+      //   Constant: '<S46>/Constant'
+
+      if (Formation_FMS_DW.icLoad_l) {
+        Formation_FMS_DW.Delay_DSTATE_i = FMS_PARAM.FW_HEIGHT_TRIM;
+      }
+
+      // Sum: '<S46>/Sum' incorporates:
+      //   Delay: '<S46>/Delay'
+
+      Formation_FMS_B.scale = Formation_FMS_DW.Delay_DSTATE_i - *rtu_INS_Out_h_R;
+
+      // End of Outputs for SubSystem: '<S12>/FormDisband'
+      std::memset(&Formation_FMS_B.Merge, 0, sizeof(FMS_Out_Bus));
+
+      // Outputs for IfAction SubSystem: '<S12>/FormDisband' incorporates:
+      //   ActionPort: '<S18>/Action Port'
+
+      // BusAssignment: '<S18>/Bus Assignment' incorporates:
+      //   Constant: '<S18>/Constant1'
+      //   Merge: '<S10>/Merge'
+
+      Formation_FMS_B.Merge.state = VehicleState::FormDisband;
+      Formation_FMS_B.Merge.ax_cmd = Formation_FMS_B.rtb_vn_idx_1;
+
+      // Saturate: '<S54>/Saturation'
+      if (Formation_FMS_B.Multiply1_f > 1.57079637F) {
+        Formation_FMS_B.Multiply1_f = 1.57079637F;
+      } else if (Formation_FMS_B.Multiply1_f < -1.57079637F) {
+        Formation_FMS_B.Multiply1_f = -1.57079637F;
+      }
+
+      // BusAssignment: '<S18>/Bus Assignment' incorporates:
+      //   Constant: '<S47>/L1'
+      //   Gain: '<S54>/Gain'
+      //   Product: '<S54>/Divide'
+      //   Product: '<S54>/Multiply1'
+      //   Saturate: '<S54>/Saturation'
+      //   Trigonometry: '<S54>/Sin'
+
+      Formation_FMS_B.Merge.ay_cmd = 2.0F * Formation_FMS_B.absxk * std::sin
+        (Formation_FMS_B.Multiply1_f) / FMS_PARAM.L1;
+
+      // Gain: '<S46>/Gain2'
+      Formation_FMS_B.Multiply1_f = FMS_PARAM.Z_P * Formation_FMS_B.scale;
+
+      // Saturate: '<S46>/Saturation'
+      if (Formation_FMS_B.Multiply1_f > CONTROL_PARAM.FW_T_CLMB_MAX) {
+        // BusAssignment: '<S18>/Bus Assignment'
+        Formation_FMS_B.Merge.vh_cmd = CONTROL_PARAM.FW_T_CLMB_MAX;
+      } else if (Formation_FMS_B.Multiply1_f < -CONTROL_PARAM.FW_T_SINK_MAX) {
+        // BusAssignment: '<S18>/Bus Assignment'
+        Formation_FMS_B.Merge.vh_cmd = -CONTROL_PARAM.FW_T_SINK_MAX;
+      } else {
+        // BusAssignment: '<S18>/Bus Assignment'
+        Formation_FMS_B.Merge.vh_cmd = Formation_FMS_B.Multiply1_f;
+      }
+
+      // End of Saturate: '<S46>/Saturation'
+
+      // Update for Delay: '<S50>/start_vel'
+      Formation_FMS_DW.icLoad_a = false;
+
+      // Update for Delay: '<S46>/Delay'
+      Formation_FMS_DW.icLoad_l = false;
+
+      // End of Outputs for SubSystem: '<S12>/FormDisband'
+      break;
+
+     default:
+      if (Formation_FMS_DW.SwitchCase_ActiveSubsystem_c != rtPrevAction) {
+        // SystemReset for IfAction SubSystem: '<S12>/Default' incorporates:
+        //   ActionPort: '<S16>/Action Port'
+
+        // SystemReset for SwitchCase: '<S12>/Switch Case'
+        Formation_FMS_Default_Reset(&Formation_FMS_DW.Default_d);
+
+        // End of SystemReset for SubSystem: '<S12>/Default'
+      }
+
+      // Outputs for IfAction SubSystem: '<S12>/Default' incorporates:
+      //   ActionPort: '<S16>/Action Port'
+
+      Formation_FMS_Default(rtu_INS_Out_airspeed, rtu_INS_Out_h_R,
+                            &Formation_FMS_B.Merge, &Formation_FMS_DW.Default_d);
+
+      // End of Outputs for SubSystem: '<S12>/Default'
+      break;
     }
 
-    // End of Outputs for SubSystem: '<S13>/FormMission_SubSystem'
-    // End of Outputs for SubSystem: '<S10>/FormMission'
-    std::memset(&Formation_FMS_DW.Merge, 0, sizeof(FMS_Out_Bus));
-
-    // Outputs for IfAction SubSystem: '<S10>/FormMission' incorporates:
-    //   ActionPort: '<S13>/Action Port'
-
-    // Outputs for Resettable SubSystem: '<S13>/FormMission_SubSystem' incorporates:
-    //   ResetPort: '<S41>/Reset'
-
-    // BusAssignment: '<S41>/Bus Assignment' incorporates:
-    //   Constant: '<S41>/Constant1'
-    //   Merge: '<S10>/Merge'
-
-    Formation_FMS_DW.Merge.state = VehicleState::FormMission;
-    Formation_FMS_DW.Merge.ax_cmd = Formation_FMS_DW.t_f;
-    Formation_FMS_DW.Merge.ay_cmd = Formation_FMS_DW.rtb_vn_idx_1;
-    Formation_FMS_DW.Merge.vh_cmd = Formation_FMS_DW.Multiply1_f;
-
-    // Update for Delay: '<S115>/Delay'
-    Formation_FMS_DW.icLoad_k = false;
-
-    // Update for DiscreteIntegrator: '<S97>/Integrator' incorporates:
-    //   Gain: '<S94>/Integral Gain'
-
-    Formation_FMS_DW.Integrator_DSTATE += 0.0F * Formation_FMS_DW.pose[2] *
-      0.02F;
-
-    // End of Outputs for SubSystem: '<S13>/FormMission_SubSystem'
-
-    // Update for UnitDelay: '<S40>/Delay Input1'
-    //
-    //  Block description for '<S40>/Delay Input1':
-    //
-    //   Store in Global RAM
-
-    Formation_FMS_DW.DelayInput1_DSTATE_d = Formation_FMS_DW.wp_index;
-
-    // End of Outputs for SubSystem: '<S10>/FormMission'
+    // End of Outputs for SubSystem: '<S10>/Form_Subsystem'
     break;
 
    case 1:
-    // Outputs for IfAction SubSystem: '<S10>/FormAssemble' incorporates:
-    //   ActionPort: '<S12>/Action Port'
-
-    // RelationalOperator: '<S17>/FixPt Relational Operator' incorporates:
-    //   UnitDelay: '<S17>/Delay Input1'
-    //
-    //  Block description for '<S17>/Delay Input1':
-    //
-    //   Store in Global RAM
-
-    rtb_FixPtRelationalOperator_c = (Formation_FMS_DW.wp_index !=
-      Formation_FMS_DW.DelayInput1_DSTATE_h);
-
-    // Outputs for Resettable SubSystem: '<S12>/Mission_SubSystem' incorporates:
-    //   ResetPort: '<S18>/Reset'
-
-    // InitializeConditions for Delay: '<S20>/Delay'
-    Formation_FMS_DW.icLoad_h = ((rtb_FixPtRelationalOperator_c &&
-      (Formation_FMS_PrevZCX.Mission_SubSystem_Reset_ZCE != POS_ZCSIG)) ||
-      Formation_FMS_DW.icLoad_h);
-    Formation_FMS_PrevZCX.Mission_SubSystem_Reset_ZCE =
-      rtb_FixPtRelationalOperator_c;
-
-    // Reshape: '<S24>/Reshape2'
-    Formation_FMS_DW.MathFunction_h4[0] = *rtu_INS_Out_x_R;
-    Formation_FMS_DW.MathFunction_h4[1] = *rtu_INS_Out_y_R;
-
-    // MATLAB Function: '<S25>/NearbyRefWP' incorporates:
-    //   Constant: '<S23>/L1'
-
-    Formation_FMS_NearbyRefWP(&Formation_FMS_DW.Cmd_In.sp_waypoint[0],
-      Formation_FMS_DW.MathFunction_h4, FMS_PARAM.L1, Formation_FMS_DW.P_c,
-      &Formation_FMS_DW.rtb_y_R_idx_1);
-
-    // MATLAB Function: '<S25>/SearchL1RefWP' incorporates:
-    //   Constant: '<S23>/L1'
-
-    Formation_FMS_SearchL1RefWP(&Formation_FMS_DW.Cmd_In.cur_waypoint[0],
-      &Formation_FMS_DW.Cmd_In.sp_waypoint[0], Formation_FMS_DW.MathFunction_h4,
-      FMS_PARAM.L1, Formation_FMS_DW.TmpSignalConversionAtSqua_n,
-      &Formation_FMS_DW.Multiply1_f);
-
-    // MATLAB Function: '<S25>/OutRegionRegWP'
-    Formation_FMS_OutRegionRegWP(&Formation_FMS_DW.Cmd_In.cur_waypoint[0],
-      &Formation_FMS_DW.Cmd_In.sp_waypoint[0], Formation_FMS_DW.MathFunction_h4,
-      Formation_FMS_DW.Reshape2_bi);
-
-    // Switch: '<S21>/Switch' incorporates:
-    //   Constant: '<S21>/Constant'
-    //   Math: '<S35>/Math Function'
-    //   Product: '<S39>/Divide'
-
-    if (Formation_FMS_DW.Cmd_In.l1_enable) {
-      // SignalConversion generated from: '<S34>/Square'
-      Formation_FMS_DW.rtb_y_R_idx_0 = *rtu_INS_Out_vn;
-      Formation_FMS_DW.rtb_x_R_idx_0 = *rtu_INS_Out_ve;
-
-      // Switch: '<S25>/Switch1' incorporates:
-      //   Constant: '<S28>/Constant'
-      //   RelationalOperator: '<S28>/Compare'
-
-      if (!(Formation_FMS_DW.rtb_y_R_idx_1 > 0.0F)) {
-        // Switch: '<S25>/Switch' incorporates:
-        //   Constant: '<S27>/Constant'
-        //   RelationalOperator: '<S27>/Compare'
-        //   Switch: '<S25>/Switch1'
-
-        if (Formation_FMS_DW.Multiply1_f >= 0.0F) {
-          Formation_FMS_DW.P_c[0] =
-            Formation_FMS_DW.TmpSignalConversionAtSqua_n[0];
-          Formation_FMS_DW.P_c[1] =
-            Formation_FMS_DW.TmpSignalConversionAtSqua_n[1];
-        } else {
-          Formation_FMS_DW.P_c[0] = Formation_FMS_DW.Reshape2_bi[0];
-          Formation_FMS_DW.P_c[1] = Formation_FMS_DW.Reshape2_bi[1];
-        }
-
-        // End of Switch: '<S25>/Switch'
-      }
-
-      // End of Switch: '<S25>/Switch1'
-
-      // Sum: '<S26>/Subtract' incorporates:
-      //   Reshape: '<S24>/Reshape2'
-      //   Switch: '<S25>/Switch1'
-
-      Formation_FMS_DW.Multiply1_f = Formation_FMS_DW.P_c[0] -
-        Formation_FMS_DW.MathFunction_h4[0];
-      Formation_FMS_DW.MathFunction_h4[0] = Formation_FMS_DW.rtb_y_R_idx_0 *
-        Formation_FMS_DW.rtb_y_R_idx_0;
-
-      // Sum: '<S26>/Subtract' incorporates:
-      //   Math: '<S35>/Math Function'
-      //   Reshape: '<S24>/Reshape2'
-      //   Switch: '<S25>/Switch1'
-
-      Formation_FMS_DW.rtb_vn_idx_1 = Formation_FMS_DW.P_c[1] -
-        Formation_FMS_DW.MathFunction_h4[1];
-
-      // Math: '<S35>/Math Function'
-      Formation_FMS_DW.rtb_y_R_idx_1 = Formation_FMS_DW.rtb_x_R_idx_0 *
-        Formation_FMS_DW.rtb_x_R_idx_0;
-
-      // Sum: '<S35>/Sum of Elements' incorporates:
-      //   Math: '<S35>/Math Function'
-
-      Formation_FMS_DW.scale = Formation_FMS_DW.rtb_y_R_idx_1 +
-        Formation_FMS_DW.MathFunction_h4[0];
-
-      // Math: '<S35>/Math Function1'
-      //
-      //  About '<S35>/Math Function1':
-      //   Operator: sqrt
-
-      if (Formation_FMS_DW.scale < 0.0F) {
-        Formation_FMS_DW.scale = -std::sqrt(std::abs(Formation_FMS_DW.scale));
-      } else {
-        Formation_FMS_DW.scale = std::sqrt(Formation_FMS_DW.scale);
-      }
-
-      // End of Math: '<S35>/Math Function1'
-
-      // Switch: '<S35>/Switch' incorporates:
-      //   Constant: '<S35>/Constant'
-      //   Product: '<S35>/Product'
-
-      if (Formation_FMS_DW.scale > 0.0F) {
-        Formation_FMS_DW.pose[0] = *rtu_INS_Out_vn;
-        Formation_FMS_DW.pose[1] = *rtu_INS_Out_ve;
-        Formation_FMS_DW.pose[2] = Formation_FMS_DW.scale;
-      } else {
-        Formation_FMS_DW.pose[0] = Formation_FMS_DW.rtb_y_R_idx_0 * 0.0F;
-        Formation_FMS_DW.pose[1] = Formation_FMS_DW.rtb_x_R_idx_0 * 0.0F;
-        Formation_FMS_DW.pose[2] = 1.0F;
-      }
-
-      // End of Switch: '<S35>/Switch'
-
-      // Product: '<S35>/Divide'
-      Formation_FMS_DW.rtb_y_R_idx_0 = Formation_FMS_DW.pose[0] /
-        Formation_FMS_DW.pose[2];
-      Formation_FMS_DW.rtb_x_R_idx_0 = Formation_FMS_DW.pose[1] /
-        Formation_FMS_DW.pose[2];
-
-      // Sum: '<S36>/Sum of Elements' incorporates:
-      //   Math: '<S36>/Math Function'
-
-      Formation_FMS_DW.scale = Formation_FMS_DW.Multiply1_f *
-        Formation_FMS_DW.Multiply1_f + Formation_FMS_DW.rtb_vn_idx_1 *
-        Formation_FMS_DW.rtb_vn_idx_1;
-
-      // Math: '<S36>/Math Function1'
-      //
-      //  About '<S36>/Math Function1':
-      //   Operator: sqrt
-
-      if (Formation_FMS_DW.scale < 0.0F) {
-        Formation_FMS_DW.scale = -std::sqrt(std::abs(Formation_FMS_DW.scale));
-      } else {
-        Formation_FMS_DW.scale = std::sqrt(Formation_FMS_DW.scale);
-      }
-
-      // End of Math: '<S36>/Math Function1'
-
-      // Switch: '<S36>/Switch' incorporates:
-      //   Constant: '<S36>/Constant'
-      //   Product: '<S36>/Product'
-      //   Switch: '<S39>/Switch'
-
-      if (Formation_FMS_DW.scale > 0.0F) {
-        Formation_FMS_DW.pose[0] = Formation_FMS_DW.Multiply1_f;
-        Formation_FMS_DW.pose[1] = Formation_FMS_DW.rtb_vn_idx_1;
-        Formation_FMS_DW.pose[2] = Formation_FMS_DW.scale;
-      } else {
-        Formation_FMS_DW.pose[0] = Formation_FMS_DW.Multiply1_f * 0.0F;
-        Formation_FMS_DW.pose[1] = Formation_FMS_DW.rtb_vn_idx_1 * 0.0F;
-        Formation_FMS_DW.pose[2] = 1.0F;
-      }
-
-      // End of Switch: '<S36>/Switch'
-
-      // Product: '<S36>/Divide' incorporates:
-      //   Product: '<S39>/Divide'
-
-      Formation_FMS_DW.P_c[0] = Formation_FMS_DW.pose[0] /
-        Formation_FMS_DW.pose[2];
-      Formation_FMS_DW.P_c[1] = Formation_FMS_DW.pose[1] /
-        Formation_FMS_DW.pose[2];
-
-      // Sum: '<S38>/Sum of Elements' incorporates:
-      //   Math: '<S38>/Math Function'
-      //   SignalConversion generated from: '<S38>/Math Function'
-
-      Formation_FMS_DW.scale = Formation_FMS_DW.rtb_x_R_idx_0 *
-        Formation_FMS_DW.rtb_x_R_idx_0 + Formation_FMS_DW.rtb_y_R_idx_0 *
-        Formation_FMS_DW.rtb_y_R_idx_0;
-
-      // Math: '<S38>/Math Function1'
-      //
-      //  About '<S38>/Math Function1':
-      //   Operator: sqrt
-
-      if (Formation_FMS_DW.scale < 0.0F) {
-        Formation_FMS_DW.scale = -std::sqrt(std::abs(Formation_FMS_DW.scale));
-      } else {
-        Formation_FMS_DW.scale = std::sqrt(Formation_FMS_DW.scale);
-      }
-
-      // End of Math: '<S38>/Math Function1'
-
-      // Switch: '<S38>/Switch' incorporates:
-      //   Constant: '<S38>/Constant'
-      //   Product: '<S38>/Product'
-      //   SignalConversion generated from: '<S38>/Math Function'
-
-      if (Formation_FMS_DW.scale > 0.0F) {
-        Formation_FMS_DW.pose[0] = Formation_FMS_DW.rtb_x_R_idx_0;
-        Formation_FMS_DW.pose[1] = Formation_FMS_DW.rtb_y_R_idx_0;
-        Formation_FMS_DW.pose[2] = Formation_FMS_DW.scale;
-      } else {
-        Formation_FMS_DW.pose[0] = Formation_FMS_DW.rtb_x_R_idx_0 * 0.0F;
-        Formation_FMS_DW.pose[1] = Formation_FMS_DW.rtb_y_R_idx_0 * 0.0F;
-        Formation_FMS_DW.pose[2] = 1.0F;
-      }
-
-      // End of Switch: '<S38>/Switch'
-
-      // Product: '<S38>/Divide'
-      Formation_FMS_DW.rtb_y_R_idx_0 = Formation_FMS_DW.pose[0] /
-        Formation_FMS_DW.pose[2];
-      Formation_FMS_DW.rtb_x_R_idx_0 = Formation_FMS_DW.pose[1] /
-        Formation_FMS_DW.pose[2];
-
-      // Sum: '<S39>/Sum of Elements' incorporates:
-      //   Math: '<S39>/Math Function'
-      //   SignalConversion generated from: '<S39>/Math Function'
-
-      Formation_FMS_DW.scale = Formation_FMS_DW.P_c[1] * Formation_FMS_DW.P_c[1]
-        + Formation_FMS_DW.P_c[0] * Formation_FMS_DW.P_c[0];
-
-      // Math: '<S39>/Math Function1'
-      //
-      //  About '<S39>/Math Function1':
-      //   Operator: sqrt
-
-      if (Formation_FMS_DW.scale < 0.0F) {
-        Formation_FMS_DW.scale = -std::sqrt(std::abs(Formation_FMS_DW.scale));
-      } else {
-        Formation_FMS_DW.scale = std::sqrt(Formation_FMS_DW.scale);
-      }
-
-      // End of Math: '<S39>/Math Function1'
-
-      // Switch: '<S39>/Switch' incorporates:
-      //   Constant: '<S39>/Constant'
-      //   Product: '<S39>/Product'
-      //   SignalConversion generated from: '<S39>/Math Function'
-
-      if (Formation_FMS_DW.scale > 0.0F) {
-        Formation_FMS_DW.pose[0] = Formation_FMS_DW.P_c[1];
-        Formation_FMS_DW.pose[1] = Formation_FMS_DW.P_c[0];
-        Formation_FMS_DW.pose[2] = Formation_FMS_DW.scale;
-      } else {
-        Formation_FMS_DW.pose[0] = Formation_FMS_DW.P_c[1] * 0.0F;
-        Formation_FMS_DW.pose[1] = Formation_FMS_DW.P_c[0] * 0.0F;
-        Formation_FMS_DW.pose[2] = 1.0F;
-      }
-
-      // End of Switch: '<S39>/Switch'
-
-      // Product: '<S39>/Divide'
-      Formation_FMS_DW.Multiply1_f = Formation_FMS_DW.pose[0] /
-        Formation_FMS_DW.pose[2];
-
-      // DotProduct: '<S33>/Dot Product'
-      Formation_FMS_DW.absxk = Formation_FMS_DW.rtb_y_R_idx_0 *
-        Formation_FMS_DW.Multiply1_f;
-      Formation_FMS_DW.P_c[0] = Formation_FMS_DW.Multiply1_f;
-
-      // Product: '<S39>/Divide'
-      Formation_FMS_DW.Multiply1_f = Formation_FMS_DW.pose[1] /
-        Formation_FMS_DW.pose[2];
-
-      // DotProduct: '<S33>/Dot Product'
-      Formation_FMS_DW.absxk += Formation_FMS_DW.rtb_x_R_idx_0 *
-        Formation_FMS_DW.Multiply1_f;
-
-      // Sum: '<S37>/Subtract' incorporates:
-      //   Product: '<S37>/Multiply'
-      //   Product: '<S37>/Multiply1'
-
-      Formation_FMS_DW.rtb_y_R_idx_0 = Formation_FMS_DW.P_c[0] *
-        Formation_FMS_DW.rtb_x_R_idx_0 - Formation_FMS_DW.rtb_y_R_idx_0 *
-        Formation_FMS_DW.Multiply1_f;
-
-      // Signum: '<S33>/Sign1'
-      if (std::isnan(Formation_FMS_DW.rtb_y_R_idx_0)) {
-        Formation_FMS_DW.scale = (rtNaNF);
-      } else if (Formation_FMS_DW.rtb_y_R_idx_0 < 0.0F) {
-        Formation_FMS_DW.scale = -1.0F;
-      } else {
-        Formation_FMS_DW.scale = (Formation_FMS_DW.rtb_y_R_idx_0 > 0.0F);
-      }
-
-      // End of Signum: '<S33>/Sign1'
-
-      // Trigonometry: '<S33>/Acos' incorporates:
-      //   DotProduct: '<S33>/Dot Product'
-
-      if (Formation_FMS_DW.absxk > 1.0F) {
-        Formation_FMS_DW.absxk = 1.0F;
-      } else if (Formation_FMS_DW.absxk < -1.0F) {
-        Formation_FMS_DW.absxk = -1.0F;
-      }
-
-      // Switch: '<S33>/Switch2' incorporates:
-      //   Constant: '<S33>/Constant4'
-
-      if (!(Formation_FMS_DW.scale != 0.0F)) {
-        Formation_FMS_DW.scale = 1.0F;
-      }
-
-      // Product: '<S33>/Multiply' incorporates:
-      //   Switch: '<S33>/Switch2'
-      //   Trigonometry: '<S33>/Acos'
-
-      Formation_FMS_DW.path_ratio = std::acos(Formation_FMS_DW.absxk) *
-        Formation_FMS_DW.scale;
-
-      // Sqrt: '<S34>/Sqrt' incorporates:
-      //   Math: '<S34>/Square'
-      //   Math: '<S35>/Math Function'
-      //   Sum: '<S34>/Sum of Elements'
-
-      Formation_FMS_DW.scale = std::sqrt(Formation_FMS_DW.MathFunction_h4[0] +
-        Formation_FMS_DW.rtb_y_R_idx_1);
-
-      // Saturate: '<S32>/Saturation'
-      if (Formation_FMS_DW.path_ratio > 1.57079637F) {
-        Formation_FMS_DW.path_ratio = 1.57079637F;
-      } else if (Formation_FMS_DW.path_ratio < -1.57079637F) {
-        Formation_FMS_DW.path_ratio = -1.57079637F;
-      }
-
-      // Product: '<S32>/Divide' incorporates:
-      //   Constant: '<S23>/L1'
-      //   Gain: '<S32>/Gain'
-      //   Math: '<S32>/Square'
-      //   Product: '<S32>/Multiply1'
-      //   Saturate: '<S32>/Saturation'
-      //   Trigonometry: '<S32>/Sin'
-
-      Formation_FMS_DW.scale = Formation_FMS_DW.scale * Formation_FMS_DW.scale *
-        2.0F * std::sin(Formation_FMS_DW.path_ratio) / FMS_PARAM.L1;
-
-      // Saturate: '<S23>/Saturation1'
-      if (Formation_FMS_DW.scale > FMS_PARAM.ACC_Y_LIM) {
-        Formation_FMS_DW.scale = FMS_PARAM.ACC_Y_LIM;
-      } else if (Formation_FMS_DW.scale < -FMS_PARAM.ACC_Y_LIM) {
-        Formation_FMS_DW.scale = -FMS_PARAM.ACC_Y_LIM;
-      }
-
-      // End of Saturate: '<S23>/Saturation1'
-    } else {
-      Formation_FMS_DW.scale = 0.0F;
-    }
-
-    // End of Switch: '<S21>/Switch'
-
-    // MATLAB Function: '<S19>/Time Consensus Controller'
-    Formation_FMS_DW.Multiply1_f = rtu_Formation_Cross_left_time
-      [static_cast<int32_T>(FORMATION_PARAM.UAV_ID) - 1];
-    Formation_FMS_DW.rtb_y_R_idx_1 = (Formation_FMS_DW.Multiply1_f -
-      rtu_Formation_Cross_left_time[0]) * static_cast<real32_T>
-      (FORMATION_PARAM.ADJ_MARTIX[static_cast<int32_T>(FORMATION_PARAM.UAV_ID) -
-       1]);
-    Formation_FMS_DW.rtb_y_R_idx_1 += (Formation_FMS_DW.Multiply1_f -
-      rtu_Formation_Cross_left_time[1]) * static_cast<real32_T>
-      (FORMATION_PARAM.ADJ_MARTIX[static_cast<int32_T>(FORMATION_PARAM.UAV_ID) +
-       2]);
-    Formation_FMS_DW.rtb_y_R_idx_1 += (Formation_FMS_DW.Multiply1_f -
-      rtu_Formation_Cross_left_time[2]) * static_cast<real32_T>
-      (FORMATION_PARAM.ADJ_MARTIX[static_cast<int32_T>(FORMATION_PARAM.UAV_ID) +
-       5]);
-
-    // Sum: '<S19>/Sum' incorporates:
-    //   Constant: '<S19>/Constant'
-
-    Formation_FMS_DW.Multiply1_f = FMS_PARAM.FW_AIRSPD_TRIM -
-      *rtu_INS_Out_airspeed;
-
-    // Delay: '<S20>/Delay' incorporates:
-    //   Constant: '<S20>/Constant'
-
-    if (Formation_FMS_DW.icLoad_h) {
-      Formation_FMS_DW.Delay_DSTATE_l = FMS_PARAM.FW_HEIGHT_TRIM;
-    }
-
-    // Sum: '<S20>/Sum' incorporates:
-    //   Delay: '<S20>/Delay'
-
-    Formation_FMS_DW.absxk = Formation_FMS_DW.Delay_DSTATE_l - *rtu_INS_Out_h_R;
-
-    // End of Outputs for SubSystem: '<S12>/Mission_SubSystem'
-    // End of Outputs for SubSystem: '<S10>/FormAssemble'
-    std::memset(&Formation_FMS_DW.Merge, 0, sizeof(FMS_Out_Bus));
-
-    // Outputs for IfAction SubSystem: '<S10>/FormAssemble' incorporates:
-    //   ActionPort: '<S12>/Action Port'
-
-    // Outputs for Resettable SubSystem: '<S12>/Mission_SubSystem' incorporates:
-    //   ResetPort: '<S18>/Reset'
-
-    // BusAssignment: '<S18>/Bus Assignment' incorporates:
-    //   Constant: '<S18>/Constant1'
-    //   Gain: '<S19>/Gain1'
-    //   Merge: '<S10>/Merge'
-    //   Sum: '<S19>/Sum1'
-
-    Formation_FMS_DW.Merge.state = VehicleState::FormAssemble;
-    Formation_FMS_DW.Merge.ax_cmd = FORMATION_PARAM.ASSEMBLE_KT *
-      Formation_FMS_DW.rtb_y_R_idx_1 + Formation_FMS_DW.Multiply1_f;
-    Formation_FMS_DW.Merge.ay_cmd = Formation_FMS_DW.scale;
-
-    // Gain: '<S20>/Gain2'
-    Formation_FMS_DW.path_ratio = FMS_PARAM.Z_P * Formation_FMS_DW.absxk;
-
-    // Saturate: '<S20>/Saturation'
-    if (Formation_FMS_DW.path_ratio > CONTROL_PARAM.FW_T_CLMB_MAX) {
-      // BusAssignment: '<S18>/Bus Assignment'
-      Formation_FMS_DW.Merge.vh_cmd = CONTROL_PARAM.FW_T_CLMB_MAX;
-    } else if (Formation_FMS_DW.path_ratio < -CONTROL_PARAM.FW_T_SINK_MAX) {
-      // BusAssignment: '<S18>/Bus Assignment'
-      Formation_FMS_DW.Merge.vh_cmd = -CONTROL_PARAM.FW_T_SINK_MAX;
-    } else {
-      // BusAssignment: '<S18>/Bus Assignment'
-      Formation_FMS_DW.Merge.vh_cmd = Formation_FMS_DW.path_ratio;
-    }
-
-    // End of Saturate: '<S20>/Saturation'
-
-    // Update for Delay: '<S20>/Delay'
-    Formation_FMS_DW.icLoad_h = false;
-
-    // End of Outputs for SubSystem: '<S12>/Mission_SubSystem'
-
-    // Update for UnitDelay: '<S17>/Delay Input1'
-    //
-    //  Block description for '<S17>/Delay Input1':
-    //
-    //   Store in Global RAM
-
-    Formation_FMS_DW.DelayInput1_DSTATE_h = Formation_FMS_DW.wp_index;
-
-    // End of Outputs for SubSystem: '<S10>/FormAssemble'
-    break;
-
-   case 2:
-    if (rtAction != rtPrevAction) {
+    if (Formation_FMS_DW.SwitchCase_ActiveSubsystem != rtPrevAction) {
       // InitializeConditions for IfAction SubSystem: '<S10>/Hold' incorporates:
-      //   ActionPort: '<S14>/Action Port'
+      //   ActionPort: '<S13>/Action Port'
 
       // InitializeConditions for SwitchCase: '<S10>/Switch Case' incorporates:
-      //   Delay: '<S135>/Delay'
-      //   Delay: '<S139>/start_vel'
+      //   Delay: '<S182>/Delay'
+      //   Delay: '<S186>/start_vel'
 
-      Formation_FMS_DW.icLoad_c = true;
+      Formation_FMS_DW.icLoad = true;
       Formation_FMS_DW.icLoad_j = true;
 
       // End of InitializeConditions for SubSystem: '<S10>/Hold'
     }
 
     // Outputs for IfAction SubSystem: '<S10>/Hold' incorporates:
-    //   ActionPort: '<S14>/Action Port'
+    //   ActionPort: '<S13>/Action Port'
 
-    // SignalConversion generated from: '<S145>/Square'
-    Formation_FMS_DW.P_c[0] = *rtu_INS_Out_vn;
-    Formation_FMS_DW.P_c[1] = *rtu_INS_Out_ve;
+    // SignalConversion generated from: '<S192>/Square'
+    Formation_FMS_B.TmpSignalConversionAtSqua_c[0] = *rtu_INS_Out_vn;
+    Formation_FMS_B.TmpSignalConversionAtSqua_c[1] = *rtu_INS_Out_ve;
 
-    // Sum: '<S146>/Sum of Elements' incorporates:
-    //   Math: '<S146>/Math Function'
-    //   Sum: '<S145>/Sum of Elements'
+    // Math: '<S193>/Math Function' incorporates:
+    //   Math: '<S192>/Square'
 
-    Formation_FMS_DW.rtb_vn_idx_1 = Formation_FMS_DW.P_c[0] *
-      Formation_FMS_DW.P_c[0] + Formation_FMS_DW.P_c[1] * Formation_FMS_DW.P_c[1];
+    Formation_FMS_B.absxk = Formation_FMS_B.TmpSignalConversionAtSqua_c[0] *
+      Formation_FMS_B.TmpSignalConversionAtSqua_c[0];
+    Formation_FMS_B.t = Formation_FMS_B.TmpSignalConversionAtSqua_c[1] *
+      Formation_FMS_B.TmpSignalConversionAtSqua_c[1];
 
-    // Math: '<S146>/Math Function1' incorporates:
-    //   Sum: '<S146>/Sum of Elements'
+    // Sum: '<S193>/Sum of Elements' incorporates:
+    //   Math: '<S193>/Math Function'
+
+    Formation_FMS_B.scale = Formation_FMS_B.absxk + Formation_FMS_B.t;
+
+    // Math: '<S193>/Math Function1' incorporates:
+    //   Sum: '<S193>/Sum of Elements'
     //
-    //  About '<S146>/Math Function1':
+    //  About '<S193>/Math Function1':
     //   Operator: sqrt
 
-    if (Formation_FMS_DW.rtb_vn_idx_1 < 0.0F) {
-      Formation_FMS_DW.scale = -std::sqrt(std::abs(Formation_FMS_DW.rtb_vn_idx_1));
+    if (Formation_FMS_B.scale < 0.0F) {
+      Formation_FMS_B.rtb_vn_idx_1 = -std::sqrt(std::abs(Formation_FMS_B.scale));
     } else {
-      Formation_FMS_DW.scale = std::sqrt(Formation_FMS_DW.rtb_vn_idx_1);
+      Formation_FMS_B.rtb_vn_idx_1 = std::sqrt(Formation_FMS_B.scale);
     }
 
-    // End of Math: '<S146>/Math Function1'
+    // End of Math: '<S193>/Math Function1'
 
-    // Switch: '<S146>/Switch' incorporates:
-    //   Constant: '<S146>/Constant'
-    //   Product: '<S146>/Product'
+    // Switch: '<S193>/Switch' incorporates:
+    //   Constant: '<S193>/Constant'
+    //   Product: '<S193>/Product'
 
-    if (Formation_FMS_DW.scale > 0.0F) {
-      Formation_FMS_DW.pose[0] = *rtu_INS_Out_vn;
-      Formation_FMS_DW.pose[1] = *rtu_INS_Out_ve;
-      Formation_FMS_DW.pose[2] = Formation_FMS_DW.scale;
+    if (Formation_FMS_B.rtb_vn_idx_1 > 0.0F) {
+      Formation_FMS_B.vd[0] = *rtu_INS_Out_vn;
+      Formation_FMS_B.vd[1] = *rtu_INS_Out_ve;
+      Formation_FMS_B.vd[2] = Formation_FMS_B.rtb_vn_idx_1;
     } else {
-      Formation_FMS_DW.pose[0] = Formation_FMS_DW.P_c[0] * 0.0F;
-      Formation_FMS_DW.pose[1] = Formation_FMS_DW.P_c[1] * 0.0F;
-      Formation_FMS_DW.pose[2] = 1.0F;
+      Formation_FMS_B.vd[0] = Formation_FMS_B.TmpSignalConversionAtSqua_c[0] *
+        0.0F;
+      Formation_FMS_B.vd[1] = Formation_FMS_B.TmpSignalConversionAtSqua_c[1] *
+        0.0F;
+      Formation_FMS_B.vd[2] = 1.0F;
     }
 
-    // End of Switch: '<S146>/Switch'
+    // End of Switch: '<S193>/Switch'
 
-    // Delay: '<S139>/start_vel'
-    if (Formation_FMS_DW.icLoad_c) {
-      Formation_FMS_DW.start_vel_DSTATE[0] = Formation_FMS_DW.P_c[0];
-      Formation_FMS_DW.start_vel_DSTATE[1] = Formation_FMS_DW.P_c[1];
+    // Delay: '<S186>/start_vel'
+    if (Formation_FMS_DW.icLoad) {
+      Formation_FMS_DW.start_vel_DSTATE[0] =
+        Formation_FMS_B.TmpSignalConversionAtSqua_c[0];
+      Formation_FMS_DW.start_vel_DSTATE[1] =
+        Formation_FMS_B.TmpSignalConversionAtSqua_c[1];
     }
 
-    // Sum: '<S151>/Sum of Elements' incorporates:
-    //   Delay: '<S139>/start_vel'
-    //   Math: '<S151>/Math Function'
+    // Math: '<S198>/Math Function' incorporates:
+    //   Delay: '<S186>/start_vel'
 
-    Formation_FMS_DW.scale = Formation_FMS_DW.start_vel_DSTATE[0] *
-      Formation_FMS_DW.start_vel_DSTATE[0] + Formation_FMS_DW.start_vel_DSTATE[1]
-      * Formation_FMS_DW.start_vel_DSTATE[1];
+    Formation_FMS_B.TmpSignalConversionAtSqua_c[0] =
+      Formation_FMS_DW.start_vel_DSTATE[0] * Formation_FMS_DW.start_vel_DSTATE[0];
+    Formation_FMS_B.TmpSignalConversionAtSqua_c[1] =
+      Formation_FMS_DW.start_vel_DSTATE[1] * Formation_FMS_DW.start_vel_DSTATE[1];
 
-    // Math: '<S151>/Math Function1'
+    // Sum: '<S198>/Sum of Elements'
+    Formation_FMS_B.scale = Formation_FMS_B.TmpSignalConversionAtSqua_c[0] +
+      Formation_FMS_B.TmpSignalConversionAtSqua_c[1];
+
+    // Math: '<S198>/Math Function1' incorporates:
+    //   Sum: '<S198>/Sum of Elements'
     //
-    //  About '<S151>/Math Function1':
+    //  About '<S198>/Math Function1':
     //   Operator: sqrt
 
-    if (Formation_FMS_DW.scale < 0.0F) {
-      Formation_FMS_DW.scale = -std::sqrt(std::abs(Formation_FMS_DW.scale));
+    if (Formation_FMS_B.scale < 0.0F) {
+      Formation_FMS_B.rtb_vn_idx_1 = -std::sqrt(std::abs(Formation_FMS_B.scale));
     } else {
-      Formation_FMS_DW.scale = std::sqrt(Formation_FMS_DW.scale);
+      Formation_FMS_B.rtb_vn_idx_1 = std::sqrt(Formation_FMS_B.scale);
     }
 
-    // End of Math: '<S151>/Math Function1'
+    // End of Math: '<S198>/Math Function1'
 
-    // Switch: '<S151>/Switch' incorporates:
-    //   Constant: '<S151>/Constant'
-    //   Delay: '<S139>/start_vel'
-    //   Product: '<S151>/Product'
+    // Switch: '<S198>/Switch' incorporates:
+    //   Constant: '<S198>/Constant'
+    //   Delay: '<S186>/start_vel'
+    //   Product: '<S198>/Product'
 
-    if (Formation_FMS_DW.scale > 0.0F) {
-      Formation_FMS_DW.ve[0] = Formation_FMS_DW.start_vel_DSTATE[0];
-      Formation_FMS_DW.ve[1] = Formation_FMS_DW.start_vel_DSTATE[1];
-      Formation_FMS_DW.ve[2] = Formation_FMS_DW.scale;
+    if (Formation_FMS_B.rtb_vn_idx_1 > 0.0F) {
+      Formation_FMS_B.ve[0] = Formation_FMS_DW.start_vel_DSTATE[0];
+      Formation_FMS_B.ve[1] = Formation_FMS_DW.start_vel_DSTATE[1];
+      Formation_FMS_B.ve[2] = Formation_FMS_B.rtb_vn_idx_1;
     } else {
-      Formation_FMS_DW.ve[0] = Formation_FMS_DW.start_vel_DSTATE[0] * 0.0F;
-      Formation_FMS_DW.ve[1] = Formation_FMS_DW.start_vel_DSTATE[1] * 0.0F;
-      Formation_FMS_DW.ve[2] = 1.0F;
+      Formation_FMS_B.ve[0] = Formation_FMS_DW.start_vel_DSTATE[0] * 0.0F;
+      Formation_FMS_B.ve[1] = Formation_FMS_DW.start_vel_DSTATE[1] * 0.0F;
+      Formation_FMS_B.ve[2] = 1.0F;
     }
 
-    // End of Switch: '<S151>/Switch'
+    // End of Switch: '<S198>/Switch'
 
-    // Product: '<S146>/Divide'
-    Formation_FMS_DW.P_c[0] = Formation_FMS_DW.pose[0] / Formation_FMS_DW.pose[2];
-    Formation_FMS_DW.P_c[1] = Formation_FMS_DW.pose[1] / Formation_FMS_DW.pose[2];
+    // Product: '<S193>/Divide'
+    Formation_FMS_B.TmpSignalConversionAtSqua_c[0] = Formation_FMS_B.vd[0] /
+      Formation_FMS_B.vd[2];
+    Formation_FMS_B.TmpSignalConversionAtSqua_c[1] = Formation_FMS_B.vd[1] /
+      Formation_FMS_B.vd[2];
 
-    // Sum: '<S149>/Sum of Elements' incorporates:
-    //   Math: '<S149>/Math Function'
-    //   SignalConversion generated from: '<S149>/Math Function'
+    // SignalConversion generated from: '<S196>/Math Function'
+    Formation_FMS_B.P_d[0] = Formation_FMS_B.TmpSignalConversionAtSqua_c[1];
+    Formation_FMS_B.P_d[1] = Formation_FMS_B.TmpSignalConversionAtSqua_c[0];
 
-    Formation_FMS_DW.scale = Formation_FMS_DW.P_c[1] * Formation_FMS_DW.P_c[1] +
-      Formation_FMS_DW.P_c[0] * Formation_FMS_DW.P_c[0];
+    // Sum: '<S196>/Sum of Elements' incorporates:
+    //   Math: '<S196>/Math Function'
+    //   SignalConversion generated from: '<S196>/Math Function'
 
-    // Math: '<S149>/Math Function1'
+    Formation_FMS_B.scale = Formation_FMS_B.TmpSignalConversionAtSqua_c[1] *
+      Formation_FMS_B.TmpSignalConversionAtSqua_c[1] +
+      Formation_FMS_B.TmpSignalConversionAtSqua_c[0] *
+      Formation_FMS_B.TmpSignalConversionAtSqua_c[0];
+
+    // Math: '<S196>/Math Function1' incorporates:
+    //   Sum: '<S196>/Sum of Elements'
     //
-    //  About '<S149>/Math Function1':
+    //  About '<S196>/Math Function1':
     //   Operator: sqrt
 
-    if (Formation_FMS_DW.scale < 0.0F) {
-      Formation_FMS_DW.scale = -std::sqrt(std::abs(Formation_FMS_DW.scale));
+    if (Formation_FMS_B.scale < 0.0F) {
+      Formation_FMS_B.rtb_vn_idx_1 = -std::sqrt(std::abs(Formation_FMS_B.scale));
     } else {
-      Formation_FMS_DW.scale = std::sqrt(Formation_FMS_DW.scale);
+      Formation_FMS_B.rtb_vn_idx_1 = std::sqrt(Formation_FMS_B.scale);
     }
 
-    // End of Math: '<S149>/Math Function1'
+    // End of Math: '<S196>/Math Function1'
 
-    // Switch: '<S149>/Switch' incorporates:
-    //   Constant: '<S149>/Constant'
-    //   Product: '<S149>/Product'
-    //   SignalConversion generated from: '<S149>/Math Function'
+    // Switch: '<S196>/Switch' incorporates:
+    //   Constant: '<S196>/Constant'
+    //   Product: '<S196>/Product'
+    //   SignalConversion generated from: '<S196>/Math Function'
 
-    if (Formation_FMS_DW.scale > 0.0F) {
-      Formation_FMS_DW.pose[0] = Formation_FMS_DW.P_c[1];
-      Formation_FMS_DW.pose[1] = Formation_FMS_DW.P_c[0];
-      Formation_FMS_DW.pose[2] = Formation_FMS_DW.scale;
+    if (Formation_FMS_B.rtb_vn_idx_1 > 0.0F) {
+      Formation_FMS_B.vd[0] = Formation_FMS_B.TmpSignalConversionAtSqua_c[1];
+      Formation_FMS_B.vd[1] = Formation_FMS_B.TmpSignalConversionAtSqua_c[0];
+      Formation_FMS_B.vd[2] = Formation_FMS_B.rtb_vn_idx_1;
     } else {
-      Formation_FMS_DW.pose[0] = Formation_FMS_DW.P_c[1] * 0.0F;
-      Formation_FMS_DW.pose[1] = Formation_FMS_DW.P_c[0] * 0.0F;
-      Formation_FMS_DW.pose[2] = 1.0F;
+      Formation_FMS_B.vd[0] = Formation_FMS_B.TmpSignalConversionAtSqua_c[1] *
+        0.0F;
+      Formation_FMS_B.vd[1] = Formation_FMS_B.TmpSignalConversionAtSqua_c[0] *
+        0.0F;
+      Formation_FMS_B.vd[2] = 1.0F;
     }
 
-    // End of Switch: '<S149>/Switch'
+    // End of Switch: '<S196>/Switch'
 
-    // MinMax: '<S137>/Max' incorporates:
-    //   Constant: '<S136>/L1'
-    //   Constant: '<S136>/R'
-    //   Gain: '<S137>/Gain'
+    // MinMax: '<S184>/Max' incorporates:
+    //   Constant: '<S183>/L1'
+    //   Constant: '<S183>/R'
+    //   Gain: '<S184>/Gain'
 
-    Formation_FMS_DW.rtb_y_R_idx_1 = std::fmax(FMS_PARAM.LOITER_R, 0.5F *
-      FMS_PARAM.L1);
+    Formation_FMS_B.scale = std::fmax(FMS_PARAM.LOITER_R, 0.5F * FMS_PARAM.L1);
 
-    // Reshape: '<S137>/Reshape2'
-    Formation_FMS_DW.P_c[0] = *rtu_INS_Out_x_R;
-    Formation_FMS_DW.P_c[1] = *rtu_INS_Out_y_R;
+    // Reshape: '<S184>/Reshape2'
+    Formation_FMS_B.Reshape2_bq[0] = *rtu_INS_Out_x_R;
+    Formation_FMS_B.Reshape2_bq[1] = *rtu_INS_Out_y_R;
 
-    // MATLAB Function: '<S137>/SearchL1RefWP' incorporates:
-    //   Constant: '<S136>/L1'
-    //   Reshape: '<S137>/Reshape2'
+    // MATLAB Function: '<S184>/SearchL1RefWP' incorporates:
+    //   Constant: '<S183>/L1'
 
-    Formation_FMS_DW.rtb_y_R_idx_0 = 0.0F;
-    Formation_FMS_DW.rtb_x_R_idx_0 = 0.0F;
-    if ((Formation_FMS_DW.P_c[0] == Formation_FMS_DW.Cmd_In.cur_waypoint[0]) &&
-        (Formation_FMS_DW.P_c[1] == Formation_FMS_DW.Cmd_In.cur_waypoint[1]) &&
-        (Formation_FMS_DW.rtb_y_R_idx_1 == FMS_PARAM.L1)) {
-      Formation_FMS_DW.i = 0;
+    Formation_FMS_SearchL1RefWP_i(&Formation_FMS_B.Cmd_In.cur_waypoint[0],
+      Formation_FMS_B.Reshape2_bq, Formation_FMS_B.scale, FMS_PARAM.L1,
+      Formation_FMS_B.TmpSignalConversionAtSqua_c, &Formation_FMS_B.n_j);
+
+    // RelationalOperator: '<S187>/Compare' incorporates:
+    //   Constant: '<S187>/Constant'
+
+    rtb_FixPtRelationalOperator_c = (Formation_FMS_B.n_j > 0.0);
+
+    // Product: '<S198>/Divide'
+    Formation_FMS_B.P_i[0] = Formation_FMS_B.ve[0] / Formation_FMS_B.ve[2];
+    Formation_FMS_B.P_i[1] = Formation_FMS_B.ve[1] / Formation_FMS_B.ve[2];
+
+    // MATLAB Function: '<S184>/OutRegionRegWP' incorporates:
+    //   Constant: '<S183>/L1'
+
+    Formation_FMS_OutRegionRegWP_o(&Formation_FMS_B.Cmd_In.cur_waypoint[0],
+      Formation_FMS_B.Reshape2_bq, Formation_FMS_B.scale, FMS_PARAM.L1,
+      Formation_FMS_B.P_i, Formation_FMS_B.P_d);
+
+    // Switch: '<S184>/Switch'
+    if (rtb_FixPtRelationalOperator_c) {
+      Formation_FMS_B.scale = Formation_FMS_B.TmpSignalConversionAtSqua_c[0];
     } else {
-      Formation_FMS_DW.scale = Formation_FMS_DW.Cmd_In.cur_waypoint[0] -
-        Formation_FMS_DW.P_c[0];
-      Formation_FMS_DW.TmpSignalConversionAtSqua_n[0] = Formation_FMS_DW.scale *
-        Formation_FMS_DW.scale;
-      Formation_FMS_DW.Reshape2_bi[0] = Formation_FMS_DW.scale;
-      Formation_FMS_DW.scale = Formation_FMS_DW.Cmd_In.cur_waypoint[1] -
-        Formation_FMS_DW.P_c[1];
-      Formation_FMS_DW.absxk = std::sqrt(Formation_FMS_DW.scale *
-        Formation_FMS_DW.scale + Formation_FMS_DW.TmpSignalConversionAtSqua_n[0]);
-      Formation_FMS_DW.path_ratio = FMS_PARAM.L1 * FMS_PARAM.L1;
-      Formation_FMS_DW.Multiply1_f = ((Formation_FMS_DW.absxk *
-        Formation_FMS_DW.absxk + Formation_FMS_DW.path_ratio) -
-        Formation_FMS_DW.rtb_y_R_idx_1 * Formation_FMS_DW.rtb_y_R_idx_1) / (2.0F
-        * Formation_FMS_DW.absxk);
-      Formation_FMS_DW.t_f = Formation_FMS_DW.Reshape2_bi[0] /
-        Formation_FMS_DW.absxk;
-      Formation_FMS_DW.scale /= Formation_FMS_DW.absxk;
-      Formation_FMS_DW.absxk = Formation_FMS_DW.Multiply1_f *
-        Formation_FMS_DW.Multiply1_f;
-      if (Formation_FMS_DW.absxk > Formation_FMS_DW.path_ratio) {
-        Formation_FMS_DW.i = 0;
-      } else if (Formation_FMS_DW.absxk == Formation_FMS_DW.path_ratio) {
-        Formation_FMS_DW.i = 1;
-        Formation_FMS_DW.rtb_y_R_idx_0 = Formation_FMS_DW.Multiply1_f *
-          Formation_FMS_DW.t_f + Formation_FMS_DW.P_c[0];
-        Formation_FMS_DW.rtb_x_R_idx_0 = Formation_FMS_DW.Multiply1_f *
-          Formation_FMS_DW.scale + Formation_FMS_DW.P_c[1];
-      } else {
-        Formation_FMS_DW.i = 2;
-        Formation_FMS_DW.absxk = std::sqrt(Formation_FMS_DW.path_ratio -
-          Formation_FMS_DW.absxk);
-        Formation_FMS_DW.rtb_y_R_idx_0 = (0.0F * Formation_FMS_DW.t_f -
-          Formation_FMS_DW.scale) * Formation_FMS_DW.absxk +
-          (Formation_FMS_DW.Multiply1_f * Formation_FMS_DW.t_f +
-           Formation_FMS_DW.P_c[0]);
-        Formation_FMS_DW.rtb_x_R_idx_0 = (0.0F * Formation_FMS_DW.scale +
-          Formation_FMS_DW.t_f) * Formation_FMS_DW.absxk +
-          (Formation_FMS_DW.Multiply1_f * Formation_FMS_DW.scale +
-           Formation_FMS_DW.P_c[1]);
-      }
+      Formation_FMS_B.scale = Formation_FMS_B.P_d[0];
     }
 
-    // End of MATLAB Function: '<S137>/SearchL1RefWP'
+    // Sum: '<S185>/Subtract' incorporates:
+    //   Switch: '<S184>/Switch'
 
-    // MATLAB Function: '<S137>/OutRegionRegWP' incorporates:
-    //   Reshape: '<S137>/Reshape2'
+    Formation_FMS_B.Reshape2_bq[0] = Formation_FMS_B.scale - *rtu_INS_Out_x_R;
 
-    Formation_FMS_DW.scale = Formation_FMS_DW.P_c[0] -
-      Formation_FMS_DW.Cmd_In.cur_waypoint[0];
-    Formation_FMS_DW.TmpSignalConversionAtSqua_n[0] = Formation_FMS_DW.scale *
-      Formation_FMS_DW.scale;
-    Formation_FMS_DW.scale = Formation_FMS_DW.P_c[1] -
-      Formation_FMS_DW.Cmd_In.cur_waypoint[1];
-
-    // Switch: '<S137>/Switch' incorporates:
-    //   Constant: '<S140>/Constant'
-    //   RelationalOperator: '<S140>/Compare'
-
-    if (Formation_FMS_DW.i <= 0) {
-      // MATLAB Function: '<S137>/OutRegionRegWP' incorporates:
-      //   Constant: '<S136>/L1'
-      //   Product: '<S151>/Divide'
-      //   Reshape: '<S137>/Reshape2'
-
-      Formation_FMS_DW.scale = Formation_FMS_DW.scale * Formation_FMS_DW.scale +
-        Formation_FMS_DW.TmpSignalConversionAtSqua_n[0];
-      Formation_FMS_DW.rtb_y_R_idx_1 *= Formation_FMS_DW.rtb_y_R_idx_1;
-      if (Formation_FMS_DW.scale > Formation_FMS_DW.rtb_y_R_idx_1) {
-        Formation_FMS_DW.rtb_y_R_idx_0 = Formation_FMS_DW.Cmd_In.cur_waypoint[0];
-      } else {
-        Formation_FMS_DW.rtb_y_R_idx_0 = Formation_FMS_DW.ve[0] /
-          Formation_FMS_DW.ve[2] * FMS_PARAM.L1 + Formation_FMS_DW.P_c[0];
-      }
-
-      if (Formation_FMS_DW.scale > Formation_FMS_DW.rtb_y_R_idx_1) {
-        Formation_FMS_DW.rtb_x_R_idx_0 = Formation_FMS_DW.Cmd_In.cur_waypoint[1];
-      } else {
-        Formation_FMS_DW.rtb_x_R_idx_0 = Formation_FMS_DW.ve[1] /
-          Formation_FMS_DW.ve[2] * FMS_PARAM.L1 + Formation_FMS_DW.P_c[1];
-      }
+    // Switch: '<S184>/Switch'
+    if (rtb_FixPtRelationalOperator_c) {
+      Formation_FMS_B.scale = Formation_FMS_B.TmpSignalConversionAtSqua_c[1];
+    } else {
+      Formation_FMS_B.scale = Formation_FMS_B.P_d[1];
     }
 
-    // Sum: '<S138>/Subtract' incorporates:
-    //   Switch: '<S137>/Switch'
+    // Sum: '<S185>/Subtract' incorporates:
+    //   Switch: '<S184>/Switch'
 
-    Formation_FMS_DW.Reshape2_bi[0] = Formation_FMS_DW.rtb_y_R_idx_0 -
-      *rtu_INS_Out_x_R;
-    Formation_FMS_DW.Reshape2_bi[1] = Formation_FMS_DW.rtb_x_R_idx_0 -
-      *rtu_INS_Out_y_R;
+    Formation_FMS_B.Reshape2_bq[1] = Formation_FMS_B.scale - *rtu_INS_Out_y_R;
 
-    // Sum: '<S147>/Sum of Elements' incorporates:
-    //   Math: '<S147>/Math Function'
-    //   Sum: '<S138>/Subtract'
+    // Sum: '<S194>/Sum of Elements' incorporates:
+    //   Math: '<S194>/Math Function'
+    //   Sum: '<S185>/Subtract'
 
-    Formation_FMS_DW.scale = Formation_FMS_DW.Reshape2_bi[0] *
-      Formation_FMS_DW.Reshape2_bi[0] + Formation_FMS_DW.Reshape2_bi[1] *
-      Formation_FMS_DW.Reshape2_bi[1];
+    Formation_FMS_B.scale = Formation_FMS_B.Reshape2_bq[0] *
+      Formation_FMS_B.Reshape2_bq[0] + Formation_FMS_B.Reshape2_bq[1] *
+      Formation_FMS_B.Reshape2_bq[1];
 
-    // Math: '<S147>/Math Function1'
+    // Math: '<S194>/Math Function1' incorporates:
+    //   Sum: '<S194>/Sum of Elements'
     //
-    //  About '<S147>/Math Function1':
+    //  About '<S194>/Math Function1':
     //   Operator: sqrt
 
-    if (Formation_FMS_DW.scale < 0.0F) {
-      Formation_FMS_DW.scale = -std::sqrt(std::abs(Formation_FMS_DW.scale));
+    if (Formation_FMS_B.scale < 0.0F) {
+      Formation_FMS_B.rtb_vn_idx_1 = -std::sqrt(std::abs(Formation_FMS_B.scale));
     } else {
-      Formation_FMS_DW.scale = std::sqrt(Formation_FMS_DW.scale);
+      Formation_FMS_B.rtb_vn_idx_1 = std::sqrt(Formation_FMS_B.scale);
     }
 
-    // End of Math: '<S147>/Math Function1'
+    // End of Math: '<S194>/Math Function1'
 
-    // Switch: '<S147>/Switch' incorporates:
-    //   Constant: '<S147>/Constant'
-    //   Product: '<S147>/Product'
-    //   Sum: '<S138>/Subtract'
-    //   Switch: '<S150>/Switch'
+    // Switch: '<S194>/Switch' incorporates:
+    //   Constant: '<S194>/Constant'
+    //   Product: '<S194>/Product'
+    //   Sum: '<S185>/Subtract'
+    //   Switch: '<S197>/Switch'
 
-    if (Formation_FMS_DW.scale > 0.0F) {
-      Formation_FMS_DW.ve[0] = Formation_FMS_DW.Reshape2_bi[0];
-      Formation_FMS_DW.ve[1] = Formation_FMS_DW.Reshape2_bi[1];
-      Formation_FMS_DW.ve[2] = Formation_FMS_DW.scale;
+    if (Formation_FMS_B.rtb_vn_idx_1 > 0.0F) {
+      Formation_FMS_B.ve[0] = Formation_FMS_B.Reshape2_bq[0];
+      Formation_FMS_B.ve[1] = Formation_FMS_B.Reshape2_bq[1];
+      Formation_FMS_B.ve[2] = Formation_FMS_B.rtb_vn_idx_1;
     } else {
-      Formation_FMS_DW.ve[0] = Formation_FMS_DW.Reshape2_bi[0] * 0.0F;
-      Formation_FMS_DW.ve[1] = Formation_FMS_DW.Reshape2_bi[1] * 0.0F;
-      Formation_FMS_DW.ve[2] = 1.0F;
+      Formation_FMS_B.ve[0] = Formation_FMS_B.Reshape2_bq[0] * 0.0F;
+      Formation_FMS_B.ve[1] = Formation_FMS_B.Reshape2_bq[1] * 0.0F;
+      Formation_FMS_B.ve[2] = 1.0F;
     }
 
-    // End of Switch: '<S147>/Switch'
+    // End of Switch: '<S194>/Switch'
 
-    // Product: '<S147>/Divide' incorporates:
-    //   Product: '<S150>/Divide'
+    // Product: '<S194>/Divide' incorporates:
+    //   Product: '<S197>/Divide'
 
-    Formation_FMS_DW.P_c[0] = Formation_FMS_DW.ve[0] / Formation_FMS_DW.ve[2];
-    Formation_FMS_DW.P_c[1] = Formation_FMS_DW.ve[1] / Formation_FMS_DW.ve[2];
+    Formation_FMS_B.TmpSignalConversionAtSqua_c[0] = Formation_FMS_B.ve[0] /
+      Formation_FMS_B.ve[2];
+    Formation_FMS_B.TmpSignalConversionAtSqua_c[1] = Formation_FMS_B.ve[1] /
+      Formation_FMS_B.ve[2];
 
-    // Sum: '<S150>/Sum of Elements' incorporates:
-    //   Math: '<S150>/Math Function'
-    //   SignalConversion generated from: '<S150>/Math Function'
+    // Sum: '<S197>/Sum of Elements' incorporates:
+    //   Math: '<S197>/Math Function'
+    //   SignalConversion generated from: '<S197>/Math Function'
 
-    Formation_FMS_DW.scale = Formation_FMS_DW.P_c[1] * Formation_FMS_DW.P_c[1] +
-      Formation_FMS_DW.P_c[0] * Formation_FMS_DW.P_c[0];
+    Formation_FMS_B.scale = Formation_FMS_B.TmpSignalConversionAtSqua_c[1] *
+      Formation_FMS_B.TmpSignalConversionAtSqua_c[1] +
+      Formation_FMS_B.TmpSignalConversionAtSqua_c[0] *
+      Formation_FMS_B.TmpSignalConversionAtSqua_c[0];
 
-    // Math: '<S150>/Math Function1'
+    // Math: '<S197>/Math Function1' incorporates:
+    //   Sum: '<S197>/Sum of Elements'
     //
-    //  About '<S150>/Math Function1':
+    //  About '<S197>/Math Function1':
     //   Operator: sqrt
 
-    if (Formation_FMS_DW.scale < 0.0F) {
-      Formation_FMS_DW.scale = -std::sqrt(std::abs(Formation_FMS_DW.scale));
+    if (Formation_FMS_B.scale < 0.0F) {
+      Formation_FMS_B.rtb_vn_idx_1 = -std::sqrt(std::abs(Formation_FMS_B.scale));
     } else {
-      Formation_FMS_DW.scale = std::sqrt(Formation_FMS_DW.scale);
+      Formation_FMS_B.rtb_vn_idx_1 = std::sqrt(Formation_FMS_B.scale);
     }
 
-    // End of Math: '<S150>/Math Function1'
+    // End of Math: '<S197>/Math Function1'
 
-    // Switch: '<S150>/Switch' incorporates:
-    //   Constant: '<S150>/Constant'
-    //   Product: '<S150>/Product'
-    //   SignalConversion generated from: '<S150>/Math Function'
+    // Switch: '<S197>/Switch' incorporates:
+    //   Constant: '<S197>/Constant'
+    //   Product: '<S197>/Product'
+    //   SignalConversion generated from: '<S197>/Math Function'
 
-    if (Formation_FMS_DW.scale > 0.0F) {
-      Formation_FMS_DW.ve[0] = Formation_FMS_DW.P_c[1];
-      Formation_FMS_DW.ve[1] = Formation_FMS_DW.P_c[0];
-      Formation_FMS_DW.ve[2] = Formation_FMS_DW.scale;
+    if (Formation_FMS_B.rtb_vn_idx_1 > 0.0F) {
+      Formation_FMS_B.ve[0] = Formation_FMS_B.TmpSignalConversionAtSqua_c[1];
+      Formation_FMS_B.ve[1] = Formation_FMS_B.TmpSignalConversionAtSqua_c[0];
+      Formation_FMS_B.ve[2] = Formation_FMS_B.rtb_vn_idx_1;
     } else {
-      Formation_FMS_DW.ve[0] = Formation_FMS_DW.P_c[1] * 0.0F;
-      Formation_FMS_DW.ve[1] = Formation_FMS_DW.P_c[0] * 0.0F;
-      Formation_FMS_DW.ve[2] = 1.0F;
+      Formation_FMS_B.ve[0] = Formation_FMS_B.TmpSignalConversionAtSqua_c[1] *
+        0.0F;
+      Formation_FMS_B.ve[1] = Formation_FMS_B.TmpSignalConversionAtSqua_c[0] *
+        0.0F;
+      Formation_FMS_B.ve[2] = 1.0F;
     }
 
-    // End of Switch: '<S150>/Switch'
+    // End of Switch: '<S197>/Switch'
 
-    // Product: '<S150>/Divide'
-    Formation_FMS_DW.Multiply1_f = Formation_FMS_DW.ve[0] / Formation_FMS_DW.ve
-      [2];
+    // Product: '<S197>/Divide'
+    Formation_FMS_B.rtb_x_R_idx_0 = Formation_FMS_B.ve[0] / Formation_FMS_B.ve[2];
 
-    // Product: '<S149>/Divide'
-    Formation_FMS_DW.absxk = Formation_FMS_DW.pose[0] / Formation_FMS_DW.pose[2];
+    // Product: '<S196>/Divide'
+    Formation_FMS_B.Multiply1_f = Formation_FMS_B.vd[0] / Formation_FMS_B.vd[2];
 
-    // DotProduct: '<S144>/Dot Product'
-    Formation_FMS_DW.rtb_x_R_idx_0 = Formation_FMS_DW.absxk *
-      Formation_FMS_DW.Multiply1_f;
-    Formation_FMS_DW.P_c[0] = Formation_FMS_DW.Multiply1_f;
-    Formation_FMS_DW.rtb_y_R_idx_0 = Formation_FMS_DW.absxk;
+    // DotProduct: '<S191>/Dot Product'
+    Formation_FMS_B.scale = Formation_FMS_B.Multiply1_f *
+      Formation_FMS_B.rtb_x_R_idx_0;
+    Formation_FMS_B.TmpSignalConversionAtSqua_c[0] =
+      Formation_FMS_B.rtb_x_R_idx_0;
+    Formation_FMS_B.P_d[0] = Formation_FMS_B.Multiply1_f;
 
-    // Product: '<S150>/Divide' incorporates:
-    //   Product: '<S149>/Divide'
+    // Product: '<S197>/Divide' incorporates:
+    //   Product: '<S196>/Divide'
 
-    Formation_FMS_DW.Multiply1_f = Formation_FMS_DW.ve[1] / Formation_FMS_DW.ve
-      [2];
+    Formation_FMS_B.rtb_x_R_idx_0 = Formation_FMS_B.ve[1] / Formation_FMS_B.ve[2];
 
-    // Product: '<S149>/Divide'
-    Formation_FMS_DW.absxk = Formation_FMS_DW.pose[1] / Formation_FMS_DW.pose[2];
+    // Product: '<S196>/Divide'
+    Formation_FMS_B.Multiply1_f = Formation_FMS_B.vd[1] / Formation_FMS_B.vd[2];
 
-    // DotProduct: '<S144>/Dot Product'
-    Formation_FMS_DW.rtb_x_R_idx_0 += Formation_FMS_DW.absxk *
-      Formation_FMS_DW.Multiply1_f;
+    // DotProduct: '<S191>/Dot Product'
+    Formation_FMS_B.scale += Formation_FMS_B.Multiply1_f *
+      Formation_FMS_B.rtb_x_R_idx_0;
 
-    // Sqrt: '<S145>/Sqrt'
-    Formation_FMS_DW.scale = std::sqrt(Formation_FMS_DW.rtb_vn_idx_1);
+    // Sqrt: '<S192>/Sqrt' incorporates:
+    //   Math: '<S192>/Square'
+    //   Sum: '<S192>/Sum of Elements'
 
-    // Math: '<S143>/Square'
-    Formation_FMS_DW.rtb_y_R_idx_1 = Formation_FMS_DW.scale *
-      Formation_FMS_DW.scale;
+    Formation_FMS_B.rtb_vn_idx_1 = std::sqrt(Formation_FMS_B.absxk +
+      Formation_FMS_B.t);
 
-    // Sum: '<S148>/Subtract' incorporates:
-    //   Product: '<S148>/Multiply'
-    //   Product: '<S148>/Multiply1'
+    // Math: '<S190>/Square'
+    Formation_FMS_B.absxk = Formation_FMS_B.rtb_vn_idx_1 *
+      Formation_FMS_B.rtb_vn_idx_1;
 
-    Formation_FMS_DW.rtb_y_R_idx_0 = Formation_FMS_DW.P_c[0] *
-      Formation_FMS_DW.absxk - Formation_FMS_DW.rtb_y_R_idx_0 *
-      Formation_FMS_DW.Multiply1_f;
+    // Sum: '<S195>/Subtract' incorporates:
+    //   Product: '<S195>/Multiply'
+    //   Product: '<S195>/Multiply1'
 
-    // Signum: '<S144>/Sign1'
-    if (std::isnan(Formation_FMS_DW.rtb_y_R_idx_0)) {
-      Formation_FMS_DW.scale = (rtNaNF);
-    } else if (Formation_FMS_DW.rtb_y_R_idx_0 < 0.0F) {
-      Formation_FMS_DW.scale = -1.0F;
+    Formation_FMS_B.t = Formation_FMS_B.TmpSignalConversionAtSqua_c[0] *
+      Formation_FMS_B.Multiply1_f - Formation_FMS_B.P_d[0] *
+      Formation_FMS_B.rtb_x_R_idx_0;
+
+    // Signum: '<S191>/Sign1'
+    if (std::isnan(Formation_FMS_B.t)) {
+      Formation_FMS_B.rtb_vn_idx_1 = (rtNaNF);
+    } else if (Formation_FMS_B.t < 0.0F) {
+      Formation_FMS_B.rtb_vn_idx_1 = -1.0F;
     } else {
-      Formation_FMS_DW.scale = (Formation_FMS_DW.rtb_y_R_idx_0 > 0.0F);
+      Formation_FMS_B.rtb_vn_idx_1 = (Formation_FMS_B.t > 0.0F);
     }
 
-    // End of Signum: '<S144>/Sign1'
+    // End of Signum: '<S191>/Sign1'
 
-    // Trigonometry: '<S144>/Acos' incorporates:
-    //   DotProduct: '<S144>/Dot Product'
+    // Trigonometry: '<S191>/Acos' incorporates:
+    //   DotProduct: '<S191>/Dot Product'
 
-    if (Formation_FMS_DW.rtb_x_R_idx_0 > 1.0F) {
-      Formation_FMS_DW.rtb_x_R_idx_0 = 1.0F;
-    } else if (Formation_FMS_DW.rtb_x_R_idx_0 < -1.0F) {
-      Formation_FMS_DW.rtb_x_R_idx_0 = -1.0F;
+    if (Formation_FMS_B.scale > 1.0F) {
+      Formation_FMS_B.scale = 1.0F;
+    } else if (Formation_FMS_B.scale < -1.0F) {
+      Formation_FMS_B.scale = -1.0F;
     }
 
-    // Switch: '<S144>/Switch2' incorporates:
-    //   Constant: '<S144>/Constant4'
+    // Switch: '<S191>/Switch2' incorporates:
+    //   Constant: '<S191>/Constant4'
 
-    if (!(Formation_FMS_DW.scale != 0.0F)) {
-      Formation_FMS_DW.scale = 1.0F;
+    if (!(Formation_FMS_B.rtb_vn_idx_1 != 0.0F)) {
+      Formation_FMS_B.rtb_vn_idx_1 = 1.0F;
     }
 
-    // Product: '<S144>/Multiply' incorporates:
-    //   Switch: '<S144>/Switch2'
-    //   Trigonometry: '<S144>/Acos'
+    // Product: '<S191>/Multiply' incorporates:
+    //   Switch: '<S191>/Switch2'
+    //   Trigonometry: '<S191>/Acos'
 
-    Formation_FMS_DW.path_ratio = std::acos(Formation_FMS_DW.rtb_x_R_idx_0) *
-      Formation_FMS_DW.scale;
+    Formation_FMS_B.Multiply1_f = std::acos(Formation_FMS_B.scale) *
+      Formation_FMS_B.rtb_vn_idx_1;
 
-    // Sum: '<S134>/Sum' incorporates:
-    //   Constant: '<S134>/Constant'
+    // Sum: '<S181>/Sum' incorporates:
+    //   Constant: '<S181>/Constant'
 
-    Formation_FMS_DW.scale = FMS_PARAM.FW_AIRSPD_TRIM - *rtu_INS_Out_airspeed;
+    Formation_FMS_B.rtb_vn_idx_1 = FMS_PARAM.FW_AIRSPD_TRIM -
+      *rtu_INS_Out_airspeed;
 
-    // Delay: '<S135>/Delay' incorporates:
-    //   Constant: '<S135>/Constant'
+    // Delay: '<S182>/Delay' incorporates:
+    //   Constant: '<S182>/Constant'
 
     if (Formation_FMS_DW.icLoad_j) {
-      Formation_FMS_DW.Delay_DSTATE_m = FMS_PARAM.FW_HEIGHT_TRIM;
+      Formation_FMS_DW.Delay_DSTATE = FMS_PARAM.FW_HEIGHT_TRIM;
     }
 
-    // Sum: '<S135>/Sum' incorporates:
-    //   Delay: '<S135>/Delay'
+    // Sum: '<S182>/Sum' incorporates:
+    //   Delay: '<S182>/Delay'
 
-    Formation_FMS_DW.absxk = Formation_FMS_DW.Delay_DSTATE_m - *rtu_INS_Out_h_R;
+    Formation_FMS_B.scale = Formation_FMS_DW.Delay_DSTATE - *rtu_INS_Out_h_R;
 
     // End of Outputs for SubSystem: '<S10>/Hold'
-    std::memset(&Formation_FMS_DW.Merge, 0, sizeof(FMS_Out_Bus));
+    std::memset(&Formation_FMS_B.Merge, 0, sizeof(FMS_Out_Bus));
 
     // Outputs for IfAction SubSystem: '<S10>/Hold' incorporates:
-    //   ActionPort: '<S14>/Action Port'
+    //   ActionPort: '<S13>/Action Port'
 
-    // BusAssignment: '<S14>/Bus Assignment' incorporates:
-    //   Constant: '<S14>/Constant1'
+    // BusAssignment: '<S13>/Bus Assignment' incorporates:
+    //   Constant: '<S13>/Constant1'
     //   Merge: '<S10>/Merge'
 
-    Formation_FMS_DW.Merge.state = VehicleState::Hold;
-    Formation_FMS_DW.Merge.ax_cmd = Formation_FMS_DW.scale;
+    Formation_FMS_B.Merge.state = VehicleState::Hold;
+    Formation_FMS_B.Merge.ax_cmd = Formation_FMS_B.rtb_vn_idx_1;
 
-    // Saturate: '<S143>/Saturation'
-    if (Formation_FMS_DW.path_ratio > 1.57079637F) {
-      Formation_FMS_DW.path_ratio = 1.57079637F;
-    } else if (Formation_FMS_DW.path_ratio < -1.57079637F) {
-      Formation_FMS_DW.path_ratio = -1.57079637F;
+    // Saturate: '<S190>/Saturation'
+    if (Formation_FMS_B.Multiply1_f > 1.57079637F) {
+      Formation_FMS_B.Multiply1_f = 1.57079637F;
+    } else if (Formation_FMS_B.Multiply1_f < -1.57079637F) {
+      Formation_FMS_B.Multiply1_f = -1.57079637F;
     }
 
-    // BusAssignment: '<S14>/Bus Assignment' incorporates:
-    //   Constant: '<S136>/L1'
-    //   Gain: '<S143>/Gain'
-    //   Product: '<S143>/Divide'
-    //   Product: '<S143>/Multiply1'
-    //   Saturate: '<S143>/Saturation'
-    //   Trigonometry: '<S143>/Sin'
+    // BusAssignment: '<S13>/Bus Assignment' incorporates:
+    //   Constant: '<S183>/L1'
+    //   Gain: '<S190>/Gain'
+    //   Product: '<S190>/Divide'
+    //   Product: '<S190>/Multiply1'
+    //   Saturate: '<S190>/Saturation'
+    //   Trigonometry: '<S190>/Sin'
 
-    Formation_FMS_DW.Merge.ay_cmd = 2.0F * Formation_FMS_DW.rtb_y_R_idx_1 * std::
-      sin(Formation_FMS_DW.path_ratio) / FMS_PARAM.L1;
+    Formation_FMS_B.Merge.ay_cmd = 2.0F * Formation_FMS_B.absxk * std::sin
+      (Formation_FMS_B.Multiply1_f) / FMS_PARAM.L1;
 
-    // Gain: '<S135>/Gain2'
-    Formation_FMS_DW.path_ratio = FMS_PARAM.Z_P * Formation_FMS_DW.absxk;
+    // Gain: '<S182>/Gain2'
+    Formation_FMS_B.Multiply1_f = FMS_PARAM.Z_P * Formation_FMS_B.scale;
 
-    // Saturate: '<S135>/Saturation'
-    if (Formation_FMS_DW.path_ratio > CONTROL_PARAM.FW_T_CLMB_MAX) {
-      // BusAssignment: '<S14>/Bus Assignment'
-      Formation_FMS_DW.Merge.vh_cmd = CONTROL_PARAM.FW_T_CLMB_MAX;
-    } else if (Formation_FMS_DW.path_ratio < -CONTROL_PARAM.FW_T_SINK_MAX) {
-      // BusAssignment: '<S14>/Bus Assignment'
-      Formation_FMS_DW.Merge.vh_cmd = -CONTROL_PARAM.FW_T_SINK_MAX;
+    // Saturate: '<S182>/Saturation'
+    if (Formation_FMS_B.Multiply1_f > CONTROL_PARAM.FW_T_CLMB_MAX) {
+      // BusAssignment: '<S13>/Bus Assignment'
+      Formation_FMS_B.Merge.vh_cmd = CONTROL_PARAM.FW_T_CLMB_MAX;
+    } else if (Formation_FMS_B.Multiply1_f < -CONTROL_PARAM.FW_T_SINK_MAX) {
+      // BusAssignment: '<S13>/Bus Assignment'
+      Formation_FMS_B.Merge.vh_cmd = -CONTROL_PARAM.FW_T_SINK_MAX;
     } else {
-      // BusAssignment: '<S14>/Bus Assignment'
-      Formation_FMS_DW.Merge.vh_cmd = Formation_FMS_DW.path_ratio;
+      // BusAssignment: '<S13>/Bus Assignment'
+      Formation_FMS_B.Merge.vh_cmd = Formation_FMS_B.Multiply1_f;
     }
 
-    // End of Saturate: '<S135>/Saturation'
+    // End of Saturate: '<S182>/Saturation'
 
-    // Update for Delay: '<S139>/start_vel'
-    Formation_FMS_DW.icLoad_c = false;
+    // Update for Delay: '<S186>/start_vel'
+    Formation_FMS_DW.icLoad = false;
 
-    // Update for Delay: '<S135>/Delay'
+    // Update for Delay: '<S182>/Delay'
     Formation_FMS_DW.icLoad_j = false;
 
     // End of Outputs for SubSystem: '<S10>/Hold'
     break;
 
    default:
-    // InitializeConditions for IfAction SubSystem: '<S10>/Default' incorporates:
-    //   ActionPort: '<S11>/Action Port'
+    if (Formation_FMS_DW.SwitchCase_ActiveSubsystem != rtPrevAction) {
+      // SystemReset for IfAction SubSystem: '<S10>/Default' incorporates:
+      //   ActionPort: '<S11>/Action Port'
 
-    // InitializeConditions for SwitchCase: '<S10>/Switch Case' incorporates:
-    //   Delay: '<S16>/Delay'
+      // SystemReset for SwitchCase: '<S10>/Switch Case'
+      Formation_FMS_Default_Reset(&Formation_FMS_DW.Default);
 
-    Formation_FMS_DW.icLoad = ((rtAction != rtPrevAction) ||
-      Formation_FMS_DW.icLoad);
-
-    // End of InitializeConditions for SubSystem: '<S10>/Default'
+      // End of SystemReset for SubSystem: '<S10>/Default'
+    }
 
     // Outputs for IfAction SubSystem: '<S10>/Default' incorporates:
     //   ActionPort: '<S11>/Action Port'
 
-    // Sum: '<S15>/Sum' incorporates:
-    //   Constant: '<S15>/Constant'
-
-    Formation_FMS_DW.scale = FMS_PARAM.FW_AIRSPD_TRIM - *rtu_INS_Out_airspeed;
-
-    // Delay: '<S16>/Delay'
-    if (Formation_FMS_DW.icLoad) {
-      Formation_FMS_DW.Delay_DSTATE = *rtu_INS_Out_h_R;
-    }
-
-    // Sum: '<S16>/Sum' incorporates:
-    //   Delay: '<S16>/Delay'
-
-    Formation_FMS_DW.rtb_y_R_idx_1 = Formation_FMS_DW.Delay_DSTATE -
-      *rtu_INS_Out_h_R;
-
-    // End of Outputs for SubSystem: '<S10>/Default'
-    std::memset(&Formation_FMS_DW.Merge, 0, sizeof(FMS_Out_Bus));
-
-    // Outputs for IfAction SubSystem: '<S10>/Default' incorporates:
-    //   ActionPort: '<S11>/Action Port'
-
-    // BusAssignment: '<S11>/Bus Assignment' incorporates:
-    //   Constant: '<S11>/Constant1'
-    //   Merge: '<S10>/Merge'
-
-    Formation_FMS_DW.Merge.state = VehicleState::None;
-    Formation_FMS_DW.Merge.ax_cmd = Formation_FMS_DW.scale;
-    Formation_FMS_DW.Merge.ay_cmd = 0.0F;
-
-    // Gain: '<S16>/Gain2'
-    Formation_FMS_DW.path_ratio = FMS_PARAM.Z_P * Formation_FMS_DW.rtb_y_R_idx_1;
-
-    // Saturate: '<S16>/Saturation'
-    if (Formation_FMS_DW.path_ratio > CONTROL_PARAM.FW_T_CLMB_MAX) {
-      // BusAssignment: '<S11>/Bus Assignment'
-      Formation_FMS_DW.Merge.vh_cmd = CONTROL_PARAM.FW_T_CLMB_MAX;
-    } else if (Formation_FMS_DW.path_ratio < -CONTROL_PARAM.FW_T_SINK_MAX) {
-      // BusAssignment: '<S11>/Bus Assignment'
-      Formation_FMS_DW.Merge.vh_cmd = -CONTROL_PARAM.FW_T_SINK_MAX;
-    } else {
-      // BusAssignment: '<S11>/Bus Assignment'
-      Formation_FMS_DW.Merge.vh_cmd = Formation_FMS_DW.path_ratio;
-    }
-
-    // End of Saturate: '<S16>/Saturation'
-
-    // Update for Delay: '<S16>/Delay'
-    Formation_FMS_DW.icLoad = false;
+    Formation_FMS_Default(rtu_INS_Out_airspeed, rtu_INS_Out_h_R,
+                          &Formation_FMS_B.Merge, &Formation_FMS_DW.Default);
 
     // End of Outputs for SubSystem: '<S10>/Default'
     break;
@@ -4112,44 +5000,44 @@ void Formation_FMS::step(const uint32_T *rtu_Pilot_Cmd_timestamp, const uint32_T
   // End of SwitchCase: '<S10>/Switch Case'
 
   // SignalConversion generated from: '<Root>/Other_Mission_Data'
-  rty_Other_Mission_Data_type[0] = Formation_FMS_DW.Other_Mission_Data.type[0];
+  rty_Other_Mission_Data_type[0] = Formation_FMS_B.Other_Mission_Data.type[0];
 
   // SignalConversion generated from: '<Root>/Other_Mission_Data'
   rty_Other_Mission_Data_valid_it[0] =
-    Formation_FMS_DW.Other_Mission_Data.valid_items[0];
+    Formation_FMS_B.Other_Mission_Data.valid_items[0];
 
   // SignalConversion generated from: '<Root>/Other_Mission_Data'
-  rty_Other_Mission_Data_type[1] = Formation_FMS_DW.Other_Mission_Data.type[1];
+  rty_Other_Mission_Data_type[1] = Formation_FMS_B.Other_Mission_Data.type[1];
 
   // SignalConversion generated from: '<Root>/Other_Mission_Data'
   rty_Other_Mission_Data_valid_it[1] =
-    Formation_FMS_DW.Other_Mission_Data.valid_items[1];
+    Formation_FMS_B.Other_Mission_Data.valid_items[1];
 
   // SignalConversion generated from: '<Root>/Other_Mission_Data'
-  rty_Other_Mission_Data_type[2] = Formation_FMS_DW.Other_Mission_Data.type[2];
+  rty_Other_Mission_Data_type[2] = Formation_FMS_B.Other_Mission_Data.type[2];
 
   // SignalConversion generated from: '<Root>/Other_Mission_Data'
   rty_Other_Mission_Data_valid_it[2] =
-    Formation_FMS_DW.Other_Mission_Data.valid_items[2];
+    Formation_FMS_B.Other_Mission_Data.valid_items[2];
 
   // SignalConversion generated from: '<Root>/Other_Mission_Data'
   *rty_Other_Mission_Data_timestam =
-    Formation_FMS_DW.Other_Mission_Data.timestamp;
+    Formation_FMS_B.Other_Mission_Data.timestamp;
 
   // SignalConversion generated from: '<Root>/FMS_Out'
-  *rty_FMS_Out_timestamp = Formation_FMS_DW.Merge.timestamp;
+  *rty_FMS_Out_timestamp = Formation_FMS_B.Merge.timestamp;
 
   // SignalConversion generated from: '<Root>/FMS_Out'
-  *rty_FMS_Out_state = Formation_FMS_DW.Merge.state;
+  *rty_FMS_Out_state = Formation_FMS_B.Merge.state;
 
   // SignalConversion generated from: '<Root>/FMS_Out'
-  *rty_FMS_Out_ax_cmd = Formation_FMS_DW.Merge.ax_cmd;
+  *rty_FMS_Out_ax_cmd = Formation_FMS_B.Merge.ax_cmd;
 
   // SignalConversion generated from: '<Root>/FMS_Out'
-  *rty_FMS_Out_ay_cmd = Formation_FMS_DW.Merge.ay_cmd;
+  *rty_FMS_Out_ay_cmd = Formation_FMS_B.Merge.ay_cmd;
 
   // SignalConversion generated from: '<Root>/FMS_Out'
-  *rty_FMS_Out_vh_cmd = Formation_FMS_DW.Merge.vh_cmd;
+  *rty_FMS_Out_vh_cmd = Formation_FMS_B.Merge.vh_cmd;
 }
 
 // Model initialize function
@@ -4159,12 +5047,13 @@ void Formation_FMS::initialize()
 
   // initialize non-finites
   rt_InitInfAndNaN(sizeof(real_T));
-  Formation_FMS_PrevZCX.FormMission_SubSystem_Reset_ZCE = POS_ZCSIG;
   Formation_FMS_PrevZCX.Mission_SubSystem_Reset_ZCE = POS_ZCSIG;
+  Formation_FMS_PrevZCX.FormMission_SubSystem_Reset_ZCE = POS_ZCSIG;
 }
 
 // Constructor
 Formation_FMS::Formation_FMS() :
+  Formation_FMS_B(),
   Formation_FMS_DW(),
   Formation_FMS_PrevZCX(),
   Formation_FMS_M()

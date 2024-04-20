@@ -5,11 +5,11 @@
 //
 // File: rtwtypes.h
 //
-// Code generated for Simulink model 'FMS_TECS'.
+// Code generated for Simulink model 'Formation_FMS'.
 //
-// Model version                  : 1.36
+// Model version                  : 1.183
 // Simulink Coder version         : 9.8 (R2022b) 13-May-2022
-// C/C++ source code generated on : Tue Apr  2 21:16:50 2024
+// C/C++ source code generated on : Sat Apr 13 20:05:24 2024
 //
 #ifndef RTWTYPES_H
 #define RTWTYPES_H
@@ -29,7 +29,7 @@
 //  Target hardware information
 //    Device type: Intel->x86-64 (Linux 64)
 //    Number of bits:     char:   8    short:   16    int:  32
-//                        long:  64    long long:  64
+//                        long:  64
 //                        native word size:  64
 //    Byte ordering: LittleEndian
 //    Signed integer division rounds to: Zero
@@ -55,7 +55,7 @@ typedef double real64_T;
 
 //===========================================================================*
 //  Generic type definitions: boolean_T, char_T, byte_T, int_T, uint_T,       *
-//                            real_T, time_T, ulong_T, ulonglong_T.           *
+//                            real_T, time_T, ulong_T.                        *
 // ===========================================================================
 typedef double real_T;
 typedef double time_T;
@@ -63,86 +63,9 @@ typedef unsigned char boolean_T;
 typedef int int_T;
 typedef unsigned int uint_T;
 typedef unsigned long ulong_T;
-typedef unsigned long long ulonglong_T;
 typedef char char_T;
 typedef unsigned char uchar_T;
 typedef char_T byte_T;
-
-//===========================================================================*
-//  Complex number type definitions                                           *
-// ===========================================================================
-#define CREAL_T
-
-typedef struct {
-  real32_T re;
-  real32_T im;
-} creal32_T;
-
-typedef struct {
-  real64_T re;
-  real64_T im;
-} creal64_T;
-
-typedef struct {
-  real_T re;
-  real_T im;
-} creal_T;
-
-#define CINT8_T
-
-typedef struct {
-  int8_T re;
-  int8_T im;
-} cint8_T;
-
-#define CUINT8_T
-
-typedef struct {
-  uint8_T re;
-  uint8_T im;
-} cuint8_T;
-
-#define CINT16_T
-
-typedef struct {
-  int16_T re;
-  int16_T im;
-} cint16_T;
-
-#define CUINT16_T
-
-typedef struct {
-  uint16_T re;
-  uint16_T im;
-} cuint16_T;
-
-#define CINT32_T
-
-typedef struct {
-  int32_T re;
-  int32_T im;
-} cint32_T;
-
-#define CUINT32_T
-
-typedef struct {
-  uint32_T re;
-  uint32_T im;
-} cuint32_T;
-
-#define CINT64_T
-
-typedef struct {
-  int64_T re;
-  int64_T im;
-} cint64_T;
-
-#define CUINT64_T
-
-typedef struct {
-  uint64_T re;
-  uint64_T im;
-} cuint64_T;
 
 //=======================================================================*
 //  Min and Max:                                                          *

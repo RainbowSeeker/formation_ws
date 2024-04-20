@@ -7,9 +7,9 @@
 //
 // Code generated for Simulink model 'Formation_FMS'.
 //
-// Model version                  : 1.159
+// Model version                  : 1.183
 // Simulink Coder version         : 9.8 (R2022b) 13-May-2022
-// C/C++ source code generated on : Tue Apr  2 21:16:26 2024
+// C/C++ source code generated on : Sat Apr 13 20:05:24 2024
 //
 #include "rtwtypes.h"
 #include "mod_ThuC9Kor.h"
@@ -22,7 +22,7 @@ extern "C"
 
 }
 
-// Function for MATLAB Function: '<S83>/Dubins Closest Point'
+// Function for MATLAB Function: '<S153>/Dubins Closest Point'
 real32_T mod_ThuC9Kor(real32_T x)
 {
   real32_T r;

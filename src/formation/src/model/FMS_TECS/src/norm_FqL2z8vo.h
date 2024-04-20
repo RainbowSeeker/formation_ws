@@ -3,21 +3,21 @@
 // course requirements at degree granting institutions only.  Not for
 // government, commercial, or other organizational use.
 //
-// File: rt_atan2f_snf.h
+// File: norm_FqL2z8vo.h
 //
 // Code generated for Simulink model 'Formation_FMS'.
 //
-// Model version                  : 1.183
+// Model version                  : 1.206
 // Simulink Coder version         : 9.8 (R2022b) 13-May-2022
-// C/C++ source code generated on : Sat Apr 13 20:05:24 2024
+// C/C++ source code generated on : Fri Apr 19 19:09:23 2024
 //
-#ifndef RTW_HEADER_rt_atan2f_snf_h_
-#define RTW_HEADER_rt_atan2f_snf_h_
+#ifndef RTW_HEADER_norm_FqL2z8vo_h_
+#define RTW_HEADER_norm_FqL2z8vo_h_
 #include "rtwtypes.h"
 
-extern real32_T rt_atan2f_snf(real32_T u0, real32_T u1);
+extern real32_T norm_FqL2z8vo(const real32_T x[2]);
 
-#endif                                 // RTW_HEADER_rt_atan2f_snf_h_
+#endif                                 // RTW_HEADER_norm_FqL2z8vo_h_
 
 //
 // File trailer for generated code.
